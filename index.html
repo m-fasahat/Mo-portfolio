@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mo Fasahat — Portfolio</title>
+    <meta name="description" content="Minimal portfolio of Mo Fasahat — selected works, notes, and contact." />
+    <meta property="og:title" content="Mo Fasahat — Portfolio" />
+    <meta property="og:description" content="Selected works, notes, and contact." />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🌊</text></svg>">
+    <style>
+      :root{
+        --bg:#ffffff; --fg:#0a0a0a; --muted:#6b7280; --line:#e5e7eb; --card:#f8fafc; --accent:#0f172a;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{ --bg:#0b0d10; --fg:#e5e7eb; --muted:#9aa4b2; --line:#1f2937; --card:#0f1318; --accent:#cbd5e1; }
+        meta[name="theme-color"]{ content:#0b0d10; }
+      }
+      *{ box-sizing:border-box }
+      html,body{ margin:0; padding:0; background:var(--bg); color:var(--fg); font: 16px/1.5 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji; }
+      a{ color:inherit; text-decoration:none }
+      .container{ max-width: 980px; margin: 0 auto; padding: 24px }
+      header{ position:sticky; top:0; backdrop-filter:saturate(180%) blur(12px); background: color-mix(in oklab, var(--bg), transparent 25%); border-bottom:1px solid var(--line); z-index:10 }
+      nav{ display:flex; gap:16px; align-items:center; justify-content:space-between }
+      .brand{ font-weight:700; letter-spacing:0.2px }
+      .navlinks a{ padding:10px 8px; opacity:.8 }
+      .navlinks a:hover{ opacity:1 }
+      .hero{ padding: 72px 24px 16px; }
+      h1{ font-size: clamp(32px, 6vw, 56px); line-height:1.1; margin:0 0 12px 0; letter-spacing:-0.02em }
+      .kicker{ color:var(--muted); font-size:14px; text-transform:uppercase; letter-spacing:.18em }
+      .lede{ color:var(--muted); max-width: 70ch }
+      .grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap: 12px }
+      .card{ grid-column: span 6; border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--card); transition: transform .2s ease }
+      .card:hover{ transform: translateY(-2px) }
+      .card img{ width:100%; height:260px; object-fit:cover; display:block; background:#ddd }
+      .card .pad{ padding:14px 16px }
+      .card h3{ margin:0 0 6px 0; font-size:18px; letter-spacing:-0.01em }
+      .card p{ margin:0; color:var(--muted); font-size:14px }
+      .card small{ color:var(--muted) }
+      @media (max-width: 800px){ .card{ grid-column: span 12 } }
+      section{ padding: 36px 24px }
+      section h2{ font-size: 18px; text-transform:uppercase; letter-spacing:.18em; color:var(--muted); margin: 8px 0 18px; }
+      .about{ display:grid; grid-template-columns: 1.2fr .8fr; gap:24px }
+      @media (max-width: 900px){ .about{ grid-template-columns: 1fr } }
+      .about p{ margin:0 0 12px 0; color:var(--fg) }
+      .meta{ border:1px solid var(--line); padding:16px; border-radius:14px; font-size:14px }
+      .meta div{ display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed var(--line) }
+      .meta div:last-child{ border-bottom:0 }
+      footer{ border-top:1px solid var(--line); padding: 18px 24px; display:flex; align-items:center; justify-content:space-between; font-size:14px; color:var(--muted) }
+      .pill{ display:inline-block; border:1px solid var(--line); border-radius:999px; padding:6px 12px; font-size:12px; color:var(--muted) }
+      .cta{ display:inline-flex; gap:8px; align-items:center; border:1px solid var(--line); border-radius:12px; padding:10px 14px; font-weight:600 }
+      .cta:hover{ background:var(--card) }
+      .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0 }
+      .note{ font-size:12px; color:var(--muted) }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <nav>
+          <a class="brand" href="#top">Mo Fasahat</a>
+          <div class="navlinks" aria-label="Primary">
+            <a href="#work">Work</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero container">
+        <div class="kicker">Architect • Storyteller</div>
+        <h1>Minimal portfolio of selected works.</h1>
+        <p class="lede">I design human-centered spaces rooted in context and narrative. Below are a few projects—from intimate interiors to urban-scale ideas. New work is added occasionally.</p>
+        <div style="margin-top:22px; display:flex; gap:12px; flex-wrap:wrap">
+          <a class="cta" href="#work">View work</a>
+          <a class="cta" href="#contact">Get in touch</a>
+          <span class="pill">Charlotte, NC · Available for collaboration</span>
+        </div>
+      </section>
+
+      <section id="work" class="container">
+        <h2>Selected Work</h2>
+        <div class="grid" id="projects">
+          <!-- Project cards are injected here by JS. Edit the `projects` array below. -->
+        </div>
+        <p class="note" style="margin-top:10px">Tip: Replace images with your own in a folder named <code>/images</code> or use external URLs. Each card supports a detail page link.</p>
+      </section>
+
+      <section id="about" class="container">
+        <h2>About</h2>
+        <div class="about">
+          <div>
+            <p>I'm Mo, an architectural designer focused on minimal, context-driven work. I weave environmental research and local craft into spatial stories—clear forms, calm materials, and good light.</p>
+            <p>Previously at Little, I work across concept, visualization, and delivery. I’m exploring ways AI and fabrication can extend traditional techniques without losing their soul.</p>
+            <p class="note">This site is a single HTML file—fast, accessible, and easy to version on GitHub Pages.</p>
+          </div>
+          <aside class="meta" aria-label="Profile details">
+            <div><span>Based</span><strong>Charlotte, NC</strong></div>
+            <div><span>Expertise</span><strong>Architecture, Viz, Story</strong></div>
+            <div><span>Tools</span><strong>Rhino/Grasshopper, V-Ray, Python, R</strong></div>
+            <div><span>Email</span><strong><a href="mailto:mohammad.fasahat@littleonline.com">mohammad.fasahat@littleonline.com</a></strong></div>
+            <div><span>Portfolio</span><strong><a href="https://www.behance.net/gallery/213717447/Architectural-Portfolio-Mohammad-Fasahat" target="_blank" rel="noopener">Behance</a></strong></div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="contact" class="container">
+        <h2>Contact</h2>
+        <p>Open to select collaborations, critiques, and talks. The fastest way is email. For quick notes, use this form:</p>
+        <form id="contactForm" style="margin-top:12px; display:grid; gap:10px; max-width:560px" action="https://formspree.io/f/your-id" method="POST">
+          <label>
+            <span class="sr-only">Your email</span>
+            <input required name="email" type="email" placeholder="you@email.com" style="width:100%; padding:12px 14px; border:1px solid var(--line); background:var(--bg); color:var(--fg); border-radius:12px"/>
+          </label>
+          <label>
+            <span class="sr-only">Message</span>
+            <textarea required name="message" rows="5" placeholder="Hello Mo — I’d like to…" style="width:100%; padding:12px 14px; border:1px solid var(--line); background:var(--bg); color:var(--fg); border-radius:12px"></textarea>
+          </label>
+          <button class="cta" type="submit">Send</button>
+          <small class="note">No tracking. Form uses Formspree (replace <code>your-id</code> in the action URL or remove the form).</small>
+        </form>
+      </section>
+    </main>
+
+    <footer class="container">
+      <span>© <span id="y"></span> Mo Fasahat</span>
+      <span><a href="#top">Back to top ↑</a></span>
+    </footer>
+
+    <script>
+      // --- Minimal data model: edit your projects here ---
+      const projects = [
+        {
+          title: 'Where the Light Unfolds',
+          year: '2024',
+          image: 'images/light-unfolds.jpg',
+          summary: 'Lighthouse reinterpretation with fabric, stone, and shadow.',
+          url: '#'
+        },
+        {
+          title: 'Golpayegan Eco Center',
+          year: '2021',
+          image: 'images/golpayegan.jpg',
+          summary: 'Ecotourism hub in local material and landscape logic.',
+          url: '#'
+        },
+        {
+          title: 'Desert House Studies',
+          year: '2023',
+          image: 'images/desert-house.jpg',
+          summary: 'Thermal mass + courtyard typologies for comfort.',
+          url: '#'
+        },
+        {
+          title: 'Film & Visualization',
+          year: '2022',
+          image: 'images/visualization.jpg',
+          summary: 'Cinematography and narratives for spatial reading.',
+          url: '#'
+        }
+      ];
+
+      // Render project cards
+      const grid = document.getElementById('projects');
+      grid.innerHTML = projects.map(p => `
+        <article class="card">
+          <a href="${p.url}">
+            <img loading="lazy" src="${p.image}" alt="${p.title}" />
+            <div class="pad">
+              <h3>${p.title}</h3>
+              <p>${p.summary}</p>
+              <small>${p.year}</small>
+            </div>
+          </a>
+        </article>
+      `).join('');
+
+      // Year stamp
+      document.getElementById('y').textContent = new Date().getFullYear();
+
+      // Smooth scroll for internal links
+      document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+        const id = a.getAttribute('href').slice(1);
+        const el = document.getElementById(id);
+        if(el){ e.preventDefault(); el.scrollIntoView({ behavior:'smooth', block:'start' }); }
+      }));
+    </script>
+  </body>
+</html>
