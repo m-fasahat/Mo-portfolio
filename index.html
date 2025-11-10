@@ -79,65 +79,51 @@
         <nav>
           <a class="brand" href="#top">Mo Fasahat</a>
           <div style="display:flex; align-items:center; gap:16px">
-            <div class="navlinks" aria-label="Primary">
-              <a class="focus-ring" href="#work">Work</a>
-              <a class="focus-ring" href="#contact">Contact</a>
-            </div>
-            <label class="switch" title="Toggle dark mode">
-              <input id="themeToggle" type="checkbox" aria-label="Toggle dark mode"/>
-              <span class="muted">Dark</span>
-            </label>
-          </div>
-        </nav>
-          <a class="brand" href="#top">Mo Fasahat</a>
-          <div class="navlinks" aria-label="Primary">
-            <a href="#work">Work</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
+            <button id="menuToggle" class="cta focus-ring" aria-expanded="true" aria-controls="sidePanel" style="border-radius:999px; width:38px; height:38px; display:grid; place-items:center">×</button>
           </div>
         </nav>
       </div>
     </header>
 
-    <main id="top">
-      <section class="hero container" style="text-align:center">
-        <h1 style="margin-top:20px">Mo Fasahat</h1>
+    <main id="top" style="padding:0">
+      <section id="split" style="display:grid; grid-template-columns: 1fr min(520px, 42vw); height: 100vh; border-top:1px solid var(--line)">
+        <!-- Left: full-bleed visual gallery -->
+        <div id="gallery" style="position:relative; overflow:hidden">
+          <ul id="slides" style="list-style:none; margin:0; padding:0; height:100%; width:100%"></ul>
+          <div id="dots" style="position:absolute; bottom:14px; left:50%; transform:translateX(-50%); display:flex; gap:8px"></div>
+        </div>
+        <!-- Right: minimal menu panel -->
+        <aside id="sidePanel" style="background:var(--bg); border-left:1px solid var(--line); display:flex; flex-direction:column; justify-content:space-between; padding:32px 28px">
+          <div>
+            <div class="muted" style="margin-bottom:14px">Menu</div>
+            <ul style="list-style:none; margin:0; padding:0; font-size:24px; line-height:1.9">
+              <li><a class="focus-ring" href="#work">Projects</a></li>
+              <li><a class="focus-ring" href="#top">Home</a></li>
+              <li><a class="focus-ring" href="https://www.behance.net/gallery/213717447/Architectural-Portfolio-Mohammad-Fasahat" target="_blank" rel="noopener">Portfolio</a></li>
+              <li><a class="focus-ring" href="mailto:mohammad.fasahat@littleonline.com">Contact</a></li>
+            </ul>
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-between">
+            <div class="muted">© <span id="y"></span> Mo Fasahat</div>
+            <div class="socials">
+              <a class="pill" href="https://www.linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+              <a class="pill" href="https://www.instagram.com" target="_blank" rel="noopener" aria-label="Instagram">ig</a>
+              <a class="pill" href="mailto:mohammad.fasahat@littleonline.com" aria-label="Email">@</a>
+            </div>
+          </div>
+        </aside>
       </section>
 
-      <section id="work" class="container">
+      <!-- Projects grid remains for deep scroll below the fold -->
+      <section id="work" class="container" style="padding-top:40px">
         <h2>Selected Work</h2>
         <div class="grid" id="projects"></div>
-        <p class="note" style="margin-top:10px">Tip: Replace images with your own in <code>/images</code>. Add external links for full case studies.</p>
       </section>
-
-      
 
       <section id="contact" class="container" style="text-align:center">
         <h2>Contact</h2>
         <p class="muted">Email: <a class="focus-ring" href="mailto:mohammad.fasahat@littleonline.com">mohammad.fasahat@littleonline.com</a></p>
       </section>
-          <!-- Project modal -->
-      <div id="modal" aria-hidden="true" style="position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.5)">
-        <div role="dialog" aria-modal="true" aria-labelledby="modalTitle" class="container" style="max-width:900px">
-          <div style="background:var(--bg); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden">
-            <img id="modalImg" alt="" style="width:100%; aspect-ratio:16/9; object-fit:cover">
-            <div style="padding:16px">
-              <div style="display:flex; justify-content:space-between; align-items:center; gap:12px">
-                <h3 id="modalTitle" style="margin:0; font-size:20px"></h3>
-                <button id="closeModal" class="cta" aria-label="Close">Close</button>
-              </div>
-              <p id="modalSummary" style="margin:8px 0 0; color:var(--muted)"></p>
-              <div style="margin-top:12px"><a id="modalLink" class="cta" href="#" target="_blank" rel="noopener">Open project ↗</a></div>
-            </div>
-          </div>
-        </div>
-      </div>
-          <script type="application/ld+json" id="schema">{
-        "@context":"https://schema.org","@type":"Person","name":"Mo Fasahat",
-        "url":document.location.origin,"jobTitle":"Architectural Designer",
-        "knowsAbout":["Architecture","Visualization","Storytelling"],
-        "email":"mailto:mohammad.fasahat@littleonline.com"
-      }</script>
     </main>
 
     <footer class="container">
@@ -146,154 +132,73 @@
     </footer>
 
     <script>
-      // --- Minimal data model: edit your projects here ---
+      // --- Visual landing: slides from projects ---
       const projects = [
-        { title:'Where the Light Unfolds', year:'2024', image:'images/light-unfolds.jpg', summary:'Lighthouse reinterpretation with fabric, stone, and shadow.', tags:['Competition','Installation'], url:'#' },
-        { title:'Golpayegan Eco Center', year:'2021', image:'images/golpayegan.jpg', summary:'Ecotourism hub in local material and landscape logic.', tags:['Landscape','Public'], url:'#' },
-        { title:'Desert House Studies', year:'2023', image:'images/desert-house.jpg', summary:'Thermal mass + courtyard typologies for comfort.', tags:['Housing','Research'], url:'#' },
-        { title:'Film & Visualization', year:'2022', image:'images/visualization.jpg', summary:'Cinematography and narratives for spatial reading.', tags:['Film','Viz'], url:'#' }
+        { title:'Where the Light Unfolds', year:'2024', image:'images/light-unfolds.jpg', url:'#' },
+        { title:'Golpayegan Eco Center', year:'2021', image:'images/golpayegan.jpg', url:'#' },
+        { title:'Desert House Studies', year:'2023', image:'images/desert-house.jpg', url:'#' },
+        { title:'Film & Visualization', year:'2022', image:'images/visualization.jpg', url:'#' }
       ];
 
-      // Persisted theme preference
-      const toggle = document.getElementById('themeToggle');
-      const stored = localStorage.getItem('theme');
-      if(stored==='dark'){ document.documentElement.style.colorScheme='dark'; toggle.checked=true; }
-      toggle?.addEventListener('change', ()=>{
-        const mode = toggle.checked ? 'dark' : 'light';
-        document.documentElement.style.colorScheme = mode;
-        localStorage.setItem('theme', mode);
+      // Build fullscreen slideshow (left column)
+      const slides = document.getElementById('slides');
+      const dots = document.getElementById('dots');
+      let idx = 0; let timer;
+      function renderSlides(){
+        slides.innerHTML = projects.map((p,i)=>`<li style="position:absolute; inset:0; opacity:${i===0?1:0}; transition:opacity .6s ease">
+          <a href="${p.url}" aria-label="${p.title}" style="display:block; width:100%; height:100%">
+            <img src="${p.image}" alt="" style="width:100%; height:100%; object-fit:cover"/>
+          </a>
+        </li>`).join('');
+        dots.innerHTML = projects.map((_,i)=>`<button class="focus-ring" data-i="${i}" aria-label="Go to slide ${i+1}" style="width:10px; height:10px; border-radius:999px; border:1px solid var(--line); background:${i===0?'var(--fg)':'transparent'}"></button>`).join('');
+      }
+      function goto(i){
+        const items = [...slides.children];
+        items.forEach((el,k)=> el.style.opacity = (k===i?1:0));
+        [...dots.children].forEach((d,k)=> d.style.background = (k===i?'var(--fg)':'transparent'));
+        idx = i;
+      }
+      function play(){ timer = setInterval(()=> goto((idx+1)%projects.length), 5000); }
+      function stop(){ clearInterval(timer); }
+      renderSlides(); play();
+      dots.addEventListener('click', e=>{ if(e.target.matches('button')){ stop(); goto(+e.target.dataset.i); play(); }});
+      window.addEventListener('keydown', e=>{
+        if(e.key==='ArrowRight') { stop(); goto((idx+1)%projects.length); play(); }
+        if(e.key==='ArrowLeft')  { stop(); goto((idx-1+projects.length)%projects.length); play(); }
       });
 
-      // Render project cards
+      // Side panel toggle (like the screenshot)
+      const split = document.getElementById('split');
+      const panel = document.getElementById('sidePanel');
+      const toggle = document.getElementById('menuToggle');
+      function setOpen(open){
+        toggle.setAttribute('aria-expanded', open);
+        split.style.gridTemplateColumns = open ? '1fr min(520px, 42vw)' : '1fr 0px';
+        panel.style.borderLeft = open ? '1px solid var(--line)' : 'none';
+        toggle.textContent = open ? '×' : '≡';
+      }
+      toggle.addEventListener('click', ()=> setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+      setOpen(true);
+
+      // Year stamp
+      document.querySelectorAll('#y').forEach(el=> el.textContent = new Date().getFullYear());
+
+      // Below-the-fold project grid (optional for browsing)
       const grid = document.getElementById('projects');
       grid.innerHTML = projects.map((p,i) => `
         <article class="card ${i===0?'large':''} ${i===2?'tall':''}">
           <a class="focus-ring" href="${p.url}">
-            <img loading="lazy" src="${p.image}" alt="${p.title}" />
-            <div class="overlay">
-              <div>
-                <h3>${p.title}</h3>
-                <small>${p.year}</small>
-              </div>
-            </div>
+            <img loading="lazy" src="${p.image}" alt="" />
           </a>
         </article>
       `).join('');
 
-      // Year stamp
-      document.getElementById('y').textContent = new Date().getFullYear();
-
-      // Smooth scroll for internal links
+      // Smooth scroll
       document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
         const id = a.getAttribute('href').slice(1);
         const el = document.getElementById(id);
         if(el){ e.preventDefault(); el.scrollIntoView({ behavior:'smooth', block:'start' }); }
       }));
-    </script>
-
-    <script>
-      // --- Minimal data model: edit your projects here ---
-      const projects = [
-        {
-          id: 'light-unfolds',
-          title: 'Where the Light Unfolds',
-          year: '2024',
-          image: 'images/light-unfolds.jpg',
-          summary: 'Lighthouse reinterpretation with fabric, stone, and shadow.',
-          url: '#'
-        },
-        {
-          id: 'golpayegan',
-          title: 'Golpayegan Eco Center',
-          year: '2021',
-          image: 'images/golpayegan.jpg',
-          summary: 'Ecotourism hub in local material and landscape logic.',
-          url: '#'
-        },
-        {
-          id: 'desert-house',
-          title: 'Desert House Studies',
-          year: '2023',
-          image: 'images/desert-house.jpg',
-          summary: 'Thermal mass + courtyard typologies for comfort.',
-          url: '#'
-        },
-        {
-          id: 'film-viz',
-          title: 'Film & Visualization',
-          year: '2022',
-          image: 'images/visualization.jpg',
-          summary: 'Cinematography and narratives for spatial reading.',
-          url: '#'
-        }
-      ];
-
-      // Render project cards
-      const grid = document.getElementById('projects');
-      grid.innerHTML = projects.map(p => `
-        <article class="card">
-          <a href="#${p.id}" data-id="${p.id}" class="open-modal">
-            <img loading="lazy" src="${p.image}" alt="${p.title} — preview" />
-            <div class="pad">
-              <h3>${p.title}</h3>
-              <p>${p.summary}</p>
-              <small>${p.year}</small>
-            </div>
-          </a>
-        </article>
-      `).join('');
-
-      // Year stamp
-      document.getElementById('y').textContent = new Date().getFullYear();
-
-      // Smooth scroll for internal links
-      document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
-        const id = a.getAttribute('href').slice(1);
-        const el = document.getElementById(id);
-        if(el){ e.preventDefault(); el.scrollIntoView({ behavior:'smooth', block:'start' }); }
-      }));
-
-      // Modal logic
-      const modal = document.getElementById('modal');
-      const modalImg = document.getElementById('modalImg');
-      const modalTitle = document.getElementById('modalTitle');
-      const modalSummary = document.getElementById('modalSummary');
-      const modalLink = document.getElementById('modalLink');
-      const closeModal = document.getElementById('closeModal');
-      const byId = id => projects.find(p => p.id === id);
-
-      document.querySelectorAll('.open-modal').forEach(el => el.addEventListener('click', e => {
-        e.preventDefault();
-        const id = el.dataset.id;
-        const p = byId(id);
-        if(!p) return;
-        modalTitle.textContent = p.title + ' — ' + p.year;
-        modalSummary.textContent = p.summary;
-        modalImg.src = p.image;
-        modalImg.alt = p.title + ' — full image';
-        modalLink.href = p.url || '#';
-        modal.style.display = 'grid';
-        modal.setAttribute('aria-hidden','false');
-      }));
-
-      const hide = () => { modal.style.display='none'; modal.setAttribute('aria-hidden','true'); }
-      closeModal.addEventListener('click', hide);
-      modal.addEventListener('click', (e)=>{ if(e.target===modal) hide(); });
-      window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') hide(); }); }
-      }));
-    </script>
-      <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Mo Fasahat",
-        "jobTitle": "Architectural Designer",
-        "url": "https://example.com",
-        "email": "mohammad.fasahat@littleonline.com",
-        "sameAs": [
-          "https://www.behance.net/gallery/213717447/Architectural-Portfolio-Mohammad-Fasahat"
-        ]
-      }
     </script>
   </body>
 </html>
