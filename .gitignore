@@ -1,0 +1,15 @@
+# IDE caches
+.vs/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Build/output (future-proof if you add tooling later)
+node_modules/
+dist/
+out/
+.next/
