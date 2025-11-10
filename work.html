@@ -8,13 +8,16 @@
   <style>
     :root{ --bg:#f7f8fa; --fg:#0b0d10; --muted:#616a75; --line:#e6e9ee; }
     *{ box-sizing:border-box }
-    html,body{ margin:0; padding:0; background:var(--bg); color:var(--fg); font:16px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial; }
+    html,body{ margin:0; padding:0; background:var(--bg); color:var(--fg); font:16px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial; }
     a{ color:inherit; text-decoration:none }
-/* Header */
+
+    /* Header (canonical style) */
     header{ position:fixed; top:0; left:0; right:0; z-index:50; background:transparent; border:0 }
     .bar{ max-width:1300px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; justify-content:space-between }
     .brand{ font-weight:700; }
-    .nav{ display:flex; gap:32px } .nav a{ font-size:18px; font-weight:600; padding:6px 8px; letter-spacing:0.02em } @media (max-width:640px){ .nav a{ font-size:16px; padding:6px } }
+    .nav{ display:flex; gap:32px } 
+    .nav a{ font-size:18px; font-weight:600; padding:6px 8px; letter-spacing:0.02em } 
+    @media (max-width:640px){ .nav a{ font-size:16px; padding:6px } }
 
     /* Wrapper centered, not full-width — more top space so grid sits below header */
     .wrap{ max-width: 1200px; margin: 0 auto; padding: 120px 24px 48px; }
@@ -25,23 +28,77 @@
     @media (max-width: 640px){ .grid{ grid-template-columns: 1fr; } }
 
     /* Tiles */
-    .tile{ position:relative; border-radius:14px; overflow:hidden; border:1px solid var(--line); background:#fff }
+    .tile{
+      position:relative;
+      display:block;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      background:#fff;
+      text-decoration:none;
+    }
     .tile img{ width:100%; height:auto; display:block; aspect-ratio: 4 / 3; object-fit: cover; object-position:center }
 
-    /* Hover overlay: 20% dark tone + centered title */
-    .tile::after{ content:""; position:absolute; inset:0; background:rgba(0,0,0,0.20); opacity:0; transition:opacity .2s ease }
-    .label{ position:absolute; inset:0; display:grid; place-items:center; padding:8px 10px; text-align:center; color:#fff; font-weight:600; letter-spacing:.02em; opacity:0; transition:opacity .2s ease }
-    .tile:hover::after, .tile:hover .label{ opacity:1 }
+    /* subtle focus-visible for keyboard users */
+    .tile:focus-visible { outline: 3px solid rgba(0,0,0,0.08); outline-offset: 4px; }
+
+    /* Hover overlay: 20% dark tone */
+    .tile::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:rgba(0,0,0,0.20);
+      opacity:0;
+      transition:opacity .20s ease;
+      z-index:1;
+      pointer-events:none;
+    }
+
+    /* Label appears centered with fade + slide */
+    .label{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:8px 14px;
+      text-align:center;
+      color:#fff;
+      font-weight:600;
+      letter-spacing:.02em;
+      opacity:0;
+      transform:translateY(8px);
+      transition:opacity .22s ease, transform .22s ease;
+      z-index:2;
+      pointer-events:none;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+      font-size:18px;
+    }
+
+    /* Show overlay + label on hover or keyboard focus */
+    .tile:hover::after,
+    .tile:hover .label,
+    .tile:focus-within::after,
+    .tile:focus-within .label,
+    .tile:focus::after,
+    .tile:focus .label
+    {
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    /* Also show when tile anchor itself is focused (for keyboard) */
+    .tile:focus { outline: none; } /* visual handled by focus-visible */
 
     /* small accessibility nicety */
-    .tile:focus-within::after, .tile:focus-within .label{ opacity:1 }
+    .tile:focus-within::after, .tile:focus-within .label{ opacity:1; transform:translateY(0); }
   </style>
 </head>
 <body>
   <header>
     <div class="bar">
       <!-- Brand is a link back to the homepage -->
-      <a class="brand-link" href="index.html">Mohammad Fasahat</a>
+      <a class="brand" href="index.html" style="color:var(--fg); text-decoration:none">Mohammad Fasahat</a>
 
       <nav class="nav" aria-label="Primary">
         <a href="index.html#about">about</a>
@@ -54,44 +111,44 @@
   <main class="wrap">
     <section aria-label="Work grid" class="grid">
       <!-- Row 1 -->
-      <a class="tile" href="project.html" aria-label="Project 1">
-        <img src="images/work-1.jpg" alt="" />
+      <a class="tile" href="project.html" aria-label="Where the Light Unfolds">
+        <img src="images/work-1.jpg" alt="Where the Light Unfolds" />
         <div class="label">Where the Light Unfolds</div>
       </a>
-      <a class="tile" href="#" aria-label="Project 2">
-        <img src="images/work-1.jpg" alt="" />
+      <a class="tile" href="#" aria-label="Golpayegan Eco Center">
+        <img src="images/work-2.jpg" alt="Golpayegan Eco Center" />
         <div class="label">Golpayegan Eco Center</div>
       </a>
-      <a class="tile" href="#" aria-label="Project 3">
-        <img src="images/work-1.jpg" alt="" />
+      <a class="tile" href="#" aria-label="Desert House Studies">
+        <img src="images/work-3.jpg" alt="Desert House Studies" />
         <div class="label">Desert House Studies</div>
       </a>
 
       <!-- Row 2 -->
-      <a class="tile" href="#" aria-label="Project 4">
-        <img src="images/work-1.jpg" alt="" />
+      <a class="tile" href="#" aria-label="Fabric Pavilion">
+        <img src="images/work-4.jpg" alt="Fabric Pavilion" />
         <div class="label">Fabric Pavilion</div>
       </a>
-      <a class="tile" href="#" aria-label="Project 5">
-        <img src="images/work-5.jpg" alt="" />
+      <a class="tile" href="#" aria-label="Eco Corridor">
+        <img src="images/work-5.jpg" alt="Eco Corridor" />
         <div class="label">Eco Corridor</div>
       </a>
-      <a class="tile" href="#" aria-label="Project 6">
-        <img src="images/work-6.jpg" alt="" />
+      <a class="tile" href="#" aria-label="Cinematic Studies">
+        <img src="images/work-6.jpg" alt="Cinematic Studies" />
         <div class="label">Cinematic Studies</div>
       </a>
 
       <!-- Row 3 -->
-      <a class="tile" href="#" aria-label="Project 7">
-        <img src="images/work-7.jpg" alt="" />
+      <a class="tile" href="#" aria-label="Courtyard Typologies">
+        <img src="images/work-7.jpg" alt="Courtyard Typologies" />
         <div class="label">Courtyard Typologies</div>
       </a>
-      <a class="tile" href="#" aria-label="Project 8">
-        <img src="images/work-8.jpg" alt="" />
+      <a class="tile" href="#" aria-label="Interior Light Tests">
+        <img src="images/work-8.jpg" alt="Interior Light Tests" />
         <div class="label">Interior Light Tests</div>
       </a>
-      <a class="tile" href="#" aria-label="Project 9">
-        <img src="images/work-9.jpg" alt="" />
+      <a class="tile" href="#" aria-label="Stone & Fabric Study">
+        <img src="images/work-9.jpg" alt="Stone & Fabric Study" />
         <div class="label">Stone & Fabric Study</div>
       </a>
     </section>
