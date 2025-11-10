@@ -37,13 +37,13 @@
       .kicker{ color:var(--muted); font-size:14px; text-transform:uppercase; letter-spacing:.18em }
       .lede{ color:var(--muted); max-width: 70ch }
       .grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap: 12px }
-      .card{ grid-column: span 6; border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; background:var(--card); transition: transform .2s ease, box-shadow .2s ease }
+      .card{ position:relative; grid-column: span 6; border-radius:14px; overflow:hidden; background:var(--card); transition: transform .2s ease; border:1px solid var(--line) }
       .card:hover{ transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,.08) }
       .card:hover{ transform: translateY(-2px) }
-      .card img{ width:100%; aspect-ratio: 16/10; object-fit:cover; display:block; background:#ddd }
-      .card .pad{ padding:14px 16px }
-      .card h3{ margin:0 0 6px 0; font-size:18px; letter-spacing:-0.01em }
-      .card p{ margin:0; color:var(--muted); font-size:14px }
+      .card img{ width:100%; height:360px; object-fit:cover; display:block; background:#ddd }
+      .card .overlay{ position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:flex-start; padding:14px 16px; background:linear-gradient(to top, color-mix(in oklab, var(--bg), transparent 25%), transparent 60%); opacity:0; transition:opacity .25s ease }
+      .card:hover .overlay{ opacity:1 }
+      .card h3{ margin:0; font-size:18px; letter-spacing:-0.01em }
       .card small{ color:var(--muted) }
       @media (max-width: 800px){ .card{ grid-column: span 12 } }
       section{ padding: 36px 24px }
@@ -81,7 +81,6 @@
           <div style="display:flex; align-items:center; gap:16px">
             <div class="navlinks" aria-label="Primary">
               <a class="focus-ring" href="#work">Work</a>
-              <a class="focus-ring" href="#about">About</a>
               <a class="focus-ring" href="#contact">Contact</a>
             </div>
             <label class="switch" title="Toggle dark mode">
@@ -101,15 +100,8 @@
     </header>
 
     <main id="top">
-      <section class="hero container">
-        <div class="kicker">Architect • Storyteller</div>
-        <h1>Minimal portfolio of selected works.</h1>
-        <p class="lede">I design human-centered spaces rooted in context and narrative. Below are a few projects—from intimate interiors to urban-scale ideas.</p>
-        <div style="margin-top:22px; display:flex; gap:12px; flex-wrap:wrap">
-          <a class="cta focus-ring" href="#work">View work</a>
-          <a class="cta focus-ring" href="#contact">Get in touch</a>
-          <span class="pill">Charlotte, NC · Available for collaboration</span>
-        </div>
+      <section class="hero container" style="text-align:center">
+        <h1 style="margin-top:20px">Mo Fasahat</h1>
       </section>
 
       <section id="work" class="container">
@@ -118,39 +110,11 @@
         <p class="note" style="margin-top:10px">Tip: Replace images with your own in <code>/images</code>. Add external links for full case studies.</p>
       </section>
 
-      <section id="about" class="container"> class="container">
-        <h2>About</h2>
-        <div class="about">
-          <div>
-            <p>I'm Mo, an architectural designer focused on minimal, context-driven work. I weave environmental research and local craft into spatial stories—clear forms, calm materials, and good light.</p>
-            <p>Previously at Little, I work across concept, visualization, and delivery. I’m exploring ways AI and fabrication can extend traditional techniques without losing their soul.</p>
-            <p class="note">This site is a single HTML file—fast, accessible, and easy to version on GitHub Pages.</p>
-          </div>
-          <aside class="meta" aria-label="Profile details">
-            <div><span>Based</span><strong>Charlotte, NC</strong></div>
-            <div><span>Expertise</span><strong>Architecture, Visualization, Story</strong></div>
-            <div><span>Focus</span><strong>Contextual design • Fabric/stone narratives • Environmental logic</strong></div>
-            <div><span>Email</span><strong><a class="focus-ring" href="mailto:mohammad.fasahat@littleonline.com">mohammad.fasahat@littleonline.com</a></strong></div>
-            <div><span>Portfolio</span><strong><a class="focus-ring" href="https://www.behance.net/gallery/213717447/Architectural-Portfolio-Mohammad-Fasahat" target="_blank" rel="noopener">Behance</a></strong></div>
-          </aside>
-        </div>
-      </section>
+      
 
-      <section id="contact" class="container">
+      <section id="contact" class="container" style="text-align:center">
         <h2>Contact</h2>
-        <p>Open to select collaborations, critiques, and talks. The fastest way is email. For quick notes, use this form:</p>
-        <form id="contactForm" style="margin-top:12px; display:grid; gap:10px; max-width:560px" action="https://formspree.io/f/your-id" method="POST">
-          <label>
-            <span class="sr-only">Your email</span>
-            <input required name="email" type="email" placeholder="you@email.com" style="width:100%; padding:12px 14px; border:1px solid var(--line); background:var(--bg); color:var(--fg); border-radius:12px"/>
-          </label>
-          <label>
-            <span class="sr-only">Message</span>
-            <textarea required name="message" rows="5" placeholder="Hello Mo — I’d like to…" style="width:100%; padding:12px 14px; border:1px solid var(--line); background:var(--bg); color:var(--fg); border-radius:12px"></textarea>
-          </label>
-          <button class="cta" type="submit">Send</button>
-          <small class="note">No tracking. Form uses Formspree (replace <code>your-id</code> in the action URL or remove the form).</small>
-        </form>
+        <p class="muted">Email: <a class="focus-ring" href="mailto:mohammad.fasahat@littleonline.com">mohammad.fasahat@littleonline.com</a></p>
       </section>
           <!-- Project modal -->
       <div id="modal" aria-hidden="true" style="position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.5)">
@@ -206,11 +170,11 @@
         <article class="card ${i===0?'large':''} ${i===2?'tall':''}">
           <a class="focus-ring" href="${p.url}">
             <img loading="lazy" src="${p.image}" alt="${p.title}" />
-            <div class="pad">
-              <h3>${p.title}</h3>
-              <p>${p.summary}</p>
-              <div class="tags">${(p.tags||[]).map(t=>`<span class='tag'>${t}</span>`).join('')}</div>
-              <small>${p.year}</small>
+            <div class="overlay">
+              <div>
+                <h3>${p.title}</h3>
+                <small>${p.year}</small>
+              </div>
             </div>
           </a>
         </article>
