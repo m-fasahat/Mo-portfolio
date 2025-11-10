@@ -20,7 +20,7 @@
 
     /* Hero */
     .hero{ position:relative; height: 100vh; overflow:hidden }
-    .hero img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; opacity:0; transition:opacity .7s ease }
+    .hero img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .7s ease } .hero img.active{ opacity:1 }
     
     .hero img.active{ opacity:1 }
     .dots{ position:absolute; bottom:22px; left:50%; transform:translateX(-50%); display:flex; gap:10px }
@@ -61,7 +61,7 @@
 
   <!-- WORK GRID -->
   <main>
-  <!-- HOME ONLY: full-bleed hero slideshow -->
+  <!-- FULL-BLEED HERO ONLY -->
   <section id="hero" class="hero" aria-label="Featured images">
     <div class="dots" id="heroDots"></div>
   </section>
@@ -70,49 +70,46 @@
   
 
   <script>
-    // --- Hero setup (replace with your best 4–5 renders) ---
-    const heroImages = [
-      'images/hero-1.jpg',
-      'images/hero-2.jpg',
-      'images/hero-3.jpg',
-      'images/hero-4.jpg',
-      'images/hero-5.jpg'
-    ];
-    const hero = document.getElementById('hero');
-    const dots = document.getElementById('heroDots');
-    let hi = 0, timer;
-    function mountHero(){
-      heroImages.forEach((src,i)=>{
-        const img = document.createElement('img');
-        img.src = src; img.alt = '';
-        if(i===0) img.classList.add('active');
-        hero.appendChild(img);
-      });
-      dots.innerHTML = heroImages.map((_,i)=>`<button data-i="${i}"></button>`).join('');
-      dots.children[0].classList.add('active');
-    }
-    function heroGoto(i){
-      const imgs = [...hero.querySelectorAll('img')];
-      imgs.forEach((el,k)=> el.classList.toggle('active', k===i));
-      [...dots.children].forEach((d,k)=> d.classList.toggle('active', k===i));
-      hi = i;
-    }
-    function play(){ timer = setInterval(()=> heroGoto((hi+1)%heroImages.length), 6000); }
-    function stop(){ clearInterval(timer); }
-    mountHero();
-    play();
-    dots.addEventListener('click', e=>{ if(e.target.matches('button')){ stop(); heroGoto(+e.target.dataset.i); play(); }});
-    window.addEventListener('keydown', e=>{
-      if(e.key==='ArrowRight'){ stop(); heroGoto((hi+1)%heroImages.length); play(); }
-      if(e.key==='ArrowLeft'){ stop(); heroGoto((hi-1+heroImages.length)%heroImages.length); play(); }
+  // Minimal hero slideshow — full cover, no black bars
+  const heroImages = [
+    'images/hero-1.jpg',
+    'images/hero-2.jpg',
+    'images/hero-3.jpg',
+    'images/hero-4.jpg',
+    'images/hero-5.jpg'
+  ];
+  const hero = document.getElementById('hero');
+  const dots = document.getElementById('heroDots');
+  let hi = 0, timer;
+
+  function mountHero(){
+    heroImages.forEach((src,i)=>{
+      const img = document.createElement('img');
+      img.src = src; img.alt = '';
+      if(i===0) img.classList.add('active');
+      hero.appendChild(img);
     });
+    dots.innerHTML = heroImages.map((_,i)=>`<button data-i="${i}"></button>`).join('');
+    if(dots.firstElementChild) dots.firstElementChild.classList.add('active');
+  }
+  function heroGoto(i){
+    const imgs = [...hero.querySelectorAll('img')];
+    if(!imgs.length) return;
+    imgs.forEach((el,k)=> el.classList.toggle('active', k===i));
+    [...dots.children].forEach((d,k)=> d.classList.toggle('active', k===i));
+    hi = i;
+  }
+  function play(){ timer = setInterval(()=> heroGoto((hi+1)%heroImages.length), 6000); }
+  function stop(){ clearInterval(timer); }
 
-    // --- Work grid data (replace with real) ---
-     font-size:12px">${p.year}</div></div>
-      </article>
-    `).join('');
-
-    
-  </script>
+  // Start
+  mountHero();
+  play();
+  dots.addEventListener('click', e=>{ if(e.target.matches('button')){ stop(); heroGoto(+e.target.dataset.i); play(); }});
+  window.addEventListener('keydown', e=>{
+    if(e.key==='ArrowRight'){ stop(); heroGoto((hi+1)%heroImages.length); play(); }
+    if(e.key==='ArrowLeft'){ stop(); heroGoto((hi-1+heroImages.length)%heroImages.length); play(); }
+  });
+</script>
 </body>
 </html>
