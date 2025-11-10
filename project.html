@@ -1,0 +1,139 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PROJECT NAME — Mohammad Fasahat</title>
+  <meta name="description" content="PROJECT NAME — short one-line summary." />
+  <style>
+    :root{
+      --bg:#ffffff; --fg:#0b0d10; --muted:#6b7280; --accent:#111827;
+      --max:1200px;
+    }
+    *{box-sizing:border-box}
+    body{ margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; color:var(--fg); background:var(--bg); line-height:1.6; }
+    a{ color:inherit }
+
+    /* Header (same look as your site) */
+    header{ position:fixed; inset:0 0 auto 0; z-index:60; background:linear-gradient(to bottom, rgba(255,255,255,.95), transparent); border-bottom:1px solid #eee }
+    .bar{ max-width:var(--max); margin:0 auto; padding:14px 24px; display:flex; justify-content:space-between; align-items:center; }
+    .brand{ font-weight:700 }
+    .nav{ display:flex; gap:24px }
+    .nav a{ font-weight:600; font-size:15px; padding:6px 8px }
+
+    /* Page layout */
+    main{ max-width:var(--max); margin: 160px auto 80px; padding:0 24px; }
+
+    /* Gallery */
+    .gallery{ display:flex; gap:18px; align-items:flex-start }
+    .gallery-main{ flex:1 1 66%; border-radius:8px; overflow:hidden; position:relative; background:#111 }
+    .gallery-main img{ width:100%; height:70vh; object-fit:cover; display:block }
+    .gallery-thumbs{ width:240px; display:flex; flex-direction:column; gap:12px; }
+    .thumb{ cursor:pointer; border-radius:6px; overflow:hidden; border:1px solid #e8e8e8 }
+    .thumb img{ width:100%; height:120px; object-fit:cover; display:block }
+    .thumb.active{ outline:3px solid var(--accent) }
+
+    /* Info panel (right column under narrow) */
+    .info-row{ display:flex; gap:32px; margin-top:26px; align-items:flex-start }
+    .meta{ width:320px; flex:0 0 320px; background:#fafafa; border:1px solid #eee; padding:18px; border-radius:8px; }
+    .meta h4{ margin:0 0 12px 0; font-size:13px; color:var(--muted); letter-spacing:.06em }
+    .meta .kv{ display:flex; gap:10px; margin-bottom:10px; font-size:14px }
+    .meta .kv span.key{ color:var(--muted); width:90px; font-size:13px }
+    .text{ flex:1 1 auto; min-width:0; }
+
+    /* Project copy */
+    .lead{ font-size:18px; margin:0 0 10px 0; font-weight:600 }
+    .para{ color:var(--muted); margin:0 0 16px 0 }
+
+    /* Responsive */
+    @media (max-width:1000px){
+      .gallery{ flex-direction:column }
+      .gallery-main img{ height:56vh }
+      .gallery-thumbs{ width:100%; flex-direction:row; overflow:auto; height:110px }
+      .thumb img{ height:100px; width:160px }
+      .meta{ width:100%; flex-basis:auto }
+      .info-row{ flex-direction:column }
+      main{ margin:120px 16px 40px }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <a class="brand" href="index.html">Mohammad Fasahat</a>
+      <nav class="nav">
+        <a href="index.html#about">about</a>
+        <a href="work.html">work</a>
+        <a href="index.html#office">office</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Top gallery / hero -->
+    <section class="gallery" aria-label="Project gallery">
+      <div class="gallery-main" id="galleryMain" role="region" aria-live="polite">
+        <!-- Primary slide image (js will inject) -->
+        <img id="mainImage" src="images/project-1.jpg" alt="Primary image — PROJECT NAME">
+      </div>
+
+      <!-- vertical thumbnails -->
+      <div class="gallery-thumbs" id="thumbs" aria-hidden="false">
+        <!-- thumbnails will be injected by JS -->
+        <div class="thumb active" data-src="images/project-1.jpg"><img src="images/project-1-thumb.jpg" alt=""></div>
+        <div class="thumb" data-src="images/project-2.jpg"><img src="images/project-2-thumb.jpg" alt=""></div>
+        <div class="thumb" data-src="images/project-3.jpg"><img src="images/project-3-thumb.jpg" alt=""></div>
+        <!-- add more thumbs -->
+      </div>
+    </section>
+
+    <!-- Info & copy -->
+    <section class="info-row" aria-label="Project information and description">
+      <aside class="meta" aria-labelledby="project-meta">
+        <h4 id="project-meta">Project details</h4>
+        <div class="kv"><span class="key">Project</span><span>Living Places Copenhagen</span></div>
+        <div class="kv"><span class="key">Typology</span><span>Culture / Residential</span></div>
+        <div class="kv"><span class="key">Location</span><span>Copenhagen, Denmark</span></div>
+        <div class="kv"><span class="key">Year</span><span>2023</span></div>
+        <div class="kv"><span class="key">Status</span><span>Built</span></div>
+        <div class="kv"><span class="key">Size</span><span>2,230 m²</span></div>
+        <div class="kv"><span class="key">Client</span><span>VELUX A/S</span></div>
+        <div class="kv"><span class="key">Photography</span><span>Adam Mork</span></div>
+
+        <!-- optional downloads / book links -->
+        <div style="margin-top:12px">
+          <a href="#" download>Download project PDF</a><br/>
+          <a href="#" target="_blank">Book / report (PDF)</a>
+        </div>
+      </aside>
+
+      <div class="text">
+        <div class="lead">A one-sentence elevator description of the project.</div>
+        <p class="para">Short intro paragraph — 1–2 sentences that summarise the concept and its core ambition. (Place this near the top so readers immediately understand the project's intention.)</p>
+
+        <h3>Project description</h3>
+        <p class="para">Longer narrative describing process, drivers, sustainability strategies, material logic, user experience. Include measurable outcomes (energy, CO₂, sqm, occupancy) where relevant.</p>
+
+        <h3>Collaborators & team</h3>
+        <p class="para">List major contributors and partners; mention construction firms, consultants, and research partners.</p>
+
+        <!-- video embed example -->
+        <h3>Film</h3>
+        <p class="para"><iframe width="560" height="315" src="https://player.vimeo.com/video/000000" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Small gallery script: clicking a thumb swaps the main image.
+    document.querySelectorAll('.thumb').forEach(t=>{
+      t.addEventListener('click', e=>{
+        const src = t.dataset.src;
+        document.getElementById('mainImage').src = src;
+        document.querySelectorAll('.thumb').forEach(x=>x.classList.remove('active'));
+        t.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
