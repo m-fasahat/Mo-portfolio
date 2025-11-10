@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mohammad Fasahat</title>
-  <meta name="description" content="Mo Fasahat — selected works." />
+  <meta name="description" content="Mohammad Fasahat — selected works." />
   <meta name="theme-color" content="#0b0d10" />
   <style>
     :root{ --bg:#0b0d10; --fg:#eef2f6; --muted:#a3aab6; --line:#1d232f; }
@@ -20,8 +20,8 @@
 
     /* Hero */
     .hero{ position:relative; height: 100vh; overflow:hidden }
-    .hero img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .7s ease }
-    .hero img.contain{ object-fit:contain; background:#000 }
+    .hero img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; opacity:0; transition:opacity .7s ease }
+    
     .hero img.active{ opacity:1 }
     .dots{ position:absolute; bottom:22px; left:50%; transform:translateX(-50%); display:flex; gap:10px }
     .dots button{ width:38px; height:3px; background:rgba(255,255,255,.45); border:0; border-radius:2px; cursor:pointer }
@@ -42,6 +42,8 @@
     @media (max-width: 640px){ .masonry{ column-count:1 } }
 
     footer{ border-top:1px solid var(--line); color:var(--muted) }
+      /* 20% dark overlay over slideshow */
+    .hero::after{ content:""; position:absolute; inset:0; background:rgba(0,0,0,.2); pointer-events:none }
   </style>
 </head>
 <body>
@@ -56,12 +58,6 @@
       </nav>
     </div>
   </header>
-
-  <!-- FULL-BLEED HERO SLIDESHOW -->
-  <section id="hero" class="hero" aria-label="Featured images">
-    <!-- images injected by JS -->
-    <div class="dots" id="heroDots"></div>
-  </section>
 
   <!-- WORK GRID -->
   <main>
@@ -104,23 +100,6 @@
     function play(){ timer = setInterval(()=> heroGoto((hi+1)%heroImages.length), 6000); }
     function stop(){ clearInterval(timer); }
     mountHero();
-    function adjustFit(){
-      const vr = window.innerWidth / window.innerHeight; // viewport ratio
-      hero.querySelectorAll('img').forEach(img=>{
-        if(img.naturalWidth && img.naturalHeight){
-          const r = img.naturalWidth / img.naturalHeight;
-          // If aspect ratios are very different, avoid cropping by using contain
-          img.classList.toggle('contain', Math.abs(r - vr) > 0.35);
-        } else {
-          img.addEventListener('load', ()=>{
-            const r = img.naturalWidth / img.naturalHeight;
-            img.classList.toggle('contain', Math.abs(r - vr) > 0.35);
-          }, { once:true });
-        }
-      });
-    }
-    adjustFit();
-    window.addEventListener('resize', adjustFit);
     play();
     dots.addEventListener('click', e=>{ if(e.target.matches('button')){ stop(); heroGoto(+e.target.dataset.i); play(); }});
     window.addEventListener('keydown', e=>{
@@ -129,19 +108,7 @@
     });
 
     // --- Work grid data (replace with real) ---
-    const projects = [
-      { title:'Where the Light Unfolds', year:'2024', image:'images/light-unfolds.jpg', url:'#' },
-      { title:'Golpayegan Eco Center', year:'2021', image:'images/golpayegan.jpg', url:'#' },
-      { title:'Desert House Studies', year:'2023', image:'images/desert-house.jpg', url:'#' },
-      { title:'Film & Visualization', year:'2022', image:'images/visualization.jpg', url:'#' },
-      { title:'Fabric Pavilion', year:'2024', image:'images/light-unfolds.jpg', url:'#' },
-      { title:'Eco Corridor', year:'2022', image:'images/golpayegan.jpg', url:'#' }
-    ];
-    const grid = document.getElementById('grid');
-    grid.innerHTML = projects.map(p=>`
-      <article class="tile">
-        <a href="${p.url}" aria-label="${p.title}"><img loading="lazy" src="${p.image}" alt=""></a>
-        <div class="cap"><div>${p.title}</div><div style="opacity:.85; font-size:12px">${p.year}</div></div>
+     font-size:12px">${p.year}</div></div>
       </article>
     `).join('');
 
