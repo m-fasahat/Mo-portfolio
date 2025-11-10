@@ -21,6 +21,7 @@
     /* Hero */
     .hero{ position:relative; height: 100vh; overflow:hidden }
     .hero img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .7s ease }
+    .hero img.contain{ object-fit:contain; background:#000 }
     .hero img.active{ opacity:1 }
     .dots{ position:absolute; bottom:22px; left:50%; transform:translateX(-50%); display:flex; gap:10px }
     .dots button{ width:38px; height:3px; background:rgba(255,255,255,.45); border:0; border-radius:2px; cursor:pointer }
@@ -102,7 +103,25 @@
     }
     function play(){ timer = setInterval(()=> heroGoto((hi+1)%heroImages.length), 6000); }
     function stop(){ clearInterval(timer); }
-    mountHero(); play();
+    mountHero();
+    function adjustFit(){
+      const vr = window.innerWidth / window.innerHeight; // viewport ratio
+      hero.querySelectorAll('img').forEach(img=>{
+        if(img.naturalWidth && img.naturalHeight){
+          const r = img.naturalWidth / img.naturalHeight;
+          // If aspect ratios are very different, avoid cropping by using contain
+          img.classList.toggle('contain', Math.abs(r - vr) > 0.35);
+        } else {
+          img.addEventListener('load', ()=>{
+            const r = img.naturalWidth / img.naturalHeight;
+            img.classList.toggle('contain', Math.abs(r - vr) > 0.35);
+          }, { once:true });
+        }
+      });
+    }
+    adjustFit();
+    window.addEventListener('resize', adjustFit);
+    play();
     dots.addEventListener('click', e=>{ if(e.target.matches('button')){ stop(); heroGoto(+e.target.dataset.i); play(); }});
     window.addEventListener('keydown', e=>{
       if(e.key==='ArrowRight'){ stop(); heroGoto((hi+1)%heroImages.length); play(); }
