@@ -8,21 +8,29 @@
   <style>
     :root{
       --bg:#ffffff; --fg:#0b0d10; --muted:#6b7280; --accent:#111827;
-      --max:1200px;
+      --max:1300px; /* match header max-width across site */
     }
     *{box-sizing:border-box}
     body{ margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; color:var(--fg); background:var(--bg); line-height:1.6; }
     a{ color:inherit }
 
-    /* Header: canonical site header (kept identical to index.html) */
+    /* ===== Canonical Header (exact style you asked to keep) ===== */
     header{ position:fixed; top:0; left:0; right:0; z-index:50; background:transparent; border:0 }
     .bar{ max-width:1300px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; justify-content:space-between }
-    .brand{ font-weight:700; }
+    .brand{ font-weight:700; font-size:18px; } /* keep same size */
+    .brand-link{ color:var(--fg); text-decoration:none; }
     .nav{ display:flex; gap:32px }
-    .nav a{ font-size:18px; font-weight:600; padding:6px 8px; letter-spacing:0.02em }
+    .nav a{
+      font-size:18px;
+      font-weight:600;
+      padding:6px 8px;
+      letter-spacing:0.02em;
+      text-decoration:none; /* REMOVE underline */
+      color:var(--fg);       /* dark text for project pages */
+    }
     @media (max-width:640px){ .nav a{ font-size:16px; padding:6px } }
 
-    /* Page layout */
+    /* Page layout (centered, matches header) */
     main{ max-width:var(--max); margin: 160px auto 80px; padding:0 24px; }
 
     /* Gallery */
@@ -61,10 +69,10 @@
 <body>
   <header>
     <div class="bar">
-      <!-- Brand links back to the homepage -->
-      <a class="brand" href="index.html" style="text-decoration:none; color:var(--fg)">Mohammad Fasahat</a>
+      <!-- Brand links back to the homepage (same behavior as index) -->
+      <a class="brand-link" href="index.html"><span class="brand">Mohammad Fasahat</span></a>
 
-      <nav class="nav" aria-label="Primary">
+      <nav class="nav">
         <a href="index.html#about">about</a>
         <a href="work.html">work</a>
         <a href="index.html#office">office</a>
@@ -82,11 +90,9 @@
 
       <!-- vertical thumbnails -->
       <div class="gallery-thumbs" id="thumbs" aria-hidden="false">
-        <!-- thumbnails will be injected by JS -->
         <div class="thumb active" data-src="images/project-1.jpg"><img src="images/project-1-thumb.jpg" alt=""></div>
         <div class="thumb" data-src="images/project-2.jpg"><img src="images/project-2-thumb.jpg" alt=""></div>
         <div class="thumb" data-src="images/project-3.jpg"><img src="images/project-3-thumb.jpg" alt=""></div>
-        <!-- add more thumbs -->
       </div>
     </section>
 
@@ -103,7 +109,6 @@
         <div class="kv"><span class="key">Client</span><span>VELUX A/S</span></div>
         <div class="kv"><span class="key">Photography</span><span>Adam Mork</span></div>
 
-        <!-- optional downloads / book links -->
         <div style="margin-top:12px">
           <a href="#" download>Download project PDF</a><br/>
           <a href="#" target="_blank">Book / report (PDF)</a>
@@ -120,7 +125,6 @@
         <h3>Collaborators & team</h3>
         <p class="para">List major contributors and partners; mention construction firms, consultants, and research partners.</p>
 
-        <!-- video embed example -->
         <h3>Film</h3>
         <p class="para"><iframe width="560" height="315" src="https://player.vimeo.com/video/000000" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></p>
       </div>
