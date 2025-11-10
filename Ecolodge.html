@@ -26,13 +26,33 @@
     /* Page layout */
     main{ max-width:var(--max); margin: 160px auto 80px; padding:0 24px; }
 
-    /* Gallery */
+    /* Gallery: keep main image natural ratio */
     .gallery{ display:flex; gap:18px; align-items:flex-start }
-    .gallery-main{ flex:1 1 66%; border-radius:8px; overflow:hidden; position:relative; background:#111 }
-    .gallery-main img{ width:100%; height:70vh; object-fit:cover; display:block }
+    .gallery-main{
+      flex:1 1 66%;
+      border-radius:8px;
+      overflow:auto;               /* allow scroll if very tall */
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#111;
+      padding:12px;                /* small padding to show rounded corner */
+    }
+    /* Preserve original ratio: limit by width and height but don't crop */
+    .gallery-main img{
+      display:block;
+      max-width:100%;
+      width:auto;
+      height:auto;
+      max-height:80vh;            /* limit extreme tall images */
+      box-shadow:0 6px 20px rgba(0,0,0,.25);
+      border-radius:4px;
+    }
+
     .gallery-thumbs{ width:240px; display:flex; flex-direction:column; gap:12px; }
-    .thumb{ cursor:pointer; border-radius:6px; overflow:hidden; border:1px solid #e8e8e8 }
-    .thumb img{ width:100%; height:120px; object-fit:cover; display:block }
+    .thumb{ cursor:pointer; border-radius:6px; overflow:hidden; border:1px solid #e8e8e8; background:#fff }
+    .thumb img{ width:100%; height:auto; object-fit:cover; display:block }
     .thumb.active{ outline:3px solid var(--accent) }
 
     /* Info panel */
@@ -50,7 +70,7 @@
     /* Responsive */
     @media (max-width:1000px){
       .gallery{ flex-direction:column }
-      .gallery-main img{ height:56vh }
+      .gallery-main img{ max-height:56vh }
       .gallery-thumbs{ width:100%; flex-direction:row; overflow:auto; height:110px }
       .thumb img{ height:100px; width:160px }
       .meta{ width:100%; flex-basis:auto }
@@ -77,13 +97,13 @@
     <section class="gallery" aria-label="Eco Lodge gallery">
       <div class="gallery-main" id="galleryMain" role="region" aria-live="polite">
         <!-- Primary slide image -->
-        <img id="mainImage" src="images/hero-2.jpg" alt="Eco Lodge — main image">
+        <img id="mainImage" src="images/eco-1.jpg" alt="Eco Lodge — main image">
       </div>
 
       <!-- vertical thumbnails (using same files so no separate thumbs needed) -->
       <div class="gallery-thumbs" id="thumbs" aria-hidden="false">
-        <div class="thumb active" data-src="images/eco-1.jpg"><img src="images/eco-1.jpg" alt="Eco Lodge thumbnail 1"></div>
-        <div class="thumb" data-src="images/eco-2.jpg"><img src="images/eco-2.jpg" alt="Eco Lodge thumbnail 2"></div>
+        <div class="thumb" data-src="images/eco-1.jpg" title="View 1"><img src="images/eco-1.jpg" alt="Eco Lodge 1"></div>
+        <div class="thumb" data-src="images/eco-2.jpg" title="View 2"><img src="images/eco-2.jpg" alt="Eco Lodge 2"></div>
       </div>
     </section>
 
@@ -123,28 +143,84 @@
   </main>
 
   <script>
-    // Simple gallery: clicking a thumb swaps the main image.
-    document.querySelectorAll('.thumb').forEach(t=>{
-      t.addEventListener('click', e=>{
-        const src = t.dataset.src;
-        document.getElementById('mainImage').src = src;
-        document.querySelectorAll('.thumb').forEach(x=>x.classList.remove('active'));
-        t.classList.add('active');
+    // Helper to read ?img=param (filename or full path)
+    function getUrlParam(name){
+      try { return new URL(location.href).searchParams.get(name); }
+      catch(e){ return null; }
+    }
+
+    // thumbs & main
+    const thumbNodes = Array.from(document.querySelectorAll('.thumb'));
+    const mainImage = document.getElementById('mainImage');
+
+    // mark active thumbnail (by dataset.src filename match or exact)
+    function setActiveBySrc(src){
+      if(!thumbNodes.length) return;
+      // normalize: allow just filename or full path
+      const filename = src.split('/').pop();
+      let found = thumbNodes.find(t => t.dataset.src === src);
+      if(!found) found = thumbNodes.find(t => t.dataset.src && t.dataset.src.endsWith(filename));
+      if(!found) found = thumbNodes[0];
+
+      thumbNodes.forEach(t => t.classList.remove('active'));
+      found.classList.add('active');
+
+      // update main image src and alt
+      mainImage.src = found.dataset.src;
+      const alt = found.querySelector('img')?.alt || '';
+      mainImage.alt = alt;
+
+      // update URL param (filename only) without adding history entry
+      const u = new URL(location.href);
+      u.searchParams.set('img', found.dataset.src.split('/').pop());
+      history.replaceState(null, '', u.toString());
+    }
+
+    // init: choose thumb from ?img param or first thumb
+    (function initGallery(){
+      if(!thumbNodes.length) return;
+      const param = getUrlParam('img'); // e.g. "eco-1.jpg" or "images/eco-1.jpg"
+      if(param){
+        setActiveBySrc(param);
+      } else {
+        setActiveBySrc(thumbNodes[0].dataset.src);
+      }
+    })();
+
+    // click handlers
+    thumbNodes.forEach((t, i) => {
+      t.addEventListener('click', () => {
+        setActiveBySrc(t.dataset.src);
+      });
+      // allow keyboard enter/space to select
+      t.tabIndex = 0;
+      t.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          setActiveBySrc(t.dataset.src);
+        }
       });
     });
 
-    // Optional: keyboard left/right to cycle main image
-    (function(){
-      const thumbs = Array.from(document.querySelectorAll('.thumb'));
-      let idx = thumbs.findIndex(t=>t.classList.contains('active'));
-      window.addEventListener('keydown', e=>{
-        if(e.key === 'ArrowRight' || e.key === 'ArrowLeft'){
-          if(e.key === 'ArrowRight') idx = (idx + 1) % thumbs.length;
-          else idx = (idx - 1 + thumbs.length) % thumbs.length;
-          thumbs[idx].click();
-        }
-      });
-    })();
+    // keyboard navigation left/right
+    window.addEventListener('keydown', (e) => {
+      if(!thumbNodes.length) return;
+      const idx = thumbNodes.findIndex(t => t.classList.contains('active'));
+      if(e.key === 'ArrowRight'){
+        const next = (idx + 1) % thumbNodes.length;
+        setActiveBySrc(thumbNodes[next].dataset.src);
+      } else if(e.key === 'ArrowLeft'){
+        const prev = (idx - 1 + thumbNodes.length) % thumbNodes.length;
+        setActiveBySrc(thumbNodes[prev].dataset.src);
+      }
+    });
+
+    // respond to back/forward navigation (popstate)
+    window.addEventListener('popstate', () => {
+      const param = getUrlParam('img');
+      if(param) setActiveBySrc(param);
+      else setActiveBySrc(thumbNodes[0].dataset.src);
+    });
   </script>
 </body>
 </html>
