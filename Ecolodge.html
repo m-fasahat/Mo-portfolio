@@ -26,18 +26,19 @@
     /* Page layout */
     main{ max-width:var(--max); margin: 160px auto 80px; padding:0 24px; }
 
-    /* Gallery: keep main image natural ratio */
+    /* Gallery: keep main image natural ratio
+       ---- FIX APPLIED: removed dark frame/padding so no black line around image ---- */
     .gallery{ display:flex; gap:18px; align-items:flex-start }
     .gallery-main{
       flex:1 1 66%;
       border-radius:8px;
-      overflow:auto;               /* allow scroll if very tall */
+      overflow:hidden;               /* keep rounded corners if you want them */
       position:relative;
       display:flex;
       align-items:center;
       justify-content:center;
-      background:#111;
-      padding:12px;                /* small padding to show rounded corner */
+      background: transparent;       /* <-- was #111 (black) before; now transparent */
+      padding: 0;                    /* <-- removed padding that created the frame */
     }
     /* Preserve original ratio: limit by width and height but don't crop */
     .gallery-main img{
@@ -46,8 +47,11 @@
       width:auto;
       height:auto;
       max-height:80vh;            /* limit extreme tall images */
-      box-shadow:0 6px 20px rgba(0,0,0,.25);
-      border-radius:4px;
+      /* removed heavy box-shadow so there's no visible frame */
+      box-shadow: none;
+      border-radius: 4px;
+      background: none;
+      border: none;
     }
 
     .gallery-thumbs{ width:240px; display:flex; flex-direction:column; gap:12px; }
@@ -156,7 +160,6 @@
     // mark active thumbnail (by dataset.src filename match or exact)
     function setActiveBySrc(src){
       if(!thumbNodes.length) return;
-      // normalize: allow just filename or full path
       const filename = src.split('/').pop();
       let found = thumbNodes.find(t => t.dataset.src === src);
       if(!found) found = thumbNodes.find(t => t.dataset.src && t.dataset.src.endsWith(filename));
@@ -165,21 +168,19 @@
       thumbNodes.forEach(t => t.classList.remove('active'));
       found.classList.add('active');
 
-      // update main image src and alt
       mainImage.src = found.dataset.src;
       const alt = found.querySelector('img')?.alt || '';
       mainImage.alt = alt;
 
-      // update URL param (filename only) without adding history entry
       const u = new URL(location.href);
       u.searchParams.set('img', found.dataset.src.split('/').pop());
       history.replaceState(null, '', u.toString());
     }
 
-    // init: choose thumb from ?img param or first thumb
+    // init
     (function initGallery(){
       if(!thumbNodes.length) return;
-      const param = getUrlParam('img'); // e.g. "eco-1.jpg" or "images/eco-1.jpg"
+      const param = getUrlParam('img');
       if(param){
         setActiveBySrc(param);
       } else {
@@ -188,34 +189,23 @@
     })();
 
     // click handlers
-    thumbNodes.forEach((t, i) => {
-      t.addEventListener('click', () => {
-        setActiveBySrc(t.dataset.src);
-      });
-      // allow keyboard enter/space to select
+    thumbNodes.forEach((t) => {
+      t.addEventListener('click', () => setActiveBySrc(t.dataset.src));
       t.tabIndex = 0;
       t.addEventListener('keydown', (e) => {
-        if(e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          setActiveBySrc(t.dataset.src);
-        }
+        if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActiveBySrc(t.dataset.src); }
       });
     });
 
-    // keyboard navigation left/right
+    // keyboard left/right
     window.addEventListener('keydown', (e) => {
       if(!thumbNodes.length) return;
       const idx = thumbNodes.findIndex(t => t.classList.contains('active'));
-      if(e.key === 'ArrowRight'){
-        const next = (idx + 1) % thumbNodes.length;
-        setActiveBySrc(thumbNodes[next].dataset.src);
-      } else if(e.key === 'ArrowLeft'){
-        const prev = (idx - 1 + thumbNodes.length) % thumbNodes.length;
-        setActiveBySrc(thumbNodes[prev].dataset.src);
-      }
+      if(e.key === 'ArrowRight'){ setActiveBySrc(thumbNodes[(idx + 1) % thumbNodes.length].dataset.src); }
+      else if(e.key === 'ArrowLeft'){ setActiveBySrc(thumbNodes[(idx - 1 + thumbNodes.length) % thumbNodes.length].dataset.src); }
     });
 
-    // respond to back/forward navigation (popstate)
+    // respond to popstate
     window.addEventListener('popstate', () => {
       const param = getUrlParam('img');
       if(param) setActiveBySrc(param);
