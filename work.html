@@ -30,11 +30,11 @@
       padding: 140px 24px 80px;
     }
 
-    /* GRID: 3 columns x tall rows (large tiles) */
+    /* GRID: 3 columns x reduced rows (tiles 1.5x smaller) */
     .grid{
       display:grid;
       grid-template-columns: repeat(3, 1fr); /* 3 columns */
-      grid-auto-rows: 420px;                  /* large tile height */
+      grid-auto-rows: 280px;                  /* was 420px -> now 280px (1.5x smaller) */
       gap: var(--gap);
       align-items:stretch;
     }
@@ -42,11 +42,11 @@
     /* responsive adjustments */
     @media (min-width:1600px){ .wrap{ max-width: 1600px } }
     @media (max-width:1400px){
-      .grid{ grid-auto-rows: 380px; } /* slightly smaller on medium screens */
+      .grid{ grid-auto-rows: 253px; } /* was 380px -> now ~253px (1.5x smaller) */
       .wrap{ padding:120px 20px 60px; }
     }
     @media (max-width:1100px){
-      .grid{ grid-template-columns: repeat(2, 1fr); grid-auto-rows: 380px; }
+      .grid{ grid-template-columns: repeat(2, 1fr); grid-auto-rows: 253px; } /* matched 1400bp */
       .wrap{ padding:110px 18px 50px; }
     }
     @media (max-width:640px){
@@ -54,7 +54,7 @@
       .wrap{ padding:100px 14px 40px; }
     }
 
-    /* Tiles: identical, large, images fill area */
+    /* Tiles: identical, images fill area */
     .tile{
       position:relative;
       display:block;
@@ -83,7 +83,7 @@
       transform: scale(1.02);
     }
 
-    /* Strong dark overlay (hidden by default, visible on hover/focus) */
+    /* Dark overlay (hidden by default, visible on hover/focus) */
     .tile::after{
       content:"";
       position:absolute;
