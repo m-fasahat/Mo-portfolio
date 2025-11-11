@@ -7,8 +7,8 @@
   <meta name="description" content="Selected works by Mohammad Fasahat." />
   <style>
     :root{
-      --bg:#f7f8fa; --fg:#0b0d10; --muted:#616a75; --gap:20px;
-      --max:1400px;
+      --bg:#f7f8fa; --fg:#0b0d10; --muted:#616a75; --gap:18px;
+      --max: calc(100% - 48px); /* allows grid to sit closer to sides */
     }
     *{box-sizing:border-box}
     html,body{ margin:0; padding:0; background:var(--bg); color:var(--fg);
@@ -23,37 +23,38 @@
     .nav a{ font-size:18px; font-weight:600; padding:6px 8px; letter-spacing:0.02em }
     @media (max-width:640px){ .nav a{ font-size:16px; padding:6px } }
 
-    /* Page wrapper */
+    /* Page wrapper closer to sides */
     .wrap{
       max-width: var(--max);
       margin: 0 auto;
-      padding: 160px 24px 80px;
+      padding: 140px 24px 80px; /* adjust top padding if you want grid higher/lower */
     }
 
-    /* Uniform grid: 4 columns x fixed row height (2 rows shown by having 8 tiles) */
+    /* Uniform rectangular grid: 4 columns x fixed (shorter) row height */
     .grid{
       display:grid;
       grid-template-columns: repeat(4, 1fr);
-      grid-auto-rows: 360px;   /* tile height — increase for larger tiles */
+      grid-auto-rows: 220px;   /* <-- rectangular tiles: reduce for shallower tiles */
       gap: var(--gap);
       align-items:stretch;
     }
 
-    /* Responsive breakpoints */
+    /* responsive */
+    @media (min-width:1600px){ .wrap{ max-width: 1600px } } /* don't expand forever */
     @media (max-width:1200px){
-      .grid{ grid-template-columns: repeat(3, 1fr); grid-auto-rows:320px; }
-      .wrap{ padding:140px 20px 60px; }
+      .grid{ grid-template-columns: repeat(3, 1fr); grid-auto-rows:200px; }
+      .wrap{ padding:120px 20px 60px; }
     }
     @media (max-width:900px){
-      .grid{ grid-template-columns: repeat(2, 1fr); grid-auto-rows:300px; }
-      .wrap{ padding:120px 18px 50px; }
+      .grid{ grid-template-columns: repeat(2, 1fr); grid-auto-rows:240px; }
+      .wrap{ padding:110px 18px 50px; }
     }
     @media (max-width:520px){
       .grid{ grid-template-columns: 1fr; grid-auto-rows: auto; gap:14px; }
-      .wrap{ padding:110px 14px 40px; }
+      .wrap{ padding:100px 14px 40px; }
     }
 
-    /* Tiles: same size, no rounded corners, no borders, images fill tile */
+    /* Tiles: identical size, images fill tile area */
     .tile{
       position:relative;
       display:block;
@@ -68,7 +69,7 @@
       width:100%;
       height:100%;
       display:block;
-      object-fit:cover;    /* fills tile area */
+      object-fit:cover;    /* fills tile area (may crop) */
       object-position:center;
     }
 
