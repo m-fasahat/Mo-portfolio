@@ -64,60 +64,62 @@
       background:transparent;
       text-decoration:none;
       color:inherit;
-      /* make tile reachable by keyboard */
       outline: none;
     }
 
-    /* LOW-SATURATION EFFECT:
-       default: low saturation + slightly lower contrast
-       on hover/focus: remove filter (original colors)
-       smooth transition */
+    /* IMAGES: no desaturation, no default scale */
     .tile img{
       width:100%;
       height:100%;
       display:block;
-      object-fit:cover;    /* fills tile area (may crop) */
+      object-fit:cover;
       object-position:center;
-      filter: grayscale(.25) saturate(.35) contrast(.98);
-      transition: filter .28s ease, transform .28s ease;
-      will-change: filter, transform;
-      transform: scale(1.0);
+      transition: transform .28s ease;
+      will-change: transform;
     }
 
-    /* On hover/focus we remove the desaturation for that tile */
+    /* HOVER: subtle scale for the image (optional) */
     .tile:hover img,
     .tile:focus-within img,
-    .tile:active img
-    {
-      filter: none;
-      transform: scale(1.02); /* subtle scale for emphasis */
+    .tile:active img {
+      transform: scale(1.02);
     }
 
-    /* Hover overlay & label */
+    /* Stronger hover overlay:
+       default: invisible overlay; hover/focus -> dark rgba overlay (stronger) */
     .tile::after{
       content:"";
       position:absolute;
       inset:0;
-      background:rgba(0,0,0,0.12);
+      background:rgba(0,0,0,0.48); /* darker overlay when shown */
       opacity:0;
-      transition:opacity .18s ease;
-      pointer-events:none;
-    }
-    .label{
-      position:absolute;
-      left:0; right:0; bottom:8px;
-      display:flex; justify-content:center; align-items:center;
-      color:#fff; font-weight:600; font-size:15px;
-      opacity:0; transform:translateY(6px);
-      transition:opacity .18s ease, transform .18s ease;
-      text-shadow:0 1px 2px rgba(0,0,0,0.5);
-      padding:6px 10px;
+      transition:opacity .20s ease;
       pointer-events:none;
     }
 
-    /* keep label visible on hover/focus (independent from desaturation) */
-    .tile:hover::after, .tile:hover .label, .tile:focus-within::after, .tile:focus-within .label {
-      opacity:1; transform:translateY(0);
+    /* Label: base style — will scale on hover */
+    .label{
+      position:absolute;
+      left:0; right:0; bottom:18px;
+      display:flex; justify-content:center; align-items:center;
+      color:#fff; font-weight:700; font-size:16px;
+      opacity:0; transform:translateY(8px) scale(1);
+      transition:opacity .18s ease, transform .18s ease;
+      text-shadow:0 2px 4px rgba(0,0,0,0.6);
+      padding:6px 10px;
+      pointer-events:none;
+      letter-spacing:0.02em;
+    }
+
+    /* On hover/focus: show overlay and grow the label */
+    .tile:hover::after,
+    .tile:focus-within::after,
+    .tile:hover .label,
+    .tile:focus-within .label
+    {
+      opacity:1;
+      transform:translateY(0) scale(1.20); /* enlarge the label */
+      /* if you want even larger: increase scale value */
     }
 
     /* keyboard focus visible outline */
