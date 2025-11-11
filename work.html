@@ -34,7 +34,7 @@
     .grid{
       display:grid;
       grid-template-columns: repeat(3, 1fr); /* 3 columns */
-      grid-auto-rows: 420px;                  /* large tile height */
+      grid-auto-rows: 320px;                  /* large tile height */
       gap: var(--gap);
       align-items:stretch;
     }
@@ -42,7 +42,7 @@
     /* responsive adjustments */
     @media (min-width:1600px){ .wrap{ max-width: 1600px } }
     @media (max-width:1400px){
-      .grid{ grid-auto-rows: 300px; } /* slightly smaller on medium screens */
+      .grid{ grid-auto-rows: 380px; } /* slightly smaller on medium screens */
       .wrap{ padding:120px 20px 60px; }
     }
     @media (max-width:1100px){
