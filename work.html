@@ -7,7 +7,7 @@
   <meta name="description" content="Selected works by Mohammad Fasahat." />
   <style>
     :root{
-      --bg:#f7f8fa; --fg:#0b0d10; --muted:#616a75; --gap:24px;
+      --bg:#f7f8fa; --fg:#0b0d10; --muted:#616a75; --gap:20px;
       --max:1400px;
     }
     *{box-sizing:border-box}
@@ -15,7 +15,7 @@
       font:16px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial; }
     a{ color:inherit; text-decoration:none }
 
-    /* Header (canonical style) */
+    /* Header (canonical) */
     header{ position:fixed; top:0; left:0; right:0; z-index:50; background:transparent; border:0 }
     .bar{ max-width:1300px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; justify-content:space-between }
     .brand{ font-weight:700; }
@@ -23,28 +23,37 @@
     .nav a{ font-size:18px; font-weight:600; padding:6px 8px; letter-spacing:0.02em }
     @media (max-width:640px){ .nav a{ font-size:16px; padding:6px } }
 
-    /* Wrapper */
+    /* Page wrapper */
     .wrap{
       max-width: var(--max);
       margin: 0 auto;
-      padding: 160px 24px 80px; /* reduced top so grid sits higher, adjust to taste */
+      padding: 160px 24px 80px;
     }
 
-    /* GRID: larger tiles, denser layout */
+    /* Uniform grid: 4 columns x fixed row height (2 rows shown by having 8 tiles) */
     .grid{
-      display: grid;
+      display:grid;
       grid-template-columns: repeat(4, 1fr);
-      grid-auto-rows: 260px;          /* base row height (controls tile size) */
+      grid-auto-rows: 360px;   /* tile height — increase for larger tiles */
       gap: var(--gap);
-      align-items: stretch;
+      align-items:stretch;
     }
 
-    /* responsive column counts */
-    @media (max-width:1300px){ .grid{ grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 980px){ .grid{ grid-template-columns: repeat(2, 1fr); grid-auto-rows: 220px; } }
-    @media (max-width: 640px){ .grid{ grid-template-columns: 1fr; grid-auto-rows: auto; gap:16px; } .wrap{ padding:120px 16px 60px } }
+    /* Responsive breakpoints */
+    @media (max-width:1200px){
+      .grid{ grid-template-columns: repeat(3, 1fr); grid-auto-rows:320px; }
+      .wrap{ padding:140px 20px 60px; }
+    }
+    @media (max-width:900px){
+      .grid{ grid-template-columns: repeat(2, 1fr); grid-auto-rows:300px; }
+      .wrap{ padding:120px 18px 50px; }
+    }
+    @media (max-width:520px){
+      .grid{ grid-template-columns: 1fr; grid-auto-rows: auto; gap:14px; }
+      .wrap{ padding:110px 14px 40px; }
+    }
 
-    /* Tiles: NO rounded corners, NO borders, fill the cells */
+    /* Tiles: same size, no rounded corners, no borders, images fill tile */
     .tile{
       position:relative;
       display:block;
@@ -55,73 +64,39 @@
       text-decoration:none;
       color:inherit;
     }
-
-    /* Make images cover each tile area while preserving natural ratio by centering & cover */
     .tile img{
       width:100%;
       height:100%;
       display:block;
-      object-fit:cover;         /* fills tile while preserving ratio (cropping may occur) */
+      object-fit:cover;    /* fills tile area */
       object-position:center;
-      vertical-align:middle;
-      transform-origin:center;
     }
 
-    /* Optional: if you prefer preserving entire image without cropping, change to:
-       .tile img{ width:auto; height:100%; max-width:none; object-fit:none; }  */
-
-    /* Larger/masonry rhythm (adjust which tiles are larger via nth-child) */
-    .grid > .tile:nth-child(1){ grid-column: span 2; grid-row: span 2; }
-    .grid > .tile:nth-child(2){ grid-column: span 2; grid-row: span 1; }
-    .grid > .tile:nth-child(4){ grid-column: span 2; grid-row: span 1; }
-    .grid > .tile:nth-child(5){ grid-column: span 1; grid-row: span 2; }
-    .grid > .tile:nth-child(7){ grid-column: span 2; grid-row: span 1; }
-    /* Feel free to change or add nth-child rules to vary the layout */
-
-    /* reduce spans on smaller screens so layout stays balanced */
-    @media (max-width:1300px){
-      .grid > .tile:nth-child(1){ grid-column: span 3; grid-row: span 1; }
-      .grid > .tile:nth-child(5){ grid-column: span 1; grid-row: span 1; }
-    }
-    @media (max-width:980px){
-      /* single-column-ish behaviour for mobile/tablet */
-      .grid > .tile { grid-column: auto !important; grid-row: auto !important; }
-      .tile img{ height:320px; object-fit:cover; } /* keep thumbnails tall */
-    }
-
-    /* Hover overlay & label (kept minimal) */
+    /* Hover overlay & label */
     .tile::after{
       content:"";
       position:absolute;
       inset:0;
-      background:rgba(0,0,0,0.16);
+      background:rgba(0,0,0,0.12);
       opacity:0;
       transition:opacity .18s ease;
       pointer-events:none;
     }
     .label{
       position:absolute;
-      inset:auto 0 10px 0;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      color:#fff;
-      font-weight:600;
-      letter-spacing:.02em;
-      opacity:0;
-      padding:6px 12px;
-      font-size:16px;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-      transition: opacity .18s ease, transform .18s ease;
-      transform: translateY(6px);
+      left:0; right:0; bottom:8px;
+      display:flex; justify-content:center; align-items:center;
+      color:#fff; font-weight:600; font-size:15px;
+      opacity:0; transform:translateY(6px);
+      transition:opacity .18s ease, transform .18s ease;
+      text-shadow:0 1px 2px rgba(0,0,0,0.5);
+      padding:6px 10px;
     }
     .tile:hover::after, .tile:hover .label, .tile:focus-within::after, .tile:focus-within .label {
-      opacity:1; transform: translateY(0);
+      opacity:1; transform:translateY(0);
     }
 
-    /* keyboard focus */
     .tile:focus-visible { outline: 3px solid rgba(0,0,0,0.06); outline-offset:6px; }
-
   </style>
 </head>
 <body>
@@ -138,52 +113,16 @@
 
   <main class="wrap">
     <section aria-label="Work grid" class="grid">
-      <!-- Row 1 -->
-      <a class="tile" href="project.html" aria-label="Where the Light Unfolds">
-        <img src="images/light/light-1.jpg" alt="Where the Light Unfolds" />
-        <div class="label">Where the Light Unfolds</div>
-      </a>
+      <!-- 8 tiles (4 cols × 2 rows). Replace image paths with your actual files -->
+      <a class="tile" href="Ecolodge.html"><img src="images/light/light-1.jpg" alt="Where the Light Unfolds"><div class="label">Where the Light Unfolds</div></a>
+      <a class="tile" href="Ecolodge.html"><img src="images/hero-6.jpg" alt="Eco Lodge"><div class="label">Ecolodge</div></a>
+      <a class="tile" href="#"><img src="images/zero-tower/work-3.jpg" alt="Data Farm"><div class="label">Data Farm</div></a>
+      <a class="tile" href="#"><img src="images/ghana/ghana-3.jpg" alt="Better Half"><div class="label">Better Half</div></a>
 
-      <a class="tile" href="Ecolodge.html" aria-label="Golpayegan Eco Center">
-        <img src="images/hero-6.jpg" alt="Golpayegan Eco Center" />
-        <div class="label">Ecolodge</div>
-      </a>
-
-      <a class="tile" href="#" aria-label="Data Farm">
-        <img src="images/zero-tower/work-3.jpg" alt="Data Farm" />
-        <div class="label">Data Farm</div>
-      </a>
-
-      <a class="tile" href="#" aria-label="Better Half">
-        <img src="images/ghana/ghana-3.jpg" alt="Better Half" />
-        <div class="label">Better Half</div>
-      </a>
-
-      <a class="tile" href="#" aria-label="Yard to Yard">
-        <img src="images/yard/yard-2.jpg" alt="Yard to Yard" />
-        <div class="label">Yard to Yard</div>
-      </a>
-
-      <a class="tile" href="#" aria-label="Rolling Diamond">
-        <img src="images/stadium/hero-4.jpg" alt="Rolling Diamond" />
-        <div class="label">Rolling Diamond</div>
-      </a>
-
-      <!-- Row 3 -->
-      <a class="tile" href="#" aria-label="Social Housing">
-        <img src="images/housing/housing-1.jpg" alt="Social Housing" />
-        <div class="label">Social Housing</div>
-      </a>
-
-      <a class="tile" href="#" aria-label="A House in Yazd">
-        <img src="images/yazd/yazd-1.jpg" alt="A House in Yazd" />
-        <div class="label">A House in Yazd</div>
-      </a>
-
-      <a class="tile" href="#" aria-label="Stone & Fabric Study">
-        <img src="images/work-9.jpg" alt="Stone & Fabric Study" />
-        <div class="label">Stone & Fabric Study</div>
-      </a>
+      <a class="tile" href="#"><img src="images/yard/yard-2.jpg" alt="Yard to Yard"><div class="label">Yard to Yard</div></a>
+      <a class="tile" href="#"><img src="images/stadium/hero-4.jpg" alt="Rolling Diamond"><div class="label">Rolling Diamond</div></a>
+      <a class="tile" href="#"><img src="images/housing/housing-1.jpg" alt="Social Housing"><div class="label">Social Housing</div></a>
+      <a class="tile" href="#"><img src="images/yazd/yazd-1.jpg" alt="A House in Yazd"><div class="label">A House in Yazd</div></a>
     </section>
   </main>
 </body>
