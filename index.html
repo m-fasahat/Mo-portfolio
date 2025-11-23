@@ -1,13 +1,15 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- FAVICON LINK -->
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
     <title>Mohammad Fasahat | Architecture</title>
     <style>
         /* --- CSS VARIABLES --- */
         :root {
+            /* Default Dark Mode */
             --bg-color: #050505;
             --text-primary: #FFFFFF;
             --text-secondary: #AAAAAA;
@@ -16,6 +18,7 @@
         }
 
         body.light-mode {
+            /* Light Mode Overrides */
             --bg-color: #F4F4F4;
             --text-primary: #111111;
             --text-secondary: #666666;
@@ -156,11 +159,10 @@
     </div>
 
     <div class="image-container">
-        <img src="images/asd.png" class="bg-image">
-        <img src="images/hero.jpg" class="bg-image">
-        <img src="images/eco/hero-2.jpg" class="bg-image">
-        <img src="images/yazd/yazd-2.jpg" class="bg-image">
-        <img src="images/housing/housing-1.jpg" class="bg-image">
+        <!-- Replace with your actual hero images if needed -->
+        <img src="images/light/light-1.jpg" class="bg-image">
+        <img src="images/zero-tower/zero-1.jpg" class="bg-image">
+        <img src="images/stadium/hero-4.jpg" class="bg-image">
     </div>
 
     <div class="footer-info">Interact to reveal</div>
@@ -176,14 +178,16 @@
         const body = document.body;
         const images = document.querySelectorAll('.bg-image');
 
-        // --- THEME LOGIC ---
+        // --- THEME LOGIC (FIXED: Stop Propagation) ---
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'light') {
             document.body.classList.add('light-mode');
         }
 
         themeToggle.addEventListener('click', (e) => {
-            e.stopPropagation(); // Stop click from bubbling to canvas
+            // IMPORTANT: Stops click from reaching the window/canvas listener
+            e.stopPropagation(); 
+            
             document.body.classList.toggle('light-mode');
             
             if (document.body.classList.contains('light-mode')) {
@@ -193,7 +197,7 @@
             }
         });
 
-        // --- MOBILE MENU ---
+        // --- MOBILE MENU (FIXED: Stop Propagation) ---
         let isMenuOpen = false;
         mobileBtn.addEventListener('click', (e) => {
             e.stopPropagation(); // Stop bubble
@@ -225,7 +229,9 @@
         // State
         let isHoveringCenter = false;
         let lastImageIndex = -1;
-        const centerZoneRadius = 150; 
+        
+        // Mobile Adjustment: Use a larger zone for touch
+        const centerZoneRadius = window.innerWidth < 768 ? 1000 : 150; 
         let breathTimer = 0; 
 
         class Point {
@@ -257,7 +263,7 @@
             resize();
             points = [];
             // Reduce points on mobile for performance
-            totalPoints = window.innerWidth < 768 ? 50 : 100;
+            totalPoints = window.innerWidth < 768 ? 40 : 80;
             const gap = width / (totalPoints - 1);
             lineY = height * 0.5; 
             for (let i = 0; i < totalPoints; i++) points.push(new Point(i * gap, lineY));
@@ -285,24 +291,27 @@
 
             ctx.clearRect(0, 0, width, height);
             
-            // --- IDLE "TRAVELING SOLITON" (Traveling Bump) ---
-            // If inactive for 3 seconds
-            if (Date.now() - lastInteraction > 3000) {
-                // Slightly faster wave on mobile so it's noticeable
-                waveSpeed = window.innerWidth < 768 ? 0.015 : 0.008;
+            // --- IDLE WAVE LOGIC (Improved for Mobile) ---
+            // Shorter timeout on mobile (2s vs 3s)
+            const timeout = window.innerWidth < 768 ? 2000 : 3000;
+            
+            if (Date.now() - lastInteraction > timeout) {
+                // Faster speed on mobile
+                waveSpeed = window.innerWidth < 768 ? 0.02 : 0.008;
                 wavePosition += waveSpeed;
                 
                 if (wavePosition > 1.5) wavePosition = -0.5;
+
+                // Narrower width on mobile so it fits screen
+                const waveWidth = window.innerWidth < 768 ? 0.3 : 0.15;
 
                 for (let i = 0; i < points.length; i++) {
                     const p = points[i];
                     const normX = i / points.length;
                     const distFromWave = Math.abs(normX - wavePosition);
                     
-                    // Bell Curve Bump
-                    if (distFromWave < 0.15) {
-                        const strength = 1 - (distFromWave / 0.15); 
-                        // Sine shape * Amplitude (60px desktop, 40px mobile)
+                    if (distFromWave < waveWidth) {
+                        const strength = 1 - (distFromWave / waveWidth); 
                         const amp = window.innerWidth < 768 ? 40 : 60;
                         const offset = Math.sin(strength * Math.PI / 2) * amp;
                         p.iy = p.baseIy - offset; 
@@ -318,7 +327,6 @@
             ctx.beginPath();
             ctx.moveTo(points[0].x, points[0].y);
             
-            // Use Quadratic Curve for smoothness
             for (let i = 0; i < points.length - 1; i++) {
                 const p = points[i];
                 const nextP = points[i + 1];
@@ -339,6 +347,17 @@
         }
 
         function checkCenterTrigger(mouseX) {
+            // MOBILE FIX: Always allow triggering if screen is small
+            // Or widen the zone significantly
+            if(window.innerWidth < 768) {
+                 // On mobile, just touching anywhere in the middle half triggers it
+                 if (!isHoveringCenter) {
+                    isHoveringCenter = true;
+                    showRandomImage();
+                 }
+                 return;
+            }
+
             if (isMenuOpen) return;
             const centerX = window.innerWidth / 2;
             const distFromCenter = Math.abs(mouseX - centerX);
@@ -375,11 +394,19 @@
             images.forEach(img => img.classList.remove('active'));
         }
 
-        // --- CLICK ACTION ---
+        // --- CLICK ACTION (FIXED) ---
         window.addEventListener('click', (e) => {
-            // Only navigate if clicking the canvas/background (not nav buttons)
-            // And only if user is hovering the active center zone
-            if(isHoveringCenter && !isMenuOpen && !e.target.closest('nav')) {
+            // 1. Don't trigger if clicking nav items
+            if (e.target.closest('nav')) return;
+            
+            // 2. On Mobile, ANY click on the body goes to Works
+            if (window.innerWidth < 768 && !isMenuOpen) {
+                window.location.href = "works.html";
+                return;
+            }
+
+            // 3. Desktop Logic (Center Zone)
+            if(isHoveringCenter && !isMenuOpen) {
                 window.location.href = "works.html"; 
             }
         });
@@ -393,12 +420,19 @@
             checkCenterTrigger(e.clientX);
         });
         
+        // Touch Logic
+        window.addEventListener('touchstart', (e) => {
+             lastInteraction = Date.now();
+             mouse.x = e.touches[0].clientX;
+             mouse.y = e.touches[0].clientY;
+             checkCenterTrigger(e.touches[0].clientX);
+        }, { passive: false });
+
         window.addEventListener('touchmove', (e) => {
              lastInteraction = Date.now();
              e.preventDefault();
              mouse.x = e.touches[0].clientX;
              mouse.y = e.touches[0].clientY;
-             checkCenterTrigger(e.touches[0].clientX);
         }, { passive: false });
         
         window.addEventListener('touchend', () => {
