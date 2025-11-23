@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- FAVICON LINK -->
-    <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+    <!-- EMBEDDED FAVICON (Crosshair) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><style>@media(prefers-color-scheme:dark){line{stroke:white}}@media(prefers-color-scheme:light){line{stroke:black}}</style><line x1='32' y1='0' x2='32' y2='64' stroke='black' stroke-width='6'/><line x1='0' y1='32' x2='64' y2='32' stroke='black' stroke-width='6'/></svg>">
     <title>Mohammad Fasahat | Architecture</title>
     <style>
         /* --- CSS VARIABLES --- */
@@ -229,8 +229,8 @@
         let isHoveringCenter = false;
         let lastImageIndex = -1;
         
-        // Mobile Adjustment: Center Zone logic handled inside click handler
-        const centerZoneRadius = 150; // Desktop radius
+        // Mobile Adjustment: Desktop Radius
+        const centerZoneRadius = 150; 
         let breathTimer = 0; 
 
         class Point {
@@ -289,8 +289,8 @@
 
             ctx.clearRect(0, 0, width, height);
             
-            // --- IDLE WAVE LOGIC (Improved for Mobile) ---
-            const timeout = window.innerWidth < 768 ? 2000 : 3000;
+            // --- IDLE WAVE LOGIC (6 Seconds Timeout) ---
+            const timeout = 6000; // Changed to 6 seconds as requested
             
             if (Date.now() - lastInteraction > timeout) {
                 waveSpeed = window.innerWidth < 768 ? 0.02 : 0.008;
@@ -342,7 +342,7 @@
         }
 
         function checkCenterTrigger(mouseX) {
-            // On mobile, logic is handled by click, not hover
+            // Desktop only trigger logic
             if(window.innerWidth < 768) return;
 
             if (isMenuOpen) return;
@@ -381,35 +381,35 @@
             images.forEach(img => img.classList.remove('active'));
         }
 
-        // --- CLICK ACTION (Mobile + Desktop) ---
+        // --- CLICK ACTION (Mobile Logic Updated) ---
         window.addEventListener('click', (e) => {
             if (e.target.closest('nav')) return;
             
-            // Mobile Logic
+            // MOBILE LOGIC:
             if (window.innerWidth < 768 && !isMenuOpen) {
                 const centerY = window.innerHeight / 2;
                 const clickY = e.clientY;
-                const zoneHeight = 200; // Center zone height
+                // STRICT CENTER ZONE (200px height)
+                const isCenter = Math.abs(clickY - centerY) < 100; 
 
-                // Check if click is near vertical center
-                if (Math.abs(clickY - centerY) < zoneHeight) {
+                if (isCenter) {
                     if (!isHoveringCenter) {
-                        // First tap: Show Image
+                        // Tap 1: Show Image
                         isHoveringCenter = true;
                         showRandomImage();
                     } else {
-                        // Second tap: Navigate
+                        // Tap 2: Navigate
                         window.location.href = "works.html";
                     }
                 } else {
-                    // Click outside center: Reset (Hide Image)
+                    // Click OUTSIDE center: Hide Image (Reset)
                     isHoveringCenter = false;
                     hideImages();
                 }
                 return;
             }
 
-            // Desktop Logic
+            // DESKTOP LOGIC:
             if(isHoveringCenter && !isMenuOpen) {
                 window.location.href = "works.html"; 
             }
@@ -424,18 +424,9 @@
             checkCenterTrigger(e.clientX);
         });
         
-        window.addEventListener('touchstart', (e) => {
-             lastInteraction = Date.now();
-             mouse.x = e.touches[0].clientX;
-             mouse.y = e.touches[0].clientY;
-             // Don't trigger image on touchstart, wait for click logic
-        }, { passive: false });
-
         window.addEventListener('touchmove', (e) => {
              lastInteraction = Date.now();
-             // Allow scroll unless interacting with line? 
-             // For now allow scroll to be safe
-             // e.preventDefault(); 
+             e.preventDefault();
              mouse.x = e.touches[0].clientX;
              mouse.y = e.touches[0].clientY;
         }, { passive: false });
