@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <style>
+    /* Default to Black stroke */
+    .crosshair { stroke: #000000; stroke-width: 6; stroke-linecap: square; }
+    /* If user's browser/system is Dark Mode, turn White */
+    @media (prefers-color-scheme: dark) { 
+        .crosshair { stroke: #ffffff; } 
+    }
+  </style>
+  
+  <!-- Vertical Line -->
+  <line x1="32" y1="0" x2="32" y2="64" class="crosshair"/>
+  
+  <!-- Horizontal Line -->
+  <line x1="0" y1="32" x2="64" y2="32" class="crosshair"/>
+</svg>
+```
+
+### 2. How to install it
+
+Copy and paste this line into the `<head>` section of **EVERY** HTML file (`index.html`, `works.html`, `about.html`, `data-farm.html`, etc.), right below the `<title>` tag:
+
+```html
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">

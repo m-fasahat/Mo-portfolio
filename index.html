@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mohammad Fasahat | Architecture</title>
@@ -21,6 +22,7 @@
             --line-color: rgba(0, 0, 0, 0.8);
         }
 
+        /* --- BASE --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
@@ -33,25 +35,53 @@
             display: flex;
             flex-direction: column;
             transition: background-color 0.5s ease, color 0.5s ease;
+            /* Prevent pull-to-refresh on mobile */
+            overscroll-behavior: none;
         }
 
-        /* --- NAV (Clean) --- */
+        /* --- NAV --- */
         nav {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 40px 50px; position: fixed; top: 0; width: 100%; z-index: 200;
+            padding: 40px 50px; position: fixed; top: 0; width: 100%; 
+            z-index: 1000; /* Ensure clicks work */
+            pointer-events: none; /* Let clicks pass through empty areas */
         }
-        .brand { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); cursor: pointer; text-decoration: none; }
+        
+        /* Re-enable pointer events for interactive elements */
+        .brand, .nav-right { pointer-events: auto; }
+
+        .brand { 
+            font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; 
+            color: var(--text-primary); cursor: pointer; text-decoration: none;
+        }
         .nav-right { display: flex; align-items: center; gap: 30px; }
+        
         .desktop-menu { display: flex; gap: 25px; }
-        .desktop-menu a { text-decoration: none; color: var(--text-secondary); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s; }
+        .desktop-menu a { 
+            text-decoration: none; color: var(--text-secondary); font-size: 11px; 
+            font-weight: 600; letter-spacing: 1px; text-transform: uppercase; 
+            transition: color 0.3s;
+        }
         .desktop-menu a:hover { color: var(--text-primary); }
-        .mobile-menu-btn { display: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-primary); cursor: pointer; }
-        .theme-toggle { width: 18px; height: 18px; border-radius: 50%; background-color: var(--text-primary); border: 1px solid var(--bg-color); cursor: pointer; transition: transform 0.3s ease; }
+
+        .mobile-menu-btn { 
+            display: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; 
+            text-transform: uppercase; color: var(--text-primary); cursor: pointer; 
+            padding: 10px; /* Increase touch target */
+        }
+        
+        .theme-toggle {
+            width: 18px; height: 18px; border-radius: 50%;
+            background-color: var(--text-primary); border: 1px solid var(--bg-color);
+            cursor: pointer; transition: transform 0.3s ease;
+            position: relative; z-index: 1001;
+        }
         .theme-toggle:hover { transform: scale(1.1); }
 
         /* --- IMAGES --- */
         .image-container {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: 0; pointer-events: none;
         }
         .bg-image {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -62,29 +92,38 @@
         /* --- CANVAS --- */
         canvas {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 10; cursor: crosshair; touch-action: none;
+            z-index: 10; 
+            cursor: crosshair; 
+            touch-action: none;
         }
+        /* Cursor changes when hovering active area */
         canvas.clickable { cursor: pointer; }
 
         .footer-info {
             position: absolute; bottom: 40px; left: 50px;
             font-size: 10px; color: var(--text-secondary);
-            letter-spacing: 1px; text-transform: uppercase; z-index: 100; pointer-events: none;
+            letter-spacing: 1px; text-transform: uppercase; 
+            z-index: 100; pointer-events: none;
         }
 
         /* --- MOBILE OVERLAY --- */
         .mobile-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--bg-color); z-index: 150;
+            background-color: var(--bg-color); z-index: 500; /* Below Nav */
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
         }
         .mobile-overlay.active { opacity: 1; pointer-events: all; }
-        .mobile-links a { display: block; font-size: 24px; color: var(--text-primary); text-decoration: none; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; text-align: center; }
+        .mobile-links a {
+            display: block; font-size: 24px; color: var(--text-primary);
+            text-decoration: none; text-transform: uppercase; letter-spacing: 2px;
+            margin-bottom: 30px; text-align: center;
+        }
 
         @media (max-width: 768px) {
             nav { padding: 25px 20px; }
-            .desktop-menu { display: none; } .mobile-menu-btn { display: block; }
+            .desktop-menu { display: none; }
+            .mobile-menu-btn { display: block; }
             .footer-info { left: 20px; bottom: 30px; }
         }
     </style>
@@ -93,12 +132,17 @@
 
     <nav>
         <a href="index.html" class="brand">Mohammad Fasahat</a>
+        
         <div class="nav-right">
             <div class="desktop-menu">
                 <a href="works.html">Work</a>
                 <a href="about.html">About</a>
             </div>
+            
+            <!-- Theme Toggle Button -->
             <div class="theme-toggle" id="themeToggle"></div>
+            
+            <!-- Mobile Menu Button -->
             <div class="mobile-menu-btn" id="mobileBtn">MENU</div>
         </div>
     </nav>
@@ -112,8 +156,8 @@
     </div>
 
     <div class="image-container">
-        <img src="images/hero-1.jpg" class="bg-image">
-        <img src="images/hero-5.jpg" class="bg-image">
+        <img src="images/asd.png" class="bg-image">
+        <img src="images/hero.jpg" class="bg-image">
         <img src="images/eco/hero-2.jpg" class="bg-image">
         <img src="images/yazd/yazd-2.jpg" class="bg-image">
         <img src="images/housing/housing-1.jpg" class="bg-image">
@@ -132,19 +176,27 @@
         const body = document.body;
         const images = document.querySelectorAll('.bg-image');
 
-        // --- THEME MEMORY ---
+        // --- THEME LOGIC ---
         const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'light') document.body.classList.add('light-mode');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+        }
 
-        themeToggle.addEventListener('click', () => {
+        themeToggle.addEventListener('click', (e) => {
+            e.stopPropagation(); // Stop click from bubbling to canvas
             document.body.classList.toggle('light-mode');
-            if (document.body.classList.contains('light-mode')) localStorage.setItem('theme', 'light');
-            else localStorage.setItem('theme', 'dark');
+            
+            if (document.body.classList.contains('light-mode')) {
+                localStorage.setItem('theme', 'light');
+            } else {
+                localStorage.setItem('theme', 'dark');
+            }
         });
 
-        // Mobile Menu
+        // --- MOBILE MENU ---
         let isMenuOpen = false;
-        mobileBtn.addEventListener('click', () => {
+        mobileBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Stop bubble
             isMenuOpen = !isMenuOpen;
             if(isMenuOpen) {
                 mobileOverlay.classList.add('active');
@@ -155,18 +207,20 @@
             }
         });
 
-        // --- PHYSICS & WAVE VARS ---
+        // --- CANVAS VARS ---
         let width, height;
         let points = [];
         let totalPoints = 80; 
-        const mouseDist = 200; const damping = 0.06; const spring = 0.04; const pushForce = 4; 
+        const mouseDist = 200; 
+        const damping = 0.06; 
+        const spring = 0.04; 
+        const pushForce = 4; 
         let lineY = 0;
+        
         let mouse = { x: -1000, y: -1000 };
-
-        // Idle Wave Variables
         let lastInteraction = Date.now();
-        let wavePosition = -0.2; // Start off screen left
-        let waveSpeed = 0.008; // Speed of travel
+        let wavePosition = -0.2;
+        let waveSpeed = 0.008;
 
         // State
         let isHoveringCenter = false;
@@ -176,21 +230,23 @@
 
         class Point {
             constructor(x, y) {
-                this.x = x; this.baseIy = y; this.iy = y; this.y = y; this.vy = 0;
+                this.x = x; 
+                this.baseIy = y; 
+                this.iy = y;     
+                this.y = y;      
+                this.vy = 0;
             }
             update() {
                 let forceY = (this.y - this.iy) * spring;
-                
-                // Mouse Physics
                 let dx = mouse.x - this.x;
                 let dy = mouse.y - this.y;
                 let dist = Math.sqrt(dx * dx + dy * dy);
+                
                 if (dist < mouseDist) {
                     const force = (mouseDist - dist) / mouseDist;
                     const dir = dy < 0 ? -1 : 1; 
                     this.vy -= force * dir * pushForce; 
                 }
-                
                 this.vy -= forceY;
                 this.vy *= (1 - damping);
                 this.y += this.vy;
@@ -200,15 +256,25 @@
         function init() {
             resize();
             points = [];
-            totalPoints = window.innerWidth < 768 ? 40 : 80;
+            // Reduce points on mobile for performance
+            totalPoints = window.innerWidth < 768 ? 50 : 100;
             const gap = width / (totalPoints - 1);
             lineY = height * 0.5; 
             for (let i = 0; i < totalPoints; i++) points.push(new Point(i * gap, lineY));
         }
 
         function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
+            // Handle High DPI Screens (Retina / Modern Phones)
+            const dpr = window.devicePixelRatio || 1;
+            width = window.innerWidth;
+            height = window.innerHeight;
+            
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            ctx.scale(dpr, dpr);
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+
             lineY = height * 0.5;
             if(points.length > 0) points.forEach(p => { p.baseIy = lineY; p.iy = lineY; });
         }
@@ -219,43 +285,40 @@
 
             ctx.clearRect(0, 0, width, height);
             
-            // --- IDLE "TRAVELING PULSE" LOGIC ---
+            // --- IDLE "TRAVELING SOLITON" (Traveling Bump) ---
+            // If inactive for 3 seconds
             if (Date.now() - lastInteraction > 3000) {
+                // Slightly faster wave on mobile so it's noticeable
+                waveSpeed = window.innerWidth < 768 ? 0.015 : 0.008;
                 wavePosition += waveSpeed;
                 
-                // Loop the wave with a pause
-                if (wavePosition > 1.5) { // 1.5 means it went off screen right
-                    wavePosition = -0.5; // Reset to left with a delay
-                }
+                if (wavePosition > 1.5) wavePosition = -0.5;
 
-                // Update Points for the Wave
                 for (let i = 0; i < points.length; i++) {
                     const p = points[i];
-                    // Normalized X position of this point (0 to 1)
                     const normX = i / points.length;
-                    
-                    // Calculate distance from the traveling wave center
                     const distFromWave = Math.abs(normX - wavePosition);
                     
-                    // Create a Gaussian Bump (Bell Curve)
-                    // Width of 0.15 means the wave is about 15% of screen width
+                    // Bell Curve Bump
                     if (distFromWave < 0.15) {
-                        const strength = 1 - (distFromWave / 0.15); // 0 to 1
-                        // Use Sine for smooth curve * Max Height (60px)
-                        const offset = Math.sin(strength * Math.PI / 2) * 60;
-                        p.iy = p.baseIy - offset; // Move Up
+                        const strength = 1 - (distFromWave / 0.15); 
+                        // Sine shape * Amplitude (60px desktop, 40px mobile)
+                        const amp = window.innerWidth < 768 ? 40 : 60;
+                        const offset = Math.sin(strength * Math.PI / 2) * amp;
+                        p.iy = p.baseIy - offset; 
                     } else {
                         p.iy = p.baseIy;
                     }
                 }
             } else {
-                // Reset to flat if user is active
                 points.forEach(p => p.iy = p.baseIy);
             }
 
             // Draw Line
             ctx.beginPath();
             ctx.moveTo(points[0].x, points[0].y);
+            
+            // Use Quadratic Curve for smoothness
             for (let i = 0; i < points.length - 1; i++) {
                 const p = points[i];
                 const nextP = points[i + 1];
@@ -267,24 +330,10 @@
             const last = points[points.length-1];
             last.update();
             ctx.lineTo(last.x, last.y);
+            
             ctx.strokeStyle = lineColor;
             ctx.lineWidth = 1.5;
             ctx.stroke();
-
-            // --- CENTER DOT (Interactive Hint) ---
-            if (!isHoveringCenter && (Date.now() - lastInteraction < 3000)) {
-                breathTimer += 0.05;
-                const alpha = (Math.sin(breathTimer) + 1) / 2 * 0.6 + 0.2; 
-                let centerP = points[Math.floor(points.length/2)];
-                if(centerP) {
-                    ctx.fillStyle = lineColor;
-                    ctx.globalAlpha = alpha;
-                    ctx.beginPath();
-                    ctx.arc(centerP.x, centerP.y, 3, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.globalAlpha = 1.0; 
-                }
-            }
 
             requestAnimationFrame(animate);
         }
@@ -312,10 +361,12 @@
         function showRandomImage() {
             images.forEach(img => img.classList.remove('active'));
             if(images.length === 0) return;
+            
             let newIndex;
             do {
                 newIndex = Math.floor(Math.random() * images.length);
             } while (newIndex === lastImageIndex && images.length > 1);
+            
             lastImageIndex = newIndex;
             images[newIndex].classList.add('active');
         }
@@ -324,14 +375,19 @@
             images.forEach(img => img.classList.remove('active'));
         }
 
-        window.addEventListener('click', () => {
-            if(isHoveringCenter && !isMenuOpen) window.location.href = "works.html"; 
+        // --- CLICK ACTION ---
+        window.addEventListener('click', (e) => {
+            // Only navigate if clicking the canvas/background (not nav buttons)
+            // And only if user is hovering the active center zone
+            if(isHoveringCenter && !isMenuOpen && !e.target.closest('nav')) {
+                window.location.href = "works.html"; 
+            }
         });
 
         window.addEventListener('resize', () => { resize(); init(); });
         
         window.addEventListener('mousemove', (e) => {
-            lastInteraction = Date.now();
+            lastInteraction = Date.now(); 
             mouse.x = e.clientX;
             mouse.y = e.clientY;
             checkCenterTrigger(e.clientX);
