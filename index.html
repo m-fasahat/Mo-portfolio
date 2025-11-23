@@ -9,7 +9,6 @@
     <style>
         /* --- CSS VARIABLES --- */
         :root {
-            /* Default Dark Mode */
             --bg-color: #050505;
             --text-primary: #FFFFFF;
             --text-secondary: #AAAAAA;
@@ -18,14 +17,12 @@
         }
 
         body.light-mode {
-            /* Light Mode Overrides */
             --bg-color: #F4F4F4;
             --text-primary: #111111;
             --text-secondary: #666666;
             --line-color: rgba(0, 0, 0, 0.8);
         }
 
-        /* --- BASE --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
@@ -38,7 +35,6 @@
             display: flex;
             flex-direction: column;
             transition: background-color 0.5s ease, color 0.5s ease;
-            /* Prevent pull-to-refresh on mobile */
             overscroll-behavior: none;
         }
 
@@ -50,7 +46,6 @@
             pointer-events: none; /* Let clicks pass through empty areas */
         }
         
-        /* Re-enable pointer events for interactive elements */
         .brand, .nav-right { pointer-events: auto; }
 
         .brand { 
@@ -70,7 +65,7 @@
         .mobile-menu-btn { 
             display: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; 
             text-transform: uppercase; color: var(--text-primary); cursor: pointer; 
-            padding: 10px; /* Increase touch target */
+            padding: 10px; 
         }
         
         .theme-toggle {
@@ -88,18 +83,15 @@
         }
         .bg-image {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; opacity: 0; transition: opacity 0.8s ease-in-out;
+            object-fit: cover; opacity: 0; transition: opacity 0.5s ease-in-out;
         }
         .bg-image.active { opacity: 0.5; }
 
         /* --- CANVAS --- */
         canvas {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 10; 
-            cursor: crosshair; 
-            touch-action: none;
+            z-index: 10; cursor: crosshair; touch-action: none;
         }
-        /* Cursor changes when hovering active area */
         canvas.clickable { cursor: pointer; }
 
         .footer-info {
@@ -112,7 +104,7 @@
         /* --- MOBILE OVERLAY --- */
         .mobile-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--bg-color); z-index: 500; /* Below Nav */
+            background-color: var(--bg-color); z-index: 500;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
         }
@@ -135,17 +127,12 @@
 
     <nav>
         <a href="index.html" class="brand">Mohammad Fasahat</a>
-        
         <div class="nav-right">
             <div class="desktop-menu">
                 <a href="works.html">Work</a>
                 <a href="about.html">About</a>
             </div>
-            
-            <!-- Theme Toggle Button -->
             <div class="theme-toggle" id="themeToggle"></div>
-            
-            <!-- Mobile Menu Button -->
             <div class="mobile-menu-btn" id="mobileBtn">MENU</div>
         </div>
     </nav>
@@ -176,7 +163,6 @@
         const themeToggle = document.getElementById('themeToggle');
         const mobileBtn = document.getElementById('mobileBtn');
         const mobileOverlay = document.getElementById('mobileOverlay');
-        const body = document.body;
         const images = document.querySelectorAll('.bg-image');
 
         // --- THEME LOGIC ---
@@ -186,7 +172,7 @@
         }
 
         themeToggle.addEventListener('click', (e) => {
-            e.stopPropagation(); // Stop click from bubbling
+            e.stopPropagation(); // Essential: Stops click from reaching canvas
             document.body.classList.toggle('light-mode');
             
             if (document.body.classList.contains('light-mode')) {
@@ -199,7 +185,7 @@
         // --- MOBILE MENU ---
         let isMenuOpen = false;
         mobileBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); 
+            e.stopPropagation(); // Essential
             isMenuOpen = !isMenuOpen;
             if(isMenuOpen) {
                 mobileOverlay.classList.add('active');
@@ -214,32 +200,29 @@
         let width, height;
         let points = [];
         let totalPoints = 80; 
-        const mouseDist = 200; 
-        const damping = 0.06; 
-        const spring = 0.04; 
-        const pushForce = 4; 
+        const mouseDist = 200; const damping = 0.06; const spring = 0.04; const pushForce = 4; 
         let lineY = 0;
-        
         let mouse = { x: -1000, y: -1000 };
+        
+        // Interaction State
+        let isHoveringCenter = false;
+        let lastImageIndex = -1;
+        let centerZoneRadius = 150; // Desktop hover radius
+        let breathTimer = 0; 
+        
+        // Idle Wave
         let lastInteraction = Date.now();
         let wavePosition = -0.2;
         let waveSpeed = 0.008;
 
-        // State
-        let isHoveringCenter = false;
-        let lastImageIndex = -1;
-        
-        // Mobile: Larger Center Zone
-        const centerZoneRadius = 150; 
-        let breathTimer = 0; 
+        // Touch State
+        let touchStartY = 0;
+        let touchStartX = 0;
+        let isTap = false;
 
         class Point {
             constructor(x, y) {
-                this.x = x; 
-                this.baseIy = y; 
-                this.iy = y;     
-                this.y = y;      
-                this.vy = 0;
+                this.x = x; this.baseIy = y; this.iy = y; this.y = y; this.vy = 0;
             }
             update() {
                 let forceY = (this.y - this.iy) * spring;
@@ -271,13 +254,11 @@
             const dpr = window.devicePixelRatio || 1;
             width = window.innerWidth;
             height = window.innerHeight;
-            
             canvas.width = width * dpr;
             canvas.height = height * dpr;
             ctx.scale(dpr, dpr);
             canvas.style.width = width + 'px';
             canvas.style.height = height + 'px';
-
             lineY = height * 0.5;
             if(points.length > 0) points.forEach(p => { p.baseIy = lineY; p.iy = lineY; });
         }
@@ -285,42 +266,34 @@
         function animate() {
             const style = getComputedStyle(document.body);
             const lineColor = style.getPropertyValue('--line-color').trim();
-
             ctx.clearRect(0, 0, width, height);
             
-            // --- IDLE WAVE LOGIC (6 Seconds) ---
-            const timeout = 6000; 
-            
+            // Idle Wave (6 Seconds)
+            const timeout = 6000;
             if (Date.now() - lastInteraction > timeout) {
                 waveSpeed = window.innerWidth < 768 ? 0.02 : 0.008;
                 wavePosition += waveSpeed;
-                
                 if (wavePosition > 1.5) wavePosition = -0.5;
-
                 const waveWidth = window.innerWidth < 768 ? 0.3 : 0.15;
 
                 for (let i = 0; i < points.length; i++) {
                     const p = points[i];
                     const normX = i / points.length;
                     const distFromWave = Math.abs(normX - wavePosition);
-                    
                     if (distFromWave < waveWidth) {
                         const strength = 1 - (distFromWave / waveWidth); 
                         const amp = window.innerWidth < 768 ? 40 : 60;
                         const offset = Math.sin(strength * Math.PI / 2) * amp;
                         p.iy = p.baseIy - offset; 
-                    } else {
-                        p.iy = p.baseIy;
-                    }
+                    } else { p.iy = p.baseIy; }
                 }
             } else {
                 points.forEach(p => p.iy = p.baseIy);
             }
 
-            // Draw Line
+            // Draw
             ctx.beginPath();
             ctx.moveTo(points[0].x, points[0].y);
-            
             for (let i = 0; i < points.length - 1; i++) {
                 const p = points[i];
                 const nextP = points[i + 1];
@@ -340,15 +313,41 @@
             requestAnimationFrame(animate);
         }
 
-        function checkCenterTrigger(mouseX) {
-            // DESKTOP ONLY (Hover)
-            if(window.innerWidth < 768) return;
+        // --- HELPER FUNCTIONS ---
+        function showRandomImage() {
+            images.forEach(img => img.classList.remove('active'));
+            if(images.length === 0) return;
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * images.length);
+            } while (newIndex === lastImageIndex && images.length > 1);
+            lastImageIndex = newIndex;
+            images[newIndex].classList.add('active');
+        }
 
+        function hideImages() {
+            images.forEach(img => img.classList.remove('active'));
+        }
+
+        function triggerPhysicsRipple(x, y) {
+             mouse.x = x;
+             mouse.y = y;
+             setTimeout(() => { mouse.x = -1000; mouse.y = -1000; }, 100);
+        }
+
+        // --- DESKTOP MOUSE LOGIC ---
+        // Only active if screen width > 768
+        window.addEventListener('mousemove', (e) => {
+            if(window.innerWidth < 768) return; // Disable mouse logic on mobile
+            
+            lastInteraction = Date.now(); 
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+            
+            // Hover check
             if (isMenuOpen) return;
             const centerX = window.innerWidth / 2;
-            const distFromCenter = Math.abs(mouseX - centerX);
-            
-            if (distFromCenter < centerZoneRadius) {
+            if (Math.abs(e.clientX - centerX) < centerZoneRadius) {
                 if (!isHoveringCenter) {
                     isHoveringCenter = true;
                     showRandomImage();
@@ -361,119 +360,78 @@
                     canvas.classList.remove('clickable');
                 }
             }
-        }
-
-        function showRandomImage() {
-            images.forEach(img => img.classList.remove('active'));
-            if(images.length === 0) return;
-            
-            let newIndex;
-            do {
-                newIndex = Math.floor(Math.random() * images.length);
-            } while (newIndex === lastImageIndex && images.length > 1);
-            
-            lastImageIndex = newIndex;
-            images[newIndex].classList.add('active');
-        }
-
-        function hideImages() {
-            images.forEach(img => img.classList.remove('active'));
-        }
-
-        function triggerMobilePulse(x, y) {
-             // Manually set mouse position to touch point to trigger physics update
-             mouse.x = x;
-             mouse.y = y;
-             // Reset after short delay to let spring physics settle
-             setTimeout(() => {
-                 mouse.x = -1000;
-                 mouse.y = -1000;
-             }, 100);
-        }
-
-        // --- DESKTOP CLICK ---
-        window.addEventListener('click', (e) => {
-             // Skip if mobile (handled by touchend) or nav click
-             if (window.innerWidth < 768 || e.target.closest('nav')) return;
-             
-             if(isHoveringCenter && !isMenuOpen) {
-                window.location.href = "works.html"; 
-             }
         });
 
-        // --- MOBILE TOUCH INTERACTION ---
-        let touchStartTime = 0;
-        let touchStartY = 0;
+        window.addEventListener('click', (e) => {
+            // Skip if clicking nav or mobile
+            if (e.target.closest('nav')) return;
+            if (window.innerWidth < 768) return; // Mobile handled by touchend
 
+            if(isHoveringCenter && !isMenuOpen) {
+                window.location.href = "works.html"; 
+            }
+        });
+
+        // --- MOBILE TOUCH LOGIC (THE FIX) ---
         window.addEventListener('touchstart', (e) => {
-             if (e.target.closest('nav')) return; // Ignore nav taps
-             
+             if (e.target.closest('nav')) return;
              lastInteraction = Date.now();
-             touchStartTime = Date.now();
+             touchStartX = e.touches[0].clientX;
              touchStartY = e.touches[0].clientY;
-             
-             // Update physics position (Visual ripple only)
-             mouse.x = e.touches[0].clientX;
-             mouse.y = e.touches[0].clientY;
+             isTap = true; // Assume tap initially
         }, { passive: false });
 
         window.addEventListener('touchmove', (e) => {
              lastInteraction = Date.now();
+             // If user moves finger more than 10px, it's a scroll/swipe, not a tap
+             if (Math.abs(e.touches[0].clientY - touchStartY) > 10 || 
+                 Math.abs(e.touches[0].clientX - touchStartX) > 10) {
+                 isTap = false;
+             }
+             // Visual Physics ripple while dragging
              mouse.x = e.touches[0].clientX;
              mouse.y = e.touches[0].clientY;
         }, { passive: false });
 
         window.addEventListener('touchend', (e) => {
              lastInteraction = Date.now();
-             const touchEndTime = Date.now();
-             const touchEndY = e.changedTouches[0].clientY;
-             
-             // 1. Check if it was a TAP (short time, little movement)
-             const timeDiff = touchEndTime - touchStartTime;
-             const distDiff = Math.abs(touchEndY - touchStartY);
-             
-             if (timeDiff < 300 && distDiff < 20) {
-                 // It was a tap!
-                 
-                 // Check if tap is in CENTER ZONE
-                 const centerY = window.innerHeight / 2;
-                 // Zone height: 200px total (100 up/down)
-                 const isCenter = Math.abs(touchEndY - centerY) < 100; 
+             // Reset physics mouse
+             mouse.x = -1000; mouse.y = -1000;
 
-                 if (isCenter) {
-                     if (!isHoveringCenter) {
-                         // First Tap: Fade In Image
-                         isHoveringCenter = true;
-                         showRandomImage();
-                     } else {
-                         // Second Tap: Navigate
-                         window.location.href = "works.html";
-                     }
+             if (!isTap) return; // It was a scroll/swipe
+
+             // TOUCH LOGIC:
+             const touchY = e.changedTouches[0].clientY;
+             const centerY = window.innerHeight / 2;
+             // Zone: Middle 30% of screen
+             const zoneHeight = window.innerHeight * 0.3; 
+             const isCenter = Math.abs(touchY - centerY) < (zoneHeight / 2);
+
+             if (isCenter) {
+                 // Center Tap
+                 if (!isHoveringCenter) {
+                     // State 1: Show Image
+                     isHoveringCenter = true;
+                     showRandomImage();
+                     triggerPhysicsRipple(e.changedTouches[0].clientX, touchY);
                  } else {
-                     // Tapped OUTSIDE center
-                     // Reset Image (Fade Out)
+                     // State 2: Navigate
+                     window.location.href = "works.html";
+                 }
+             } else {
+                 // Outside Tap
+                 if (isHoveringCenter) {
+                     // Hide Image
                      isHoveringCenter = false;
                      hideImages();
-                     
-                     // Add a physics ripple where they tapped
-                     triggerMobilePulse(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
                  }
+                 // Always ripple physics
+                 triggerPhysicsRipple(e.changedTouches[0].clientX, touchY);
              }
-
-             // Reset physics mouse
-             mouse.x = -1000; 
-             mouse.y = -1000;
         });
 
         window.addEventListener('resize', () => { resize(); init(); });
         
-        window.addEventListener('mousemove', (e) => {
-            lastInteraction = Date.now(); 
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
-            checkCenterTrigger(e.clientX);
-        });
-
         init();
         animate();
     </script>
