@@ -159,7 +159,6 @@
     </div>
 
     <div class="image-container">
-        <!-- Corrected Image List -->
         <img src="images/hero-1.jpg" class="bg-image">
         <img src="images/hero-5.jpg" class="bg-image">
         <img src="images/eco/hero-2.jpg" class="bg-image">
@@ -187,7 +186,7 @@
         }
 
         themeToggle.addEventListener('click', (e) => {
-            e.stopPropagation(); 
+            e.stopPropagation(); // Stop click from bubbling
             document.body.classList.toggle('light-mode');
             
             if (document.body.classList.contains('light-mode')) {
@@ -230,7 +229,7 @@
         let isHoveringCenter = false;
         let lastImageIndex = -1;
         
-        // Mobile Adjustment: Desktop Radius
+        // Mobile: Larger Center Zone
         const centerZoneRadius = 150; 
         let breathTimer = 0; 
 
@@ -262,7 +261,6 @@
         function init() {
             resize();
             points = [];
-            // Reduce points on mobile for performance
             totalPoints = window.innerWidth < 768 ? 50 : 100;
             const gap = width / (totalPoints - 1);
             lineY = height * 0.5; 
@@ -290,11 +288,10 @@
 
             ctx.clearRect(0, 0, width, height);
             
-            // --- IDLE WAVE LOGIC (6 Seconds Timeout) ---
+            // --- IDLE WAVE LOGIC (6 Seconds) ---
             const timeout = 6000; 
             
             if (Date.now() - lastInteraction > timeout) {
-                // Always run wave if idle
                 waveSpeed = window.innerWidth < 768 ? 0.02 : 0.008;
                 wavePosition += waveSpeed;
                 
@@ -344,7 +341,7 @@
         }
 
         function checkCenterTrigger(mouseX) {
-            // Desktop Only trigger logic
+            // DESKTOP ONLY (Hover)
             if(window.innerWidth < 768) return;
 
             if (isMenuOpen) return;
@@ -383,38 +380,89 @@
             images.forEach(img => img.classList.remove('active'));
         }
 
-        // --- CLICK ACTION (Mobile Logic Adjusted) ---
+        function triggerMobilePulse(x, y) {
+             // Manually set mouse position to touch point to trigger physics update
+             mouse.x = x;
+             mouse.y = y;
+             // Reset after short delay to let spring physics settle
+             setTimeout(() => {
+                 mouse.x = -1000;
+                 mouse.y = -1000;
+             }, 100);
+        }
+
+        // --- DESKTOP CLICK ---
         window.addEventListener('click', (e) => {
-            if (e.target.closest('nav')) return;
-            
-            // MOBILE LOGIC:
-            if (window.innerWidth < 768 && !isMenuOpen) {
-                const centerY = window.innerHeight / 2;
-                const clickY = e.clientY;
-                // STRICT CENTER ZONE (200px height)
-                const isCenter = Math.abs(clickY - centerY) < 100; 
-
-                if (isCenter) {
-                    if (!isHoveringCenter) {
-                        // Tap 1: Show Image
-                        isHoveringCenter = true;
-                        showRandomImage();
-                    } else {
-                        // Tap 2: Navigate
-                        window.location.href = "works.html";
-                    }
-                } else {
-                    // Click OUTSIDE center: Hide Image (Reset)
-                    isHoveringCenter = false;
-                    hideImages();
-                }
-                return;
-            }
-
-            // DESKTOP LOGIC:
-            if(isHoveringCenter && !isMenuOpen) {
+             // Skip if mobile (handled by touchend) or nav click
+             if (window.innerWidth < 768 || e.target.closest('nav')) return;
+             
+             if(isHoveringCenter && !isMenuOpen) {
                 window.location.href = "works.html"; 
-            }
+             }
+        });
+
+        // --- MOBILE TOUCH INTERACTION ---
+        let touchStartTime = 0;
+        let touchStartY = 0;
+
+        window.addEventListener('touchstart', (e) => {
+             if (e.target.closest('nav')) return; // Ignore nav taps
+             
+             lastInteraction = Date.now();
+             touchStartTime = Date.now();
+             touchStartY = e.touches[0].clientY;
+             
+             // Update physics position (Visual ripple only)
+             mouse.x = e.touches[0].clientX;
+             mouse.y = e.touches[0].clientY;
+        }, { passive: false });
+
+        window.addEventListener('touchmove', (e) => {
+             lastInteraction = Date.now();
+             mouse.x = e.touches[0].clientX;
+             mouse.y = e.touches[0].clientY;
+        }, { passive: false });
+
+        window.addEventListener('touchend', (e) => {
+             lastInteraction = Date.now();
+             const touchEndTime = Date.now();
+             const touchEndY = e.changedTouches[0].clientY;
+             
+             // 1. Check if it was a TAP (short time, little movement)
+             const timeDiff = touchEndTime - touchStartTime;
+             const distDiff = Math.abs(touchEndY - touchStartY);
+             
+             if (timeDiff < 300 && distDiff < 20) {
+                 // It was a tap!
+                 
+                 // Check if tap is in CENTER ZONE
+                 const centerY = window.innerHeight / 2;
+                 // Zone height: 200px total (100 up/down)
+                 const isCenter = Math.abs(touchEndY - centerY) < 100; 
+
+                 if (isCenter) {
+                     if (!isHoveringCenter) {
+                         // First Tap: Fade In Image
+                         isHoveringCenter = true;
+                         showRandomImage();
+                     } else {
+                         // Second Tap: Navigate
+                         window.location.href = "works.html";
+                     }
+                 } else {
+                     // Tapped OUTSIDE center
+                     // Reset Image (Fade Out)
+                     isHoveringCenter = false;
+                     hideImages();
+                     
+                     // Add a physics ripple where they tapped
+                     triggerMobilePulse(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+                 }
+             }
+
+             // Reset physics mouse
+             mouse.x = -1000; 
+             mouse.y = -1000;
         });
 
         window.addEventListener('resize', () => { resize(); init(); });
@@ -424,26 +472,6 @@
             mouse.x = e.clientX;
             mouse.y = e.clientY;
             checkCenterTrigger(e.clientX);
-        });
-        
-        // Touch Start: Just update position for physics (no trigger)
-        window.addEventListener('touchstart', (e) => {
-             lastInteraction = Date.now();
-             mouse.x = e.touches[0].clientX;
-             mouse.y = e.touches[0].clientY;
-        }, { passive: false });
-
-        // Touch Move: Update physics
-        window.addEventListener('touchmove', (e) => {
-             lastInteraction = Date.now();
-             e.preventDefault();
-             mouse.x = e.touches[0].clientX;
-             mouse.y = e.touches[0].clientY;
-        }, { passive: false });
-        
-        window.addEventListener('touchend', () => {
-             lastInteraction = Date.now();
-             mouse.x = -1000; mouse.y = -1000;
         });
 
         init();
