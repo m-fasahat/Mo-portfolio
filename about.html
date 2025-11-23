@@ -1,32 +1,28 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FAVICON LINK -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><style>@media(prefers-color-scheme:dark){line{stroke:white}}@media(prefers-color-scheme:light){line{stroke:black}}</style><line x1='32' y1='0' x2='32' y2='64' stroke='black' stroke-width='6'/><line x1='0' y1='32' x2='64' y2='32' stroke='black' stroke-width='6'/></svg>">
     <title>Mohammad Fasahat | Profile</title>
     <style>
         /* --- SHARED VARIABLES --- */
         :root {
+            --bg-color: #ffffff; 
+            --text-primary: #000000;
+            --text-secondary: #555555;
+            --line-color: rgba(0, 0, 0, 0.15);
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        /* DEFAULT DARK MODE */
+        body {
             --bg-color: #050505;
             --text-primary: #FFFFFF;
             --text-secondary: #888888;
             --line-color: rgba(255, 255, 255, 0.2);
-            --active-line-color: #FFFFFF;
-            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        }
-
-        body.light-mode {
-            --bg-color: #F4F4F4;
-            --text-primary: #111111;
-            --text-secondary: #666666;
-            --line-color: rgba(0, 0, 0, 0.15);
-            --active-line-color: #000000;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
+            
             background-color: var(--bg-color);
             color: var(--text-primary);
             font-family: var(--font-main);
@@ -36,14 +32,21 @@
             cursor: crosshair;
         }
 
+        /* LIGHT MODE */
+        body.light-mode {
+            --bg-color: #FFFFFF;
+            --text-primary: #111111;
+            --text-secondary: #555555;
+            --line-color: rgba(0, 0, 0, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         a, button, .theme-toggle, .mobile-menu-btn { cursor: pointer; }
 
         /* --- NAV --- */
         nav {
             display: flex; justify-content: space-between; align-items: center;
             padding: 40px 50px; position: fixed; top: 0; width: 100%; z-index: 200;
-            background: var(--bg-color);
-            transition: background-color 0.5s ease;
         }
         .brand { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); text-decoration: none; }
         .nav-right { display: flex; align-items: center; gap: 30px; }
@@ -85,9 +88,10 @@
         /* LEFT: TEXT */
         .text-block { max-width: 480px; }
         
+        /* BIO */
         .bio { 
-            font-size: 13px; line-height: 1.7; color: var(--text-primary); 
-            text-align: left; margin-bottom: 40px;
+            font-size: 14px; line-height: 1.6; color: var(--text-primary); 
+            text-align: left; margin-bottom: 50px;
         }
         .bio p { margin-bottom: 20px; }
         .bio strong { font-weight: 600; color: var(--text-primary); }
@@ -170,20 +174,24 @@
     <div class="content-wrapper">
         <div class="grid-layout">
             
+            <!-- LEFT: TEXT -->
             <div class="text-block">
+                <!-- UPDATED BIO: Simple, Modest, Factual -->
                 <div class="bio">
                     <p>
-                        <strong>Mohammad Fasahat</strong> is an architectural designer and technologist based in Charlotte, NC. His work bridges the gap between technical documentation and high-fidelity narrative visualization.
+                        Mohammad Fasahat is an architectural designer and technologist based in Charlotte, NC. He holds a Master of Architecture from UNCC and has practiced with firms including Little and NBBJ, contributing to projects across the United States.
                     </p>
                     <p>
-                        Currently at <strong>Little Diversified Architectural Consulting</strong>, he works within the Mixed-Use Studio, leading R&D initiatives to integrate AI workflows into traditional design processes. He holds a Master of Architecture from <strong>UNCC</strong>, where he served as a research assistant at the Integrated Design Research Lab.
+                        He has also served as a guest critic for university studios and presented on narrative visualization methods. His design work has been recognized internationally, being selected in a couple of competitions.
                     </p>
                 </div>
 
+                <!-- RHYTHM LINE -->
                 <div class="divider-container">
                     <canvas id="divider-canvas"></canvas>
                 </div>
 
+                <!-- INFO -->
                 <div class="info-grid">
                     <div>
                         <span class="info-label">Connect</span>
@@ -191,22 +199,25 @@
                         <a href="#" class="list-item">LinkedIn</a>
                         <a href="#" class="list-item">Instagram</a>
                         
+                        <!-- RESUME DOWNLOAD -->
                         <div style="margin-top: 20px;">
                             <span class="info-label" style="margin-bottom: 10px;">Resume</span>
-                            <a href="documents/Mohammad_Fasahat_CV.pdf" target="_blank" class="download-link">Download PDF ↓</a>
+                            <a href="images/Mohammad_Fasahat_CV.pdf" target="_blank" class="download-link">Download PDF ↓</a>
                         </div>
                     </div>
                     
                     <div>
                         <span class="info-label">Practice</span>
-                        <span class="list-item">Architecture</span>
+                        <span class="list-item">Architectural Design</span>
                         <span class="list-item">Visualization</span>
                         <span class="list-item">Design Tech</span>
                     </div>
                 </div>
             </div>
 
+            <!-- RIGHT: IMAGE -->
             <div class="image-block">
+                <!-- Using the Black Shirt photo -->
                 <img src="images/my-portrait.jpg" class="portrait" alt="Mohammad Fasahat">
             </div>
 
@@ -302,20 +313,15 @@
             const activeColor = style.getPropertyValue('--active-line-color').trim();
 
             ctx.clearRect(0, 0, width, height);
-            
             ctx.beginPath();
             ctx.moveTo(points[0].x, points[0].y);
 
-            // Check interaction for color change
             let interacting = false;
-            
             for (let i = 0; i < points.length - 1; i++) {
                 const p = points[i];
                 const nextP = points[i + 1];
                 p.update();
-                
                 if(Math.abs(p.y - p.iy) > 0.5) interacting = true;
-
                 const xc = (p.x + nextP.x) / 2;
                 const yc = (p.y + nextP.y) / 2;
                 ctx.quadraticCurveTo(p.x, p.y, xc, yc);

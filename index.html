@@ -269,7 +269,7 @@
             ctx.clearRect(0, 0, width, height);
             
             // Idle Wave (6 Seconds)
-            const timeout = 6000;
+            const timeout = 4000;
             if (Date.now() - lastInteraction > timeout) {
                 waveSpeed = window.innerWidth < 768 ? 0.02 : 0.008;
                 wavePosition += waveSpeed;
