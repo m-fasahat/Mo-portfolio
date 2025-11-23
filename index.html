@@ -158,7 +158,7 @@
         </div>
     </div>
 
-    <<div class="image-container">
+    <div class="image-container">
         <img src="images/hero-1.jpg" class="bg-image">
         <img src="images/hero-5.jpg" class="bg-image">
         <img src="images/eco/hero-2.jpg" class="bg-image">
@@ -179,16 +179,14 @@
         const body = document.body;
         const images = document.querySelectorAll('.bg-image');
 
-        // --- THEME LOGIC (FIXED: Stop Propagation) ---
+        // --- THEME LOGIC ---
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'light') {
             document.body.classList.add('light-mode');
         }
 
         themeToggle.addEventListener('click', (e) => {
-            // IMPORTANT: Stops click from reaching the window/canvas listener
             e.stopPropagation(); 
-            
             document.body.classList.toggle('light-mode');
             
             if (document.body.classList.contains('light-mode')) {
@@ -198,10 +196,10 @@
             }
         });
 
-        // --- MOBILE MENU (FIXED: Stop Propagation) ---
+        // --- MOBILE MENU ---
         let isMenuOpen = false;
         mobileBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Stop bubble
+            e.stopPropagation(); 
             isMenuOpen = !isMenuOpen;
             if(isMenuOpen) {
                 mobileOverlay.classList.add('active');
@@ -231,8 +229,8 @@
         let isHoveringCenter = false;
         let lastImageIndex = -1;
         
-        // Mobile Adjustment: Use a larger zone for touch
-        const centerZoneRadius = window.innerWidth < 768 ? 1000 : 150; 
+        // Mobile Adjustment: Center Zone logic handled inside click handler
+        const centerZoneRadius = 150; // Desktop radius
         let breathTimer = 0; 
 
         class Point {
@@ -264,14 +262,13 @@
             resize();
             points = [];
             // Reduce points on mobile for performance
-            totalPoints = window.innerWidth < 768 ? 40 : 80;
+            totalPoints = window.innerWidth < 768 ? 50 : 100;
             const gap = width / (totalPoints - 1);
             lineY = height * 0.5; 
             for (let i = 0; i < totalPoints; i++) points.push(new Point(i * gap, lineY));
         }
 
         function resize() {
-            // Handle High DPI Screens (Retina / Modern Phones)
             const dpr = window.devicePixelRatio || 1;
             width = window.innerWidth;
             height = window.innerHeight;
@@ -293,17 +290,14 @@
             ctx.clearRect(0, 0, width, height);
             
             // --- IDLE WAVE LOGIC (Improved for Mobile) ---
-            // Shorter timeout on mobile (2s vs 3s)
             const timeout = window.innerWidth < 768 ? 2000 : 3000;
             
             if (Date.now() - lastInteraction > timeout) {
-                // Faster speed on mobile
                 waveSpeed = window.innerWidth < 768 ? 0.02 : 0.008;
                 wavePosition += waveSpeed;
                 
                 if (wavePosition > 1.5) wavePosition = -0.5;
 
-                // Narrower width on mobile so it fits screen
                 const waveWidth = window.innerWidth < 768 ? 0.3 : 0.15;
 
                 for (let i = 0; i < points.length; i++) {
@@ -348,16 +342,8 @@
         }
 
         function checkCenterTrigger(mouseX) {
-            // MOBILE FIX: Always allow triggering if screen is small
-            // Or widen the zone significantly
-            if(window.innerWidth < 768) {
-                 // On mobile, just touching anywhere in the middle half triggers it
-                 if (!isHoveringCenter) {
-                    isHoveringCenter = true;
-                    showRandomImage();
-                 }
-                 return;
-            }
+            // On mobile, logic is handled by click, not hover
+            if(window.innerWidth < 768) return;
 
             if (isMenuOpen) return;
             const centerX = window.innerWidth / 2;
@@ -395,18 +381,35 @@
             images.forEach(img => img.classList.remove('active'));
         }
 
-        // --- CLICK ACTION (FIXED) ---
+        // --- CLICK ACTION (Mobile + Desktop) ---
         window.addEventListener('click', (e) => {
-            // 1. Don't trigger if clicking nav items
             if (e.target.closest('nav')) return;
             
-            // 2. On Mobile, ANY click on the body goes to Works
+            // Mobile Logic
             if (window.innerWidth < 768 && !isMenuOpen) {
-                window.location.href = "works.html";
+                const centerY = window.innerHeight / 2;
+                const clickY = e.clientY;
+                const zoneHeight = 200; // Center zone height
+
+                // Check if click is near vertical center
+                if (Math.abs(clickY - centerY) < zoneHeight) {
+                    if (!isHoveringCenter) {
+                        // First tap: Show Image
+                        isHoveringCenter = true;
+                        showRandomImage();
+                    } else {
+                        // Second tap: Navigate
+                        window.location.href = "works.html";
+                    }
+                } else {
+                    // Click outside center: Reset (Hide Image)
+                    isHoveringCenter = false;
+                    hideImages();
+                }
                 return;
             }
 
-            // 3. Desktop Logic (Center Zone)
+            // Desktop Logic
             if(isHoveringCenter && !isMenuOpen) {
                 window.location.href = "works.html"; 
             }
@@ -421,17 +424,18 @@
             checkCenterTrigger(e.clientX);
         });
         
-        // Touch Logic
         window.addEventListener('touchstart', (e) => {
              lastInteraction = Date.now();
              mouse.x = e.touches[0].clientX;
              mouse.y = e.touches[0].clientY;
-             checkCenterTrigger(e.touches[0].clientX);
+             // Don't trigger image on touchstart, wait for click logic
         }, { passive: false });
 
         window.addEventListener('touchmove', (e) => {
              lastInteraction = Date.now();
-             e.preventDefault();
+             // Allow scroll unless interacting with line? 
+             // For now allow scroll to be safe
+             // e.preventDefault(); 
              mouse.x = e.touches[0].clientX;
              mouse.y = e.touches[0].clientY;
         }, { passive: false });
