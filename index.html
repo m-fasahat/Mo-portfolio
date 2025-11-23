@@ -159,6 +159,7 @@
     </div>
 
     <div class="image-container">
+        <!-- Corrected Image List -->
         <img src="images/hero-1.jpg" class="bg-image">
         <img src="images/hero-5.jpg" class="bg-image">
         <img src="images/eco/hero-2.jpg" class="bg-image">
@@ -290,9 +291,10 @@
             ctx.clearRect(0, 0, width, height);
             
             // --- IDLE WAVE LOGIC (6 Seconds Timeout) ---
-            const timeout = 6000; // Changed to 6 seconds as requested
+            const timeout = 6000; 
             
             if (Date.now() - lastInteraction > timeout) {
+                // Always run wave if idle
                 waveSpeed = window.innerWidth < 768 ? 0.02 : 0.008;
                 wavePosition += waveSpeed;
                 
@@ -342,7 +344,7 @@
         }
 
         function checkCenterTrigger(mouseX) {
-            // Desktop only trigger logic
+            // Desktop Only trigger logic
             if(window.innerWidth < 768) return;
 
             if (isMenuOpen) return;
@@ -381,7 +383,7 @@
             images.forEach(img => img.classList.remove('active'));
         }
 
-        // --- CLICK ACTION (Mobile Logic Updated) ---
+        // --- CLICK ACTION (Mobile Logic Adjusted) ---
         window.addEventListener('click', (e) => {
             if (e.target.closest('nav')) return;
             
@@ -424,6 +426,14 @@
             checkCenterTrigger(e.clientX);
         });
         
+        // Touch Start: Just update position for physics (no trigger)
+        window.addEventListener('touchstart', (e) => {
+             lastInteraction = Date.now();
+             mouse.x = e.touches[0].clientX;
+             mouse.y = e.touches[0].clientY;
+        }, { passive: false });
+
+        // Touch Move: Update physics
         window.addEventListener('touchmove', (e) => {
              lastInteraction = Date.now();
              e.preventDefault();
