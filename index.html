@@ -1,115 +1,357 @@
-<!doctype html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mohammad Fasahat</title>
-  <meta name="description" content="Mohammad Fasahat — selected works." />
-  <meta name="theme-color" content="#0b0d10" />
-  <style>
-    :root{ --bg:#0b0d10; --fg:#eef2f6; --muted:#a3aab6; --line:#1d232f; }
-    *{ box-sizing:border-box }
-    html,body{ margin:0; padding:0; background:var(--bg); color:var(--fg); font: 16px/1.5 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; height:100%; overflow:hidden }
-    a{ color:inherit; text-decoration:none }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mohammad Fasahat | Architecture</title>
+    <style>
+        /* --- CSS VARIABLES --- */
+        :root {
+            --bg-color: #050505;
+            --text-primary: #FFFFFF;
+            --text-secondary: #AAAAAA;
+            --line-color: rgba(255, 255, 255, 0.8);
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
 
-    /* Header */
-    header{ position:fixed; top:0; left:0; right:0; z-index:50; background:transparent; border:0 }
-    .bar{ max-width:1300px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; justify-content:space-between }
-    .brand{ font-weight:700; }
-    .nav{ display:flex; gap:32px } .nav a{ font-size:18px; font-weight:600; padding:6px 8px; letter-spacing:0.02em } @media (max-width:640px){ .nav a{ font-size:16px; padding:6px } }
+        body.light-mode {
+            --bg-color: #F4F4F4;
+            --text-primary: #111111;
+            --text-secondary: #666666;
+            --line-color: rgba(0, 0, 0, 0.8);
+        }
 
-    /* Hero */
-    .hero{ position:relative; height: 100vh; overflow:hidden }
-    .hero img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .7s ease } .hero img.active{ opacity:1 }
-    
-    .hero img.active{ opacity:1 }
-    .dots{ position:absolute; bottom:22px; left:50%; transform:translateX(-50%); display:flex; gap:10px }
-    .dots button{ width:38px; height:3px; background:rgba(255,255,255,.45); border:0; border-radius:2px; cursor:pointer }
-    .dots button.active{ background:#fff }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
 
-    /* Sections */
-    .wrap{ max-width:1300px; margin:0 auto; padding:40px 24px }
+        /* --- NAV (Clean) --- */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 40px 50px; position: fixed; top: 0; width: 100%; z-index: 200;
+        }
+        .brand { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); cursor: pointer; text-decoration: none; }
+        .nav-right { display: flex; align-items: center; gap: 30px; }
+        .desktop-menu { display: flex; gap: 25px; }
+        .desktop-menu a { text-decoration: none; color: var(--text-secondary); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s; }
+        .desktop-menu a:hover { color: var(--text-primary); }
+        .mobile-menu-btn { display: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-primary); cursor: pointer; }
+        .theme-toggle { width: 18px; height: 18px; border-radius: 50%; background-color: var(--text-primary); border: 1px solid var(--bg-color); cursor: pointer; transition: transform 0.3s ease; }
+        .theme-toggle:hover { transform: scale(1.1); }
 
-    /* Masonry grid (Work) */
-    .masonry{ column-count:4; column-gap:18px }
-    .tile{ break-inside:avoid; margin:0 0 18px 0; position:relative; border-radius:12px; overflow:hidden; border:1px solid var(--line); background:#0f1318 }
-    .tile img{ width:100%; display:block; height:auto; aspect-ratio:4/3; object-fit:cover }
-    .cap{ position:absolute; inset:auto 0 0 0; padding:14px 16px; color:#fff; background:linear-gradient(to top, rgba(0,0,0,.4), transparent 65%); opacity:0; transition:opacity .25s ease }
-    .tile:hover .cap{ opacity:1 }
+        /* --- IMAGES --- */
+        .image-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
+        }
+        .bg-image {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; opacity: 0; transition: opacity 0.8s ease-in-out;
+        }
+        .bg-image.active { opacity: 0.5; }
 
-    @media (max-width: 1200px){ .masonry{ column-count:3 } }
-    @media (max-width: 900px){ .masonry{ column-count:2 } }
-    @media (max-width: 640px){ .masonry{ column-count:1 } }
+        /* --- CANVAS --- */
+        canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10; cursor: crosshair; touch-action: none;
+        }
+        canvas.clickable { cursor: pointer; }
 
-    footer{ border-top:1px solid var(--line); color:var(--muted) }
-      /* 20% dark overlay over slideshow */
-    .hero::after{ content:""; position:absolute; inset:0; background:rgba(0,0,0,.2); pointer-events:none }
-  </style>
+        .footer-info {
+            position: absolute; bottom: 40px; left: 50px;
+            font-size: 10px; color: var(--text-secondary);
+            letter-spacing: 1px; text-transform: uppercase; z-index: 100; pointer-events: none;
+        }
+
+        /* --- MOBILE OVERLAY --- */
+        .mobile-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-color); z-index: 150;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+        }
+        .mobile-overlay.active { opacity: 1; pointer-events: all; }
+        .mobile-links a { display: block; font-size: 24px; color: var(--text-primary); text-decoration: none; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; text-align: center; }
+
+        @media (max-width: 768px) {
+            nav { padding: 25px 20px; }
+            .desktop-menu { display: none; } .mobile-menu-btn { display: block; }
+            .footer-info { left: 20px; bottom: 30px; }
+        }
+    </style>
 </head>
 <body>
-  <!-- SINGLE, CLEAN HEADER -->
-  <header>
-    <div class="bar">
-      <div class="brand">Mohammad Fasahat</div>
-      <nav class="nav" aria-label="Primary">
-        <a href="#about">about</a>
-        <a href="work.html">work</a>
-        <a href="#office">office</a>
-      </nav>
+
+    <nav>
+        <a href="index.html" class="brand">Mohammad Fasahat</a>
+        <div class="nav-right">
+            <div class="desktop-menu">
+                <a href="works.html">Work</a>
+                <a href="about.html">About</a>
+            </div>
+            <div class="theme-toggle" id="themeToggle"></div>
+            <div class="mobile-menu-btn" id="mobileBtn">MENU</div>
+        </div>
+    </nav>
+
+    <div class="mobile-overlay" id="mobileOverlay">
+        <div class="mobile-links">
+            <a href="index.html">Home</a>
+            <a href="works.html">Work</a>
+            <a href="about.html">About</a>
+        </div>
     </div>
-  </header>
 
-  <!-- WORK GRID -->
-  <main>
-  <!-- FULL-BLEED HERO ONLY -->
-  <section id="hero" class="hero" aria-label="Featured images">
-    <div class="dots" id="heroDots"></div>
-  </section>
-</main>
+    <div class="image-container">
+        <img src="images/hero-1.jpg" class="bg-image">
+        <img src="images/hero-5.jpg" class="bg-image">
+        <img src="images/eco/hero-2.jpg" class="bg-image">
+        <img src="images/yazd/yazd-2.jpg" class="bg-image">
+        <img src="images/housing/housing-1.jpg" class="bg-image">
+    </div>
 
-  
+    <div class="footer-info">Interact to reveal</div>
 
-  <script>
-  // Minimal hero slideshow — full cover, no black bars
-  const heroImages = [
-    'images/hero-1.jpg',
-    'images/hero-2.jpg',
-    'images/hero-3.jpg',
-    'images/hero-4.jpg',
-    'images/hero-5.jpg'
-  ];
-  const hero = document.getElementById('hero');
-  const dots = document.getElementById('heroDots');
-  let hi = 0, timer;
+    <canvas id="canvas"></canvas>
 
-  function mountHero(){
-    heroImages.forEach((src,i)=>{
-      const img = document.createElement('img');
-      img.src = src; img.alt = '';
-      if(i===0) img.classList.add('active');
-      hero.appendChild(img);
-    });
-    dots.innerHTML = heroImages.map((_,i)=>`<button data-i="${i}"></button>`).join('');
-    if(dots.firstElementChild) dots.firstElementChild.classList.add('active');
-  }
-  function heroGoto(i){
-    const imgs = [...hero.querySelectorAll('img')];
-    if(!imgs.length) return;
-    imgs.forEach((el,k)=> el.classList.toggle('active', k===i));
-    [...dots.children].forEach((d,k)=> d.classList.toggle('active', k===i));
-    hi = i;
-  }
-  function play(){ timer = setInterval(()=> heroGoto((hi+1)%heroImages.length), 6000); }
-  function stop(){ clearInterval(timer); }
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const themeToggle = document.getElementById('themeToggle');
+        const mobileBtn = document.getElementById('mobileBtn');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+        const body = document.body;
+        const images = document.querySelectorAll('.bg-image');
 
-  // Start
-  mountHero();
-  play();
-  dots.addEventListener('click', e=>{ if(e.target.matches('button')){ stop(); heroGoto(+e.target.dataset.i); play(); }});
-  window.addEventListener('keydown', e=>{
-    if(e.key==='ArrowRight'){ stop(); heroGoto((hi+1)%heroImages.length); play(); }
-    if(e.key==='ArrowLeft'){ stop(); heroGoto((hi-1+heroImages.length)%heroImages.length); play(); }
-  });
-</script>
+        // --- THEME MEMORY ---
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') document.body.classList.add('light-mode');
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            if (document.body.classList.contains('light-mode')) localStorage.setItem('theme', 'light');
+            else localStorage.setItem('theme', 'dark');
+        });
+
+        // Mobile Menu
+        let isMenuOpen = false;
+        mobileBtn.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            if(isMenuOpen) {
+                mobileOverlay.classList.add('active');
+                mobileBtn.innerText = "CLOSE";
+            } else {
+                mobileOverlay.classList.remove('active');
+                mobileBtn.innerText = "MENU";
+            }
+        });
+
+        // --- PHYSICS & WAVE VARS ---
+        let width, height;
+        let points = [];
+        let totalPoints = 80; 
+        const mouseDist = 200; const damping = 0.06; const spring = 0.04; const pushForce = 4; 
+        let lineY = 0;
+        let mouse = { x: -1000, y: -1000 };
+
+        // Idle Wave Variables
+        let lastInteraction = Date.now();
+        let wavePosition = -0.2; // Start off screen left
+        let waveSpeed = 0.008; // Speed of travel
+
+        // State
+        let isHoveringCenter = false;
+        let lastImageIndex = -1;
+        const centerZoneRadius = 150; 
+        let breathTimer = 0; 
+
+        class Point {
+            constructor(x, y) {
+                this.x = x; this.baseIy = y; this.iy = y; this.y = y; this.vy = 0;
+            }
+            update() {
+                let forceY = (this.y - this.iy) * spring;
+                
+                // Mouse Physics
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < mouseDist) {
+                    const force = (mouseDist - dist) / mouseDist;
+                    const dir = dy < 0 ? -1 : 1; 
+                    this.vy -= force * dir * pushForce; 
+                }
+                
+                this.vy -= forceY;
+                this.vy *= (1 - damping);
+                this.y += this.vy;
+            }
+        }
+
+        function init() {
+            resize();
+            points = [];
+            totalPoints = window.innerWidth < 768 ? 40 : 80;
+            const gap = width / (totalPoints - 1);
+            lineY = height * 0.5; 
+            for (let i = 0; i < totalPoints; i++) points.push(new Point(i * gap, lineY));
+        }
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            lineY = height * 0.5;
+            if(points.length > 0) points.forEach(p => { p.baseIy = lineY; p.iy = lineY; });
+        }
+
+        function animate() {
+            const style = getComputedStyle(document.body);
+            const lineColor = style.getPropertyValue('--line-color').trim();
+
+            ctx.clearRect(0, 0, width, height);
+            
+            // --- IDLE "TRAVELING PULSE" LOGIC ---
+            if (Date.now() - lastInteraction > 3000) {
+                wavePosition += waveSpeed;
+                
+                // Loop the wave with a pause
+                if (wavePosition > 1.5) { // 1.5 means it went off screen right
+                    wavePosition = -0.5; // Reset to left with a delay
+                }
+
+                // Update Points for the Wave
+                for (let i = 0; i < points.length; i++) {
+                    const p = points[i];
+                    // Normalized X position of this point (0 to 1)
+                    const normX = i / points.length;
+                    
+                    // Calculate distance from the traveling wave center
+                    const distFromWave = Math.abs(normX - wavePosition);
+                    
+                    // Create a Gaussian Bump (Bell Curve)
+                    // Width of 0.15 means the wave is about 15% of screen width
+                    if (distFromWave < 0.15) {
+                        const strength = 1 - (distFromWave / 0.15); // 0 to 1
+                        // Use Sine for smooth curve * Max Height (60px)
+                        const offset = Math.sin(strength * Math.PI / 2) * 60;
+                        p.iy = p.baseIy - offset; // Move Up
+                    } else {
+                        p.iy = p.baseIy;
+                    }
+                }
+            } else {
+                // Reset to flat if user is active
+                points.forEach(p => p.iy = p.baseIy);
+            }
+
+            // Draw Line
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 0; i < points.length - 1; i++) {
+                const p = points[i];
+                const nextP = points[i + 1];
+                p.update();
+                const xc = (p.x + nextP.x) / 2;
+                const yc = (p.y + nextP.y) / 2;
+                ctx.quadraticCurveTo(p.x, p.y, xc, yc);
+            }
+            const last = points[points.length-1];
+            last.update();
+            ctx.lineTo(last.x, last.y);
+            ctx.strokeStyle = lineColor;
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            // --- CENTER DOT (Interactive Hint) ---
+            if (!isHoveringCenter && (Date.now() - lastInteraction < 3000)) {
+                breathTimer += 0.05;
+                const alpha = (Math.sin(breathTimer) + 1) / 2 * 0.6 + 0.2; 
+                let centerP = points[Math.floor(points.length/2)];
+                if(centerP) {
+                    ctx.fillStyle = lineColor;
+                    ctx.globalAlpha = alpha;
+                    ctx.beginPath();
+                    ctx.arc(centerP.x, centerP.y, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.globalAlpha = 1.0; 
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        function checkCenterTrigger(mouseX) {
+            if (isMenuOpen) return;
+            const centerX = window.innerWidth / 2;
+            const distFromCenter = Math.abs(mouseX - centerX);
+            
+            if (distFromCenter < centerZoneRadius) {
+                if (!isHoveringCenter) {
+                    isHoveringCenter = true;
+                    showRandomImage();
+                    canvas.classList.add('clickable');
+                }
+            } else {
+                if (isHoveringCenter) {
+                    isHoveringCenter = false;
+                    hideImages();
+                    canvas.classList.remove('clickable');
+                }
+            }
+        }
+
+        function showRandomImage() {
+            images.forEach(img => img.classList.remove('active'));
+            if(images.length === 0) return;
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * images.length);
+            } while (newIndex === lastImageIndex && images.length > 1);
+            lastImageIndex = newIndex;
+            images[newIndex].classList.add('active');
+        }
+
+        function hideImages() {
+            images.forEach(img => img.classList.remove('active'));
+        }
+
+        window.addEventListener('click', () => {
+            if(isHoveringCenter && !isMenuOpen) window.location.href = "works.html"; 
+        });
+
+        window.addEventListener('resize', () => { resize(); init(); });
+        
+        window.addEventListener('mousemove', (e) => {
+            lastInteraction = Date.now();
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+            checkCenterTrigger(e.clientX);
+        });
+        
+        window.addEventListener('touchmove', (e) => {
+             lastInteraction = Date.now();
+             e.preventDefault();
+             mouse.x = e.touches[0].clientX;
+             mouse.y = e.touches[0].clientY;
+             checkCenterTrigger(e.touches[0].clientX);
+        }, { passive: false });
+        
+        window.addEventListener('touchend', () => {
+             lastInteraction = Date.now();
+             mouse.x = -1000; mouse.y = -1000;
+        });
+
+        init();
+        animate();
+    </script>
 </body>
 </html>

@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohammad Fasahat | Selected Works</title>
+    <style>
+        /* --- SHARED VARIABLES --- */
+        :root {
+            --bg-color: #050505;
+            --text-primary: #FFFFFF;
+            --text-secondary: #888888;
+            --line-color: rgba(255, 255, 255, 0.2);
+            --active-line-color: #FFFFFF;
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        body.light-mode {
+            --bg-color: #F4F4F4;
+            --text-primary: #111111;
+            --text-secondary: #666666;
+            --line-color: rgba(0, 0, 0, 0.2);
+            --active-line-color: #000000;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            transition: background-color 0.5s ease, color 0.5s ease;
+            overflow-x: hidden;
+            cursor: crosshair; 
+        }
+
+        a, button, .project-row, .theme-toggle, .mobile-menu-btn { cursor: pointer; }
+
+        /* --- NAV (CLEAN - NO BORDER) --- */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 40px 50px; position: fixed; top: 0; width: 100%; 
+            z-index: 200; /* Always on top */
+            background: var(--bg-color);
+            border: none; /* REMOVED LINE */
+            transition: background-color 0.5s ease;
+        }
+        .brand { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); text-decoration: none; }
+        .nav-right { display: flex; align-items: center; gap: 30px; }
+        .desktop-menu { display: flex; gap: 25px; }
+        .desktop-menu a { text-decoration: none; color: var(--text-secondary); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s; }
+        .desktop-menu a:hover, .desktop-menu a.active { color: var(--text-primary); }
+        .mobile-menu-btn { display: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-primary); }
+        .theme-toggle { width: 18px; height: 18px; border-radius: 50%; background-color: var(--text-primary); border: 1px solid var(--bg-color); transition: transform 0.3s ease; }
+        .theme-toggle:hover { transform: scale(1.1); }
+
+        /* --- MOBILE OVERLAY --- */
+        .mobile-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-color); z-index: 150;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+        }
+        .mobile-overlay.active { opacity: 1; pointer-events: all; }
+        .mobile-links a { display: block; font-size: 24px; color: var(--text-primary); text-decoration: none; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; text-align: center; }
+
+        /* --- MOUSE FOLLOWING IMAGE (LAYER 0) --- */
+        /* This creates the depth. It sits behind the list. */
+        .hover-reveal {
+            position: fixed; 
+            width: 400px; height: 280px;
+            top: 0; left: 0;
+            opacity: 0; 
+            pointer-events: none; 
+            z-index: 0; /* Bottom Layer */
+            overflow: hidden; 
+            transition: opacity 0.2s, transform 0.1s ease-out;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+            background-color: #333; 
+        }
+        .hover-reveal img { width: 100%; height: 100%; object-fit: cover; }
+        .hover-reveal.active { opacity: 1; }
+
+        /* --- ARCHITECTURAL INDEX (LAYER 10) --- */
+        /* This container sits ON TOP of the image layer (0) */
+        .index-container {
+            margin-top: 180px; 
+            padding-bottom: 100px;
+            width: 100%; max-width: 1400px;
+            margin-left: auto; margin-right: auto;
+            padding-left: 50px; padding-right: 50px;
+            position: relative;
+            z-index: 10; /* Ensures text/lines are above image */
+        }
+
+        .list-header {
+            display: flex;
+            border-bottom: 1px solid var(--line-color);
+            padding-bottom: 15px; margin-bottom: 0;
+            font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+            color: var(--text-secondary);
+        }
+        .col-1 { width: 10%; }
+        .col-2 { width: 50%; }
+        .col-3 { width: 20%; }
+        .col-4 { width: 20%; text-align: right; }
+
+        /* PROJECT ROW */
+        .project-row {
+            display: flex; align-items: center;
+            padding: 35px 0; 
+            position: relative; 
+            text-decoration: none;
+            flex-wrap: wrap;
+        }
+
+        /* THE CANVAS LINE */
+        .row-canvas {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 60px; 
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .p-num { font-size: 11px; color: var(--text-secondary); font-family: 'Courier New', monospace; transition: color 0.3s; }
+        .p-title { font-size: 24px; font-weight: 400; color: var(--text-primary); letter-spacing: -0.5px; transition: padding-left 0.3s; }
+        .p-type { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
+        .p-loc { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; text-align: right; }
+
+        .project-row:hover .p-title { padding-left: 15px; }
+        .project-row:hover .p-num { color: var(--text-primary); }
+
+        /* --- MOBILE IMAGE --- */
+        .mobile-only-img {
+            display: none; 
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            filter: grayscale(0%); 
+            opacity: 1;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            position: fixed; bottom: 40px; left: 50px; z-index: 50; display: flex; gap: 20px;
+        }
+        .filter-btn {
+            background: none; border: none; color: var(--text-secondary);
+            font-size: 10px; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s;
+        }
+        .filter-btn:hover, .filter-btn.active { color: var(--text-primary); }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            nav { padding: 25px 20px; } 
+            .desktop-menu { display: none; } 
+            .mobile-menu-btn { display: block; }
+            
+            .index-container { padding: 0 20px; margin-top: 120px; }
+            
+            .list-header { display: none; }
+            .col-1, .col-3, .col-4 { display: none; } 
+            .col-2 { width: 100%; }
+            
+            .project-row { 
+                padding: 30px 0; 
+                flex-direction: column; 
+                align-items: flex-start; 
+            }
+            
+            .p-title { font-size: 24px; margin-bottom: 10px; padding-left: 0 !important; }
+            
+            .mobile-only-img { display: block; }
+            .hover-reveal { display: none !important; } 
+            
+            .filter-bar { position: relative; bottom: auto; left: auto; margin-bottom: 40px; padding-left: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="brand">Mohammad Fasahat</a>
+        <div class="nav-right">
+            <div class="desktop-menu">
+                <a href="works.html" class="active">Work</a>
+                <a href="about.html">About</a>
+            </div>
+            <div class="theme-toggle" id="themeToggle"></div>
+            <div class="mobile-menu-btn" id="mobileBtn">MENU</div>
+        </div>
+    </nav>
+
+    <div class="mobile-overlay" id="mobileOverlay">
+        <div class="mobile-links">
+            <a href="index.html">Home</a>
+            <a href="works.html">Work</a>
+            <a href="about.html">About</a>
+        </div>
+    </div>
+
+    <div class="hover-reveal" id="revealbox">
+        <img src="" id="revealimg">
+    </div>
+
+    <div class="index-container">
+        <div class="list-header">
+            <div class="col-1">No.</div>
+            <div class="col-2">Project</div>
+            <div class="col-3">Category</div>
+            <div class="col-4">Location / Year</div>
+        </div>
+
+        <a href="light-unfolds.html" class="project-row personal" data-img="images/light/light-1.jpg">
+            <div class="col-1 p-num">01</div>
+            <div class="col-2 p-title">Where the Light Unfolds</div>
+            <div class="col-3 p-type">Architecture</div>
+            <div class="col-4 p-loc">Italy / 2024</div>
+        </a>
+
+        <a href="data-farm.html" class="project-row personal" data-img="images/zero-tower/work-3.jpg">
+            <div class="col-1 p-num">02</div>
+            <div class="col-2 p-title">Data Farm</div>
+            <div class="col-3 p-type">Architecture</div>
+            <div class="col-4 p-loc">Charlotte / 2021</div>
+        </a>
+
+        <a href="project.template.html" class="project-row personal" data-img="images/yard/yard-1.jpg">
+            <div class="col-1 p-num">03</div>
+            <div class="col-2 p-title">Yard to Yard</div>
+            <div class="col-3 p-type">Architecture</div>
+            <div class="col-4 p-loc">Charlotte / 2021</div>
+        </a>
+
+        <a href="project.template.html" class="project-row personal" data-img="images/stadium/hero-4.jpg">
+            <div class="col-1 p-num">04</div>
+            <div class="col-2 p-title">Rolling Diamond</div>
+            <div class="col-3 p-type">Architecture</div>
+            <div class="col-4 p-loc">Beijing / 2019</div>
+        </a>
+
+        <a href="project.template.html" class="project-row personal" data-img="images/ghana/ghana-33.jpg">
+            <div class="col-1 p-num">05</div>
+            <div class="col-2 p-title">Better Half</div>
+            <div class="col-3 p-type">Architecture</div>
+            <div class="col-4 p-loc">Ghana / 2023</div>
+        </a>
+
+        <a href="project.template.html" class="project-row personal" data-img="images/eco/hero-6.jpg">
+            <div class="col-1 p-num">06</div>
+            <div class="col-2 p-title">Ecolodge</div>
+            <div class="col-3 p-type">Architecture</div>
+            <div class="col-4 p-loc">Golpayegan / 2018</div>
+        </a>
+
+        <a href="project.template.html" class="project-row personal" data-img="images/yazd/yazd-2.jpg">
+            <div class="col-1 p-num">07</div>
+            <div class="col-2 p-title">A House in Yazd</div>
+            <div class="col-3 p-type">Architecture</div>
+            <div class="col-4 p-loc">Yazd / 2017</div>
+        </a>
+
+        <a href="project.template.html" class="project-row personal" data-img="images/housing/housing-1.jpg">
+            <div class="col-1 p-num">08</div>
+            <div class="col-2 p-title">Social Housing</div>
+            <div class="col-3 p-type">Architecture</div>
+            <div class="col-4 p-loc">Tabriz / 2018</div>
+        </a>
+
+        <a href="project.template.html" class="project-row personal" data-img="images/mechanical-lungs.jpg">
+            <div class="col-1 p-num">09</div>
+            <div class="col-2 p-title">The Mechanical Lungs</div>
+            <div class="col-3 p-type">Installation</div>
+            <div class="col-4 p-loc">Charlotte / 2021</div>
+        </a>
+
+        <a href="project.template.html" class="project-row practice visual" data-img="images/church-st.jpg">
+            <div class="col-1 p-num">10</div>
+            <div class="col-2 p-title">526 Church St</div>
+            <div class="col-3 p-type">Practice</div>
+            <div class="col-4 p-loc">Charlotte / 2022</div>
+        </a>
+
+        <a href="project.template.html" class="project-row practice" data-img="images/inpro.jpg">
+            <div class="col-1 p-num">11</div>
+            <div class="col-2 p-title">Inpro Manufactury</div>
+            <div class="col-3 p-type">Practice</div>
+            <div class="col-4 p-loc">Charlotte / 2024</div>
+        </a>
+
+        <a href="project.template.html" class="project-row practice" data-img="images/compton-hs.jpg">
+            <div class="col-1 p-num">12</div>
+            <div class="col-2 p-title">Compton High School</div>
+            <div class="col-3 p-type">Practice</div>
+            <div class="col-4 p-loc">Los Angeles / 2024</div>
+        </a>
+
+        <a href="project.template.html" class="project-row visual" data-img="images/friends-house.jpg">
+            <div class="col-1 p-num">13</div>
+            <div class="col-2 p-title">A Friend's House</div>
+            <div class="col-3 p-type">Visualization</div>
+            <div class="col-4 p-loc">CGI</div>
+        </a>
+
+        <a href="project.template.html" class="project-row visual" data-img="images/formenta.jpg">
+            <div class="col-1 p-num">14</div>
+            <div class="col-2 p-title">Formenta Island Villa</div>
+            <div class="col-3 p-type">Visualization</div>
+            <div class="col-4 p-loc">CGI</div>
+        </a>
+
+    </div>
+
+    <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterSelection('all')">All</button>
+        <button class="filter-btn" onclick="filterSelection('personal')">Architecture</button>
+        <button class="filter-btn" onclick="filterSelection('practice')">Practice</button>
+        <button class="filter-btn" onclick="filterSelection('visual')">Visualization</button>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const mobileBtn = document.getElementById('mobileBtn');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+        const rows = document.querySelectorAll('.project-row');
+        const revealBox = document.getElementById('revealbox');
+        const revealImg = document.getElementById('revealimg');
+
+        // --- THEME MEMORY ---
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            if (document.body.classList.contains('light-mode')) {
+                localStorage.setItem('theme', 'light');
+            } else {
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // --- AUTO GENERATE MOBILE IMAGES ---
+        rows.forEach(row => {
+            const imgSrc = row.getAttribute('data-img');
+            const img = document.createElement('img');
+            img.src = imgSrc;
+            img.classList.add('mobile-only-img');
+            const titleCol = row.querySelector('.col-2');
+            if(titleCol) titleCol.after(img);
+        });
+
+        // --- PHYSICS LINE LOGIC ---
+        const pointsCount = 40; 
+        const damping = 0.1; 
+        const spring = 0.02; 
+        const impactRadius = 80; 
+        const impactForce = 8; 
+        
+        class RowPhysics {
+            constructor(rowElement) {
+                this.row = rowElement;
+                this.canvas = document.createElement('canvas');
+                this.canvas.classList.add('row-canvas');
+                this.row.appendChild(this.canvas);
+                this.ctx = this.canvas.getContext('2d');
+                this.points = [];
+                this.isHovering = false;
+                this.mouseX = -1000;
+                this.init();
+                this.bindEvents();
+            }
+            init() {
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+            }
+            resize() {
+                this.width = this.canvas.width = this.row.offsetWidth;
+                this.height = this.canvas.height = 60; 
+                this.points = [];
+                const gap = this.width / (pointsCount - 1);
+                const y = this.height - 1; 
+                for (let i = 0; i < pointsCount; i++) {
+                    this.points.push({ x: i * gap, y: y, iy: y, vy: 0 });
+                }
+                this.drawStatic(); 
+            }
+            bindEvents() {
+                this.row.addEventListener('mouseenter', () => {
+                    this.isHovering = true;
+                    this.loop();
+                });
+                this.row.addEventListener('mousemove', (e) => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    this.mouseX = e.clientX - rect.left;
+                });
+                this.row.addEventListener('mouseleave', () => {
+                    this.isHovering = false;
+                    this.mouseX = -1000;
+                });
+            }
+            update() {
+                let moving = false;
+                for (let i = 0; i < this.points.length; i++) {
+                    const p = this.points[i];
+                    let forceY = (p.y - p.iy) * spring;
+                    if (this.isHovering) {
+                        let dx = this.mouseX - p.x;
+                        let dist = Math.abs(dx); 
+                        if (dist < impactRadius) {
+                            const force = (impactRadius - dist) / impactRadius;
+                            p.vy += force * impactForce * 0.1; 
+                        }
+                    }
+                    p.vy -= forceY;
+                    p.vy *= (1 - damping);
+                    p.y += p.vy;
+                    if (Math.abs(p.y - p.iy) > 0.1 || Math.abs(p.vy) > 0.1) moving = true;
+                }
+                return moving || this.isHovering;
+            }
+            draw() {
+                this.ctx.clearRect(0, 0, this.width, this.height);
+                const style = getComputedStyle(document.body);
+                let color = style.getPropertyValue('--line-color').trim();
+                if(this.isHovering) color = style.getPropertyValue('--active-line-color').trim();
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.points[0].x, this.points[0].y);
+                for (let i = 0; i < this.points.length - 1; i++) {
+                    const p = this.points[i];
+                    const nextP = this.points[i+1];
+                    const xc = (p.x + nextP.x) / 2;
+                    const yc = (p.y + nextP.y) / 2;
+                    this.ctx.quadraticCurveTo(p.x, p.y, xc, yc);
+                }
+                this.ctx.strokeStyle = color;
+                this.ctx.lineWidth = 1.5; 
+                this.ctx.stroke();
+            }
+            drawStatic() {
+                this.ctx.clearRect(0, 0, this.width, this.height);
+                const style = getComputedStyle(document.body);
+                const lineColor = style.getPropertyValue('--line-color').trim();
+                const y = this.height - 1;
+                this.ctx.beginPath();
+                this.ctx.moveTo(0, y);
+                this.ctx.lineTo(this.width, y);
+                this.ctx.strokeStyle = lineColor;
+                this.ctx.lineWidth = 1;
+                this.ctx.stroke();
+            }
+            loop() {
+                const isAnimating = this.update();
+                this.draw();
+                if (isAnimating) requestAnimationFrame(() => this.loop());
+                else this.drawStatic();
+            }
+        }
+
+        rows.forEach(row => new RowPhysics(row));
+
+        // --- MOUSE FOLLOW LOGIC (OFFSET TO AVOID BLOCKING) ---
+        window.addEventListener('mousemove', (e) => {
+            const x = e.clientX + 60; 
+            const y = e.clientY;
+            revealBox.style.left = x + 'px';
+            revealBox.style.top = y + 'px';
+        });
+
+        rows.forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                const imgSrc = this.getAttribute('data-img');
+                revealImg.src = imgSrc;
+                revealBox.classList.add('active');
+                rows.forEach(r => { if(r !== row) r.style.opacity = '0.3'; });
+            });
+            row.addEventListener('mouseleave', function() {
+                revealBox.classList.remove('active');
+                rows.forEach(r => r.style.opacity = '1');
+            });
+        });
+
+        // Mobile Menu
+        let isMenuOpen = false;
+        mobileBtn.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            if(isMenuOpen) {
+                mobileOverlay.classList.add('active');
+                mobileBtn.innerText = "CLOSE";
+            } else {
+                mobileOverlay.classList.remove('active');
+                mobileBtn.innerText = "MENU";
+            }
+        });
+
+        // Filter
+        function filterSelection(category) {
+            if (category == "all") category = "";
+            rows.forEach(row => {
+                row.style.display = "flex";
+                if (category && !row.classList.contains(category)) row.style.display = "none";
+            });
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.getAttribute('onclick').includes(category || 'all')) btn.classList.add('active');
+            });
+            window.dispatchEvent(new Event('resize'));
+        }
+    </script>
+</body>
+</html>

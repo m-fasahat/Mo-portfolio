@@ -1,0 +1,345 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohammad Fasahat | Profile</title>
+    <style>
+        /* --- SHARED VARIABLES --- */
+        :root {
+            --bg-color: #050505;
+            --text-primary: #FFFFFF;
+            --text-secondary: #888888;
+            --line-color: rgba(255, 255, 255, 0.2);
+            --active-line-color: #FFFFFF;
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        body.light-mode {
+            --bg-color: #F4F4F4;
+            --text-primary: #111111;
+            --text-secondary: #666666;
+            --line-color: rgba(0, 0, 0, 0.15);
+            --active-line-color: #000000;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            transition: background-color 0.5s ease, color 0.5s ease;
+            height: 100vh;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+
+        a, button, .theme-toggle, .mobile-menu-btn { cursor: pointer; }
+
+        /* --- NAV --- */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 40px 50px; position: fixed; top: 0; width: 100%; z-index: 200;
+            background: var(--bg-color);
+            transition: background-color 0.5s ease;
+        }
+        .brand { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); text-decoration: none; }
+        .nav-right { display: flex; align-items: center; gap: 30px; }
+        .desktop-menu { display: flex; gap: 25px; }
+        .desktop-menu a { text-decoration: none; color: var(--text-secondary); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s; }
+        .desktop-menu a:hover, .desktop-menu a.active { color: var(--text-primary); }
+        .mobile-menu-btn { display: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-primary); }
+        .theme-toggle { width: 18px; height: 18px; border-radius: 50%; background-color: var(--text-primary); border: 1px solid var(--bg-color); transition: transform 0.3s ease; }
+        .theme-toggle:hover { transform: scale(1.1); }
+
+        /* --- MOBILE OVERLAY --- */
+        .mobile-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-color); z-index: 150;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+        }
+        .mobile-overlay.active { opacity: 1; pointer-events: all; }
+        .mobile-links a { display: block; font-size: 24px; color: var(--text-primary); text-decoration: none; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; text-align: center; }
+
+        /* --- CENTER LAYOUT --- */
+        .content-wrapper {
+            height: 100%; width: 100%;
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            padding: 0 50px;
+            position: relative; z-index: 10;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            max-width: 1200px; width: 100%;
+            gap: 80px;
+            align-items: center;
+        }
+
+        /* LEFT: TEXT */
+        .text-block { max-width: 480px; }
+        
+        .bio { 
+            font-size: 13px; line-height: 1.7; color: var(--text-primary); 
+            text-align: left; margin-bottom: 40px;
+        }
+        .bio p { margin-bottom: 20px; }
+        .bio strong { font-weight: 600; color: var(--text-primary); }
+
+        /* THE DIVIDER */
+        .divider-container {
+            width: 100%; height: 60px; position: relative; margin-bottom: 20px;
+        }
+        #divider-canvas { width: 100%; height: 100%; }
+
+        /* INFO GRID */
+        .info-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+        }
+        .info-label {
+            font-size: 10px; text-transform: uppercase; letter-spacing: 2px; 
+            color: var(--text-primary); margin-bottom: 15px; display: block;
+        }
+        .list-item {
+            font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; display: block; text-decoration: none; transition: color 0.3s;
+        }
+        .list-item:hover { color: var(--text-primary); }
+
+        /* --- DOWNLOAD LINK STYLE --- */
+        .download-link {
+            font-size: 13px; 
+            color: var(--text-primary); 
+            text-decoration: none; 
+            border-bottom: 1px solid var(--line-color); 
+            padding-bottom: 2px;
+            transition: border-color 0.3s;
+        }
+        .download-link:hover { border-bottom-color: var(--text-primary); }
+
+        /* RIGHT: IMAGE */
+        .image-block { display: flex; justify-content: flex-start; }
+        .portrait {
+            width: 300px; height: 380px;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: filter 0.5s ease;
+        }
+        .portrait:hover { filter: grayscale(0%); }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 900px) {
+            body { overflow-y: auto; height: auto; }
+            nav { padding: 25px 20px; }
+            .desktop-menu { display: none; } .mobile-menu-btn { display: block; }
+
+            .content-wrapper { padding: 120px 20px 100px 20px; display: block; }
+            .grid-layout { grid-template-columns: 1fr; gap: 50px; }
+            .image-block { justify-content: center; order: -1; }
+            .portrait { width: 100%; max-width: 300px; height: auto; aspect-ratio: 3/4; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="brand">Mohammad Fasahat</a>
+        <div class="nav-right">
+            <div class="desktop-menu">
+                <a href="works.html">Work</a>
+                <a href="about.html" class="active">About</a>
+            </div>
+            <div class="theme-toggle" id="themeToggle"></div>
+            <div class="mobile-menu-btn" id="mobileBtn">MENU</div>
+        </div>
+    </nav>
+
+    <div class="mobile-overlay" id="mobileOverlay">
+        <div class="mobile-links">
+            <a href="index.html">Home</a>
+            <a href="works.html">Work</a>
+            <a href="about.html">About</a>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="grid-layout">
+            
+            <div class="text-block">
+                <div class="bio">
+                    <p>
+                        <strong>Mohammad Fasahat</strong> is an architectural designer and technologist based in Charlotte, NC. His work bridges the gap between technical documentation and high-fidelity narrative visualization.
+                    </p>
+                    <p>
+                        Currently at <strong>Little Diversified Architectural Consulting</strong>, he works within the Mixed-Use Studio, leading R&D initiatives to integrate AI workflows into traditional design processes. He holds a Master of Architecture from <strong>UNCC</strong>, where he served as a research assistant at the Integrated Design Research Lab.
+                    </p>
+                </div>
+
+                <div class="divider-container">
+                    <canvas id="divider-canvas"></canvas>
+                </div>
+
+                <div class="info-grid">
+                    <div>
+                        <span class="info-label">Connect</span>
+                        <a href="mailto:fasahat.mehmet@gmail.com" class="list-item">fasahat.mehmet@gmail.com</a>
+                        <a href="#" class="list-item">LinkedIn</a>
+                        <a href="#" class="list-item">Instagram</a>
+                        
+                        <div style="margin-top: 20px;">
+                            <span class="info-label" style="margin-bottom: 10px;">Resume</span>
+                            <a href="documents/Mohammad_Fasahat_CV.pdf" target="_blank" class="download-link">Download PDF ↓</a>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <span class="info-label">Practice</span>
+                        <span class="list-item">Architecture</span>
+                        <span class="list-item">Visualization</span>
+                        <span class="list-item">Design Tech</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="image-block">
+                <img src="images/my-portrait.jpg" class="portrait" alt="Mohammad Fasahat">
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const mobileBtn = document.getElementById('mobileBtn');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+        
+        // --- THEME MEMORY ---
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            if (document.body.classList.contains('light-mode')) {
+                localStorage.setItem('theme', 'light');
+            } else {
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Mobile Menu
+        let isMenuOpen = false;
+        mobileBtn.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            if(isMenuOpen) {
+                mobileOverlay.classList.add('active');
+                mobileBtn.innerText = "CLOSE";
+            } else {
+                mobileOverlay.classList.remove('active');
+                mobileBtn.innerText = "MENU";
+            }
+        });
+
+        // --- PHYSICS LINE (DIVIDER) ---
+        const canvas = document.getElementById('divider-canvas');
+        const ctx = canvas.getContext('2d');
+        const container = document.querySelector('.divider-container');
+        
+        let width, height;
+        let points = [];
+        let totalPoints = 50;
+        const damping = 0.08; 
+        const spring = 0.05; 
+        let mouse = { x: -1000, y: -1000 };
+
+        class Point {
+            constructor(x, y) {
+                this.x = x; this.iy = y; this.y = y; this.vy = 0;
+            }
+            update() {
+                let forceY = (this.y - this.iy) * spring;
+                
+                let rect = canvas.getBoundingClientRect();
+                let relativeMouseX = mouse.x - rect.left;
+                let relativeMouseY = mouse.y - rect.top;
+
+                let dx = relativeMouseX - this.x;
+                let dy = relativeMouseY - this.y;
+                let dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < 80) {
+                    const force = (80 - dist) / 80;
+                    const dir = dy < 0 ? -1 : 1;
+                    this.vy -= force * dir * 5;
+                }
+
+                this.vy -= forceY;
+                this.vy *= (1 - damping);
+                this.y += this.vy;
+            }
+        }
+
+        function initCanvas() {
+            width = canvas.width = container.offsetWidth;
+            height = canvas.height = container.offsetHeight;
+            points = [];
+            const gap = width / (totalPoints - 1);
+            const y = height / 2; 
+            for (let i = 0; i < totalPoints; i++) {
+                points.push(new Point(i * gap, y));
+            }
+        }
+
+        function animate() {
+            const style = getComputedStyle(document.body);
+            const lineColor = style.getPropertyValue('--line-color').trim();
+            const activeColor = style.getPropertyValue('--active-line-color').trim();
+
+            ctx.clearRect(0, 0, width, height);
+            
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+
+            // Check interaction for color change
+            let interacting = false;
+            
+            for (let i = 0; i < points.length - 1; i++) {
+                const p = points[i];
+                const nextP = points[i + 1];
+                p.update();
+                
+                if(Math.abs(p.y - p.iy) > 0.5) interacting = true;
+
+                const xc = (p.x + nextP.x) / 2;
+                const yc = (p.y + nextP.y) / 2;
+                ctx.quadraticCurveTo(p.x, p.y, xc, yc);
+            }
+            
+            const last = points[points.length-1];
+            last.update();
+            ctx.lineTo(last.x, last.y);
+
+            ctx.strokeStyle = interacting ? activeColor : lineColor;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+        window.addEventListener('resize', () => { initCanvas(); });
+
+        initCanvas();
+        animate();
+
+    </script>
+</body>
+</html>

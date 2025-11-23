@@ -1,12 +1,153 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\index.html||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:index.html||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\cop.html||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:cop.html||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\works-g.html||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:works-g.html||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\gpt test.html||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:gpt test.html||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\work.html||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:work.html||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\Ecolodge.html||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Ecolodge.html||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\project.html||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:project.html||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "works-g.html",
+              "DocumentMoniker": "C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\works-g.html",
+              "RelativeDocumentMoniker": "works-g.html",
+              "ToolTip": "C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\works-g.html",
+              "RelativeToolTip": "works-g.html",
+              "ViewState": "AgIAAOEAAAAAAAAAAAAmwA0BAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-23T00:01:20.486Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "gpt test.html",
+              "DocumentMoniker": "C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\gpt test.html",
+              "RelativeDocumentMoniker": "gpt test.html",
+              "ToolTip": "C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\gpt test.html",
+              "RelativeToolTip": "gpt test.html",
+              "ViewState": "AgIAAAcBAAAAAAAAAAAmwEMBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-22T23:12:59.621Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "cop.html",
+              "DocumentMoniker": "C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\cop.html",
+              "RelativeDocumentMoniker": "cop.html",
+              "ToolTip": "C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\cop.html",
+              "RelativeToolTip": "cop.html",
+              "ViewState": "AgIAACABAAAAAAAAAAAmwFwBAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-22T23:11:19.736Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Ecolodge.html",
+              "DocumentMoniker": "C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\Ecolodge.html",
+              "RelativeDocumentMoniker": "Ecolodge.html",
+              "ToolTip": "C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\Ecolodge.html",
+              "RelativeToolTip": "Ecolodge.html",
+              "ViewState": "AgIAAB4BAAAAAAAAAAAgwGIBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-10T16:38:46.862Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "work.html",
+              "DocumentMoniker": "C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\work.html",
+              "RelativeDocumentMoniker": "work.html",
+              "ToolTip": "C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\work.html",
+              "RelativeToolTip": "work.html",
+              "ViewState": "AgIAAIUAAAAAAAAAAAAUwMUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-10T03:20:47.856Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "project.html",
+              "DocumentMoniker": "C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\project.html",
+              "RelativeDocumentMoniker": "project.html",
+              "ToolTip": "C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\project.html",
+              "RelativeToolTip": "project.html",
+              "ViewState": "AgIAAFUAAAAAAAAAAADwv5IAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-10T03:46:48.463Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": ".gitignore",
+              "DocumentMoniker": "C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\.gitignore",
+              "RelativeDocumentMoniker": ".gitignore",
+              "ToolTip": "C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\.gitignore",
+              "RelativeToolTip": ".gitignore",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-11-10T01:05:25.205Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "index.html",
+              "DocumentMoniker": "C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\index.html",
+              "RelativeDocumentMoniker": "index.html",
+              "ToolTip": "C:\\Users\\fasah\\source\\repos\\Mo-portfolio\\index.html",
+              "RelativeToolTip": "index.html",
+              "ViewState": "AgIAACABAAAAAAAAAAAmwFwBAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-10T00:32:10.163Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }
