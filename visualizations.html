@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FAVICON LINK -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><style>@media(prefers-color-scheme:dark){line{stroke:white}}@media(prefers-color-scheme:light){line{stroke:black}}</style><line x='32' y1='0' x2='32' y2='64' stroke='black' stroke-width='6'/><line x1='0' y1='32' x2='64' y2='32' stroke='black' stroke-width='6'/></svg>">
+    <title>Mohammad Fasahat | Visualizations</title>
+    <style>
+        /* --- SHARED VARIABLES --- */
+        :root {
+            --bg-color: #050505;
+            --text-primary: #FFFFFF;
+            --text-secondary: #888888;
+            --line-color: rgba(255, 255, 255, 0.15);
+            --active-line-color: #FFFFFF;
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        body.light-mode {
+            --bg-color: #F4F4F4;
+            --text-primary: #111111;
+            --text-secondary: #666666;
+            --line-color: rgba(0, 0, 0, 0.15);
+            --active-line-color: #000000;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            transition: background-color 0.5s ease, color 0.5s ease;
+            overflow-x: hidden;
+            cursor: crosshair; 
+        }
+
+        a, button, .kinetic-divider, .theme-toggle, .mobile-menu-btn { cursor: pointer; }
+
+        /* --- NAV --- */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 40px 50px; position: fixed; top: 0; width: 100%; z-index: 200;
+            background: transparent;
+            border: none;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        .brand { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); text-decoration: none; }
+        .nav-right { display: flex; align-items: center; gap: 30px; }
+        .desktop-menu { display: flex; gap: 25px; }
+        .desktop-menu a { text-decoration: none; color: var(--text-secondary); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s; }
+        .desktop-menu a:hover, .desktop-menu a.active { color: var(--text-primary); }
+        .mobile-menu-btn { display: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-primary); }
+        .theme-toggle { width: 18px; height: 18px; border-radius: 50%; background-color: var(--text-primary); border: 1px solid var(--bg-color); transition: transform 0.3s ease; }
+        .theme-toggle:hover { transform: scale(1.1); }
+
+        /* --- MOBILE OVERLAY --- */
+        .mobile-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-color); z-index: 150;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+        }
+        .mobile-overlay.active { opacity: 1; pointer-events: all; }
+        .mobile-links a { display: block; font-size: 24px; color: var(--text-primary); text-decoration: none; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; text-align: center; }
+
+        /* --- CLEAN GRID LAYOUT --- */
+        .viz-container {
+            padding: 180px 50px 100px 50px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .viz-header {
+            margin-bottom: 80px;
+            max-width: 600px;
+        }
+        .viz-title {
+            font-size: 24px; font-weight: 400; margin-bottom: 15px; color: var(--text-primary);
+        }
+        .viz-desc {
+            font-size: 13px; line-height: 1.7; color: var(--text-secondary);
+        }
+
+        /* STRICT 2-COLUMN GRID */
+        .clean-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 Columns */
+            gap: 60px; /* Space between images */
+            align-items: start;
+        }
+
+        .viz-item {
+            position: relative;
+            margin-bottom: 0;
+            width: 100%;
+        }
+
+        .viz-item img {
+            width: 100%; height: auto;
+            display: block;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            filter: grayscale(20%);
+        }
+
+        .viz-item:hover img {
+            filter: grayscale(0%);
+            transform: scale(1.01);
+        }
+
+        /* Caption under image */
+        .viz-caption {
+            margin-top: 15px;
+            font-size: 11px; color: var(--text-secondary);
+            text-transform: uppercase; letter-spacing: 1px;
+            opacity: 0.7; transition: opacity 0.3s ease;
+        }
+        .viz-item:hover .viz-caption { opacity: 1; color: var(--text-primary); }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            nav { padding: 25px 20px; } .desktop-menu { display: none; } .mobile-menu-btn { display: block; }
+            .viz-container { padding: 120px 20px 60px 20px; }
+            .clean-grid { grid-template-columns: 1fr; gap: 40px; } /* Stack on mobile */
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="brand">Mohammad Fasahat</a>
+        <div class="nav-right">
+            <div class="desktop-menu">
+                <a href="works.html" class="active">Work</a>
+                <a href="about.html">About</a>
+            </div>
+            <div class="theme-toggle" id="themeToggle"></div>
+            <div class="mobile-menu-btn" id="mobileBtn">MENU</div>
+        </div>
+    </nav>
+
+    <div class="mobile-overlay" id="mobileOverlay">
+        <div class="mobile-links">
+            <a href="index.html">Home</a>
+            <a href="works.html">Work</a>
+            <a href="about.html">About</a>
+        </div>
+    </div>
+
+    <div class="viz-container">
+        
+        <div class="viz-header">
+            <h1 class="viz-title">Selected Visualizations</h1>
+            <p class="viz-desc">
+                A collection of atmospheric studies, competition entries, and personal explorations in digital matte painting and rendering.
+            </p>
+        </div>
+
+        <div class="clean-grid">
+            
+            <!-- Item 1: A Friend's House -->
+            <div class="viz-item" id="friends-house">
+                <img src="images/visualizations/friends-house.jpg" alt="A Friend's House">
+                <div class="viz-caption">A Friend's House</div>
+            </div>
+
+            <!-- Item 2: Formenta -->
+            <div class="viz-item">
+                <img src="images/visualizations/formenta.jpg" alt="Formenta Island Villa">
+                <div class="viz-caption">Formenta Island Villa</div>
+            </div>
+
+            <!-- Item 3: Dragon's Landing -->
+            <div class="viz-item">
+                <img src="images/visualizations/dragons.jpg" alt="Dragon's Landing">
+                <div class="viz-caption">Dragon's Landing</div>
+            </div>
+
+            <!-- Item 4: Campus -->
+            <div class="viz-item">
+                <img src="images/visualizations/campus.PNG" alt="Campus">
+                <div class="viz-caption">Campus</div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const mobileBtn = document.getElementById('mobileBtn');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+        
+        // --- THEME MEMORY ---
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') document.body.classList.add('light-mode');
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            if (document.body.classList.contains('light-mode')) {
+                localStorage.setItem('theme', 'light');
+            } else {
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Mobile Menu
+        let isMenuOpen = false;
+        mobileBtn.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            if(isMenuOpen) {
+                mobileOverlay.classList.add('active');
+                mobileBtn.innerText = "CLOSE";
+            } else {
+                mobileOverlay.classList.remove('active');
+                mobileBtn.innerText = "MENU";
+            }
+        });
+    </script>
+</body>
+</html>
