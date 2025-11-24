@@ -1,0 +1,392 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FAVICON LINK -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><style>@media(prefers-color-scheme:dark){line{stroke:white}}@media(prefers-color-scheme:light){line{stroke:black}}</style><line x1='32' y1='0' x2='32' y2='64' stroke='black' stroke-width='6'/><line x1='0' y1='32' x2='64' y2='32' stroke='black' stroke-width='6'/></svg>">
+    <title>Mohammad Fasahat | 526 Church St</title>
+    <style>
+        /* --- SHARED VARIABLES --- */
+        :root {
+            --bg-color: #050505;
+            --text-primary: #FFFFFF;
+            --text-secondary: #888888;
+            --line-color: rgba(255, 255, 255, 0.15);
+            --active-line-color: #FFFFFF;
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        body.light-mode {
+            --bg-color: #F4F4F4;
+            --text-primary: #111111;
+            --text-secondary: #666666;
+            --line-color: rgba(0, 0, 0, 0.15);
+            --active-line-color: #000000;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            transition: background-color 0.5s ease, color 0.5s ease;
+            overflow-x: hidden;
+            cursor: crosshair; 
+        }
+
+        a, button, .kinetic-divider, .theme-toggle, .mobile-menu-btn { cursor: pointer; }
+
+        /* --- NAV --- */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 40px 50px; position: fixed; top: 0; width: 100%; z-index: 200;
+            background: transparent;
+            border: none;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        .brand { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); text-decoration: none; }
+        .nav-right { display: flex; align-items: center; gap: 30px; }
+        .desktop-menu { display: flex; gap: 25px; }
+        .desktop-menu a { text-decoration: none; color: var(--text-secondary); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s; }
+        .desktop-menu a:hover, .desktop-menu a.active { color: var(--text-primary); }
+        .mobile-menu-btn { display: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-primary); }
+        .theme-toggle { width: 18px; height: 18px; border-radius: 50%; background-color: var(--text-primary); border: 1px solid var(--bg-color); transition: transform 0.3s ease; }
+        .theme-toggle:hover { transform: scale(1.1); }
+
+        /* --- MOBILE OVERLAY --- */
+        .mobile-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-color); z-index: 150;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+        }
+        .mobile-overlay.active { opacity: 1; pointer-events: all; }
+        .mobile-links a { display: block; font-size: 24px; color: var(--text-primary); text-decoration: none; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; text-align: center; }
+
+        /* --- PROJECT LAYOUT --- */
+        .project-container {
+            display: grid;
+            grid-template-columns: 30% 10% 60%; 
+            padding: 180px 50px 100px 50px;
+            max-width: 1600px;
+            margin: 0 auto;
+            align-items: start;
+            position: relative;
+        }
+
+        /* LEFT: Sticky Info */
+        .info-column {
+            position: sticky;
+            top: 180px; 
+            height: fit-content;
+        }
+
+        .project-meta {
+            margin-bottom: 40px;
+        }
+
+        .p-title {
+            font-size: 24px; font-weight: 400; line-height: 1.2;
+            margin-bottom: 15px; color: var(--text-primary);
+        }
+
+        .p-details {
+            font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;
+            line-height: 1.6;
+        }
+
+        .p-description {
+            font-size: 13px; line-height: 1.7; color: var(--text-primary);
+            text-align: justify;
+        }
+
+        /* CENTER: The Vertical Spine */
+        .spine-column {
+            position: relative;
+            height: 100%; 
+            display: flex; justify-content: center;
+        }
+
+        #spine-canvas {
+            position: fixed; 
+            top: 20%; 
+            height: 60%; 
+            width: 100px;
+            z-index: 0;
+            pointer-events: none; 
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+        }
+
+        /* RIGHT: Gallery */
+        .gallery-column {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            gap: 100px; 
+        }
+
+        .project-image {
+            width: 100%; height: auto;
+            display: block;
+            transition: opacity 0.5s ease;
+        }
+        .project-image:hover { opacity: 0.9; }
+
+        /* --- NEXT PROJECT LINK --- */
+        .next-project {
+            margin-top: 100px;
+            text-align: right;
+            padding-top: 20px;
+        }
+        .next-label { font-size: 10px; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 2px; }
+        .next-title { font-size: 18px; color: var(--text-primary); text-decoration: none; margin-top: 5px; display: block; transition: opacity 0.3s; }
+        .next-title:hover { opacity: 0.6; }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            nav { padding: 25px 20px; } .desktop-menu { display: none; } .mobile-menu-btn { display: block; }
+            
+            .project-container { 
+                grid-template-columns: 1fr; 
+                padding: 120px 20px 60px 20px;
+                gap: 40px;
+            }
+            .info-column { position: static; margin-bottom: 40px; }
+            .spine-column, #spine-canvas { display: none; } 
+            .gallery-column { gap: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="brand">Mohammad Fasahat</a>
+        <div class="nav-right">
+            <div class="desktop-menu">
+                <a href="works.html" class="active">Work</a>
+                <a href="about.html">About</a>
+            </div>
+            <div class="theme-toggle" id="themeToggle"></div>
+            <div class="mobile-menu-btn" id="mobileBtn">MENU</div>
+        </div>
+    </nav>
+
+    <div class="mobile-overlay" id="mobileOverlay">
+        <div class="mobile-links">
+            <a href="index.html">Home</a>
+            <a href="works.html">Work</a>
+            <a href="about.html">About</a>
+        </div>
+    </div>
+
+    <div class="project-container">
+        
+        <!-- 1. LEFT: STICKY INFO -->
+        <div class="info-column">
+            <div class="project-meta">
+                <h1 class="p-title">526 Church St</h1>
+                <div class="p-details">
+                    Charlotte, NC / 2022<br>
+                    Mixed-Use Development / Little 
+                </div>
+            </div>
+            <div class="p-description">
+                <p>
+                    A visionary mixed-use development in Uptown Charlotte, merging adaptive reuse with new construction. The masterplan introduces a multi-family tower, creative office spaces, destination retail, and an activated public plaza.
+                </p>
+                <br>
+                <p>
+                    Massing strategies respond to solar orientation and urban corridors, while the stacked form concept and landscape integration create a signature identity along Brooklyn Village Avenue. The project balances the preservation of historic context with the density of modern urban living.
+                </p>
+            </div>
+            
+            <div class="next-project">
+                <span class="next-label">Next Project</span>
+                <!-- Update this link to your next project -->
+                <a href="inpro.html" class="next-title">Inpro Manufactury →</a>
+            </div>
+        </div>
+
+        <!-- 2. CENTER: VERTICAL SPINE -->
+        <div class="spine-column">
+            <canvas id="spine-canvas"></canvas>
+        </div>
+
+        <!-- 3. RIGHT: GALLERY -->
+        <div class="gallery-column">
+            
+            <!-- Hero / Night Shot -->
+            <img src="images/church-st/church - 1.jpg" class="project-image" alt="Night Render">
+            
+            <!-- Street View -->
+            <img src="images/church-st/church - 2.jpg" class="project-image" alt="Street Level">
+
+            <!-- Plaza / Retail -->
+            <img src="images/church-st/church - 3.jpg" class="project-image" alt="Public Plaza">
+
+            <!-- Massing / Diagram -->
+            <img src="images/church-st/church - 4.jpg" class="project-image" alt="Massing Concept">
+
+            <!-- Context -->
+            <img src="images/church-st/church - 5.jpg" class="project-image" alt="Urban Context">
+            
+            <!-- Additional Views -->
+            <img src="images/church-st/church - 6.jpg" class="project-image" alt="Alternative View">
+
+        </div>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const mobileBtn = document.getElementById('mobileBtn');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+        
+        // --- THEME MEMORY ---
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') document.body.classList.add('light-mode');
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            if (document.body.classList.contains('light-mode')) {
+                localStorage.setItem('theme', 'light');
+            } else {
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Mobile Menu
+        let isMenuOpen = false;
+        mobileBtn.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            if(isMenuOpen) {
+                mobileOverlay.classList.add('active');
+                mobileBtn.innerText = "CLOSE";
+            } else {
+                mobileOverlay.classList.remove('active');
+                mobileBtn.innerText = "MENU";
+            }
+        });
+
+        // --- VERTICAL SPINE PHYSICS ---
+        const canvas = document.getElementById('spine-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let points = [];
+        const totalPoints = 40;
+        const spring = 0.05;
+        const damping = 0.1; 
+        const mouseRadius = 100; 
+        
+        let mouse = { x: -1000, y: -1000 };
+        let scrollSpeed = 0;
+        let lastScrollY = window.scrollY;
+
+        class Point {
+            constructor(x, y) {
+                this.x = x; this.ix = x; this.y = y; this.vx = 0;
+            }
+
+            update() {
+                let forceX = (this.x - this.ix) * spring;
+
+                let rect = canvas.getBoundingClientRect();
+                let relativeMouseX = mouse.x - rect.left;
+                let relativeMouseY = mouse.y - rect.top;
+
+                let dx = relativeMouseX - this.x; 
+                let dy = relativeMouseY - this.y; 
+                let dist = Math.sqrt(dx*dx + dy*dy);
+
+                if (dist < mouseRadius) {
+                    const force = (mouseRadius - dist) / mouseRadius;
+                    const dir = dx < 0 ? 1 : -1; 
+                    this.vx += force * dir * 2; 
+                }
+
+                if (Math.abs(scrollSpeed) > 2) {
+                    const ny = this.y / canvas.height; 
+                    const wave = Math.sin(ny * Math.PI); 
+                    this.vx += scrollSpeed * wave * 0.05;
+                }
+
+                this.vx -= forceX;
+                this.vx *= (1 - damping);
+                this.x += this.vx;
+            }
+        }
+
+        function initCanvas() {
+            resize();
+            points = [];
+            const centerX = canvas.width / 2;
+            const gap = canvas.height / (totalPoints - 1);
+            
+            for (let i = 0; i < totalPoints; i++) {
+                points.push(new Point(centerX, i * gap));
+            }
+        }
+
+        function resize() {
+            canvas.width = canvas.parentElement.offsetWidth;
+            canvas.height = canvas.parentElement.offsetHeight; 
+            if(points.length > 0) {
+                const centerX = canvas.width / 2;
+                points.forEach(p => p.ix = centerX);
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const style = getComputedStyle(document.body);
+            const lineColor = style.getPropertyValue('--line-color').trim();
+            const activeColor = style.getPropertyValue('--active-line-color').trim();
+
+            const currentScroll = window.scrollY;
+            scrollSpeed = currentScroll - lastScrollY;
+            lastScrollY = currentScroll;
+
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+
+            let isMoving = Math.abs(scrollSpeed) > 5;
+
+            for (let i = 0; i < points.length - 1; i++) {
+                const p = points[i];
+                const nextP = points[i + 1];
+                p.update();
+                
+                const xc = (p.x + nextP.x) / 2;
+                const yc = (p.y + nextP.y) / 2;
+                ctx.quadraticCurveTo(p.x, p.y, xc, yc);
+            }
+            
+            const last = points[points.length-1];
+            last.update();
+            ctx.lineTo(last.x, last.y);
+
+            ctx.strokeStyle = isMoving ? activeColor : lineColor;
+            ctx.lineWidth = isMoving ? 1.5 : 1;
+            ctx.stroke();
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => { initCanvas(); });
+        
+        window.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouse.x = e.clientX - rect.left;
+            mouse.y = e.clientY - rect.top;
+        });
+
+        initCanvas();
+        animate();
+
+    </script>
+</body>
+</html>
