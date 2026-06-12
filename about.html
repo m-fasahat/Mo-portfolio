@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -41,7 +41,7 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        a, button, .theme-toggle, .mobile-menu-btn { cursor: pointer; }
+        a, button { cursor: pointer; }
 
         /* --- NAV --- */
         nav {
@@ -50,22 +50,10 @@
         }
         .brand { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); text-decoration: none; }
         .nav-right { display: flex; align-items: center; gap: 30px; }
-        .desktop-menu { display: flex; gap: 25px; }
-        .desktop-menu a { text-decoration: none; color: var(--text-secondary); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s; }
-        .desktop-menu a:hover, .desktop-menu a.active { color: var(--text-primary); }
-        .mobile-menu-btn { display: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-primary); }
-        .theme-toggle { width: 18px; height: 18px; border-radius: 50%; background-color: var(--text-primary); border: 1px solid var(--bg-color); transition: transform 0.3s ease; }
-        .theme-toggle:hover { transform: scale(1.1); }
+        .nav-right a { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); transition: color 0.3s; text-decoration: none; }
+        .nav-right a:hover { color: var(--text-primary); }
+        .theme-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--text-primary); cursor: pointer; transition: background .3s; }
 
-        /* --- MOBILE OVERLAY --- */
-        .mobile-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--bg-color); z-index: 150;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
-        }
-        .mobile-overlay.active { opacity: 1; pointer-events: all; }
-        .mobile-links a { display: block; font-size: 24px; color: var(--text-primary); text-decoration: none; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; text-align: center; }
 
         /* --- CENTER LAYOUT --- */
         .content-wrapper {
@@ -140,7 +128,6 @@
         @media (max-width: 900px) {
             body { overflow-y: auto; height: auto; }
             nav { padding: 25px 20px; }
-            .desktop-menu { display: none; } .mobile-menu-btn { display: block; }
 
             .content-wrapper { padding: 120px 20px 100px 20px; display: block; }
             .grid-layout { grid-template-columns: 1fr; gap: 50px; }
@@ -154,21 +141,12 @@
     <nav>
         <a href="index.html" class="brand">Mohammad Fasahat</a>
         <div class="nav-right">
-            <div class="desktop-menu">
-                <a href="works.html">Work</a>
-                <a href="about.html" class="active">About</a>
-            </div>
-            <div class="theme-toggle" id="themeToggle"></div>
-            <div class="mobile-menu-btn" id="mobileBtn">MENU</div>
+            <a href="index.html">Projects</a>
+            <a href="about.html">About</a>
+            <div class="theme-dot" id="themeDot"></div>
         </div>
     </nav>
 
-    <div class="mobile-overlay" id="mobileOverlay">
-        <div class="mobile-links">
-            <a href="index.html">Home</a>
-            <a href="works.html">Work</a>
-            <a href="about.html">About</a>
-        </div>
     </div>
 
     <div class="content-wrapper">
@@ -226,37 +204,21 @@
     </div>
 
     <script>
-        const themeToggle = document.getElementById('themeToggle');
-        const mobileBtn = document.getElementById('mobileBtn');
-        const mobileOverlay = document.getElementById('mobileOverlay');
-        
+        const themeDot = document.getElementById('themeDot');
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') document.body.classList.add('light-mode');
+        themeDot.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        });
+
         // --- THEME MEMORY ---
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'light') {
             document.body.classList.add('light-mode');
         }
 
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('light-mode');
-            if (document.body.classList.contains('light-mode')) {
-                localStorage.setItem('theme', 'light');
-            } else {
-                localStorage.setItem('theme', 'dark');
-            }
-        });
 
-        // Mobile Menu
-        let isMenuOpen = false;
-        mobileBtn.addEventListener('click', () => {
-            isMenuOpen = !isMenuOpen;
-            if(isMenuOpen) {
-                mobileOverlay.classList.add('active');
-                mobileBtn.innerText = "CLOSE";
-            } else {
-                mobileOverlay.classList.remove('active');
-                mobileBtn.innerText = "MENU";
-            }
-        });
 
         // --- PHYSICS LINE (DIVIDER) ---
         const canvas = document.getElementById('divider-canvas');

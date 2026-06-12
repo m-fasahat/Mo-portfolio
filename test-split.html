@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mohammad Fasahat</title>
+    <title>Mohammad Fasahat | Test</title>
     <style>
         :root {
             --bg:    #050505;
@@ -24,7 +24,7 @@
         nav {
             position:fixed; top:0; left:0; width:100%; height:var(--nav-h);
             display:flex; align-items:center; justify-content:space-between;
-            padding:0 50px; z-index:500;
+            padding:0 50px; z-index:300;
         }
         .brand { font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; }
         .nav-right { display:flex; align-items:center; gap:28px; }
@@ -35,36 +35,6 @@
         .nav-right a:hover { color:var(--fg); }
         .theme-dot { width:16px; height:16px; border-radius:50%; background:var(--fg); cursor:pointer; transition:background .3s; }
         body.light-mode .theme-dot { background:#111111; }
-
-        /* MENU BUTTON */
-        .menu-btn {
-            display:none; font-size:11px; font-weight:600; letter-spacing:1px;
-            text-transform:uppercase; color:var(--fg); cursor:pointer;
-            padding:10px; background:none; border:none;
-        }
-        body.light-mode .menu-btn { color:#111111; }
-
-        /* MOBILE NAV PANEL */
-        #nav-panel {
-            position:fixed; inset:0;
-            background:var(--bg);
-            display:flex; flex-direction:column;
-            align-items:center; justify-content:center;
-            z-index:400;
-            opacity:0; pointer-events:none;
-            transition:opacity .4s ease;
-        }
-        #nav-panel.open { opacity:1; pointer-events:all; }
-        #nav-panel a {
-            display:block; font-size:24px; color:var(--fg);
-            text-decoration:none; text-transform:uppercase; letter-spacing:2px;
-            margin-bottom:30px; text-align:center;
-            transition:opacity .3s;
-        }
-        #nav-panel a:last-child { margin-bottom:0; }
-        #nav-panel a:hover, #nav-panel a:active { opacity:0.6; }
-        body.light-mode #nav-panel { background:#F4F4F4; }
-        body.light-mode #nav-panel a { color:#111111; }
 
         /* BACKGROUND IMAGES */
         .image-container {
@@ -94,20 +64,6 @@
         body.light-mode #hint { color:#666666; }
         #hint.gone { opacity:0; }
 
-        /* SCROLL CHEVRON */
-        @keyframes chevronPulse {
-            0%, 100% { transform: translateY(-50%) translateX(0); }
-            50%       { transform: translateY(-50%) translateX(4px); }
-        }
-        #scroll-chevron {
-            position:fixed; right:28px; top:50%; transform:translateY(-50%);
-            font-size:24px; opacity:0; transition:opacity .6s; z-index:25;
-            pointer-events:none; color:var(--fg);
-            animation:chevronPulse 2s ease-in-out infinite;
-        }
-        #scroll-chevron.visible { opacity:0.45; }
-        body.light-mode #scroll-chevron { color:#111111; }
-
         /* CONTENT AREAS */
         .cat-content {
             position:fixed; left:0; right:0;
@@ -130,6 +86,7 @@
         }
         .tile-img {
             overflow:hidden;
+            /* height set by JS */
         }
         .tile-img img {
             height:100%; width:auto; display:block; object-fit:cover;
@@ -145,13 +102,13 @@
             gap:10px; padding:9px 1px 0;
         }
         .tile-name {
-            font-size:11px; letter-spacing:0.5px; text-transform:uppercase;
-            color:var(--fg); opacity:0.9; white-space:nowrap;
+            font-size:9px; letter-spacing:0.5px; text-transform:uppercase;
+            color:var(--fg); opacity:0.75; white-space:nowrap;
             overflow:hidden; text-overflow:ellipsis; max-width:180px;
         }
         body.light-mode .tile-name { color:#111111; }
         .tile-date {
-            font-size:11px; color:var(--muted); flex-shrink:0;
+            font-size:9px; color:var(--muted); flex-shrink:0;
             font-variant-numeric:tabular-nums;
         }
         body.light-mode .tile-date { color:#777777; }
@@ -161,14 +118,9 @@
             :root { --nav-h: 68px; }
             body { cursor: default; }
             nav { padding: 0 24px; }
-            .nav-right { gap: 20px; }
             .nav-right a { display: none; }
-            .menu-btn { display: block; }
-            .brand { font-size: 11px; letter-spacing: 1.2px; }
-            .theme-dot { width: 14px; height: 14px; }
             .cat-content { padding: 0 20px; gap: 14px; }
             #hint { left: 20px; bottom: 30px; }
-            #scroll-chevron { right: 16px; font-size: 20px; }
         }
 
     </style>
@@ -180,83 +132,75 @@
     <div class="nav-right">
         <a href="index.html">Projects</a>
         <a href="about.html">About</a>
-        <button class="menu-btn" id="menuBtn">MENU</button>
         <div class="theme-dot" id="themeDot"></div>
     </div>
 </nav>
 
-<div id="nav-panel">
-    <a href="index.html">Home</a>
-    <a href="works.html">Projects</a>
-    <a href="about.html">About</a>
-</div>
-
 <div class="image-container">
-    <img src="images/hero-1.jpg" class="bg-image" loading="lazy" alt="">
-    <img src="images/hero-5.jpg" class="bg-image" loading="lazy" alt="">
-    <img src="images/eco/hero-2.jpg" class="bg-image" loading="lazy" alt="">
-    <img src="images/yazd/yazd-2.jpg" class="bg-image" loading="lazy" alt="">
-    <img src="images/housing/housing-1.jpg" class="bg-image" loading="lazy" alt="">
-    <img src="images/visualizations/friends-house.jpg" class="bg-image" loading="lazy" alt="">
-    <img src="images/visualizations/dragons.jpg" class="bg-image" loading="lazy" alt="">
-    <img src="images/light/light-1.jpg" class="bg-image" loading="lazy" alt="">
+    <img src="images/hero-1.jpg" class="bg-image">
+    <img src="images/hero-5.jpg" class="bg-image">
+    <img src="images/eco/hero-2.jpg" class="bg-image">
+    <img src="images/yazd/yazd-2.jpg" class="bg-image">
+    <img src="images/housing/housing-1.jpg" class="bg-image">
+    <img src="images/visualizations/friends-house.jpg" class="bg-image">
+    <img src="images/visualizations/dragons.jpg" class="bg-image">
+    <img src="images/light/light-1.jpg" class="bg-image">
 </div>
 
 <canvas id="canvas"></canvas>
 <div id="hint">interact to reveal</div>
-<div id="scroll-chevron">→</div>
 
 <!-- ── CONTENT AREAS ─────────────────────────────────────── -->
 <div class="cat-content" id="cc-0">
     <a class="tile" href="light-unfolds.html">
-        <div class="tile-img"><img src="images/light/light-1.jpg" alt="" loading="lazy"></div>
+        <div class="tile-img"><img src="images/light/light-1.jpg" alt=""></div>
         <div class="tile-cap"><span class="tile-name">Where the Light Unfolds</span><span class="tile-date">2024</span></div>
     </a>
     <a class="tile" href="better-half.html">
-        <div class="tile-img"><img src="images/ghana/ghana-33.jpg" alt="" loading="lazy"></div>
+        <div class="tile-img"><img src="images/ghana/ghana-33.jpg" alt=""></div>
         <div class="tile-cap"><span class="tile-name">Better Half</span><span class="tile-date">2023</span></div>
     </a>
     <a class="tile" href="data-farm.html">
-        <div class="tile-img"><img src="images/zero-tower/work-3.jpg" alt="" loading="lazy"></div>
+        <div class="tile-img"><img src="images/zero-tower/work-3.jpg" alt=""></div>
         <div class="tile-cap"><span class="tile-name">Data Farm</span><span class="tile-date">2023</span></div>
     </a>
     <a class="tile" href="yard-to-yard.html">
-        <div class="tile-img"><img src="images/yard/yard-1.jpg" alt="" loading="lazy"></div>
+        <div class="tile-img"><img src="images/yard/yard-1.jpg" alt=""></div>
         <div class="tile-cap"><span class="tile-name">Yard to Yard</span><span class="tile-date">2022</span></div>
     </a>
     <a class="tile" href="rolling-diamond.html">
-        <div class="tile-img"><img src="images/stadium/hero-4.jpg" alt="" loading="lazy"></div>
+        <div class="tile-img"><img src="images/stadium/hero-4.jpg" alt=""></div>
         <div class="tile-cap"><span class="tile-name">Rolling Diamond</span><span class="tile-date">2022</span></div>
     </a>
     <a class="tile" href="ecolodge.html">
-        <div class="tile-img"><img src="images/eco/hero-6.jpg" alt="" loading="lazy"></div>
+        <div class="tile-img"><img src="images/eco/hero-6.jpg" alt=""></div>
         <div class="tile-cap"><span class="tile-name">Ecolodge</span><span class="tile-date">2021</span></div>
     </a>
     <a class="tile" href="house-in-yazd.html">
-        <div class="tile-img"><img src="images/yazd/yazd-2.jpg" alt="" loading="lazy"></div>
+        <div class="tile-img"><img src="images/yazd/yazd-2.jpg" alt=""></div>
         <div class="tile-cap"><span class="tile-name">A House in Yazd</span><span class="tile-date">2021</span></div>
     </a>
     <a class="tile" href="social-housing.html">
-        <div class="tile-img"><img src="images/housing/housing-1.jpg" alt="" loading="lazy"></div>
+        <div class="tile-img"><img src="images/housing/housing-1.jpg" alt=""></div>
         <div class="tile-cap"><span class="tile-name">Social Housing</span><span class="tile-date">2020</span></div>
     </a>
 </div>
 
 <div class="cat-content" id="cc-1">
     <a class="tile" href="visualizations.html#friends-house">
-        <div class="tile-img"><img src="images/visualizations/friends-house.jpg" alt="" loading="lazy"></div>
+        <div class="tile-img"><img src="images/visualizations/friends-house.jpg" alt=""></div>
         <div class="tile-cap"><span class="tile-name">A Friend's House</span><span class="tile-date">2024</span></div>
     </a>
     <a class="tile" href="visualizations.html">
-        <div class="tile-img"><img src="images/visualizations/formenta.jpg" alt="" loading="lazy"></div>
+        <div class="tile-img"><img src="images/visualizations/formenta.jpg" alt=""></div>
         <div class="tile-cap"><span class="tile-name">Formenta Villa</span><span class="tile-date">2023</span></div>
     </a>
     <a class="tile" href="visualizations.html">
-        <div class="tile-img"><img src="images/visualizations/dragons.jpg" alt="" loading="lazy"></div>
+        <div class="tile-img"><img src="images/visualizations/dragons.jpg" alt=""></div>
         <div class="tile-cap"><span class="tile-name">Dragon's Landing</span><span class="tile-date">2023</span></div>
     </a>
     <a class="tile" href="visualizations.html">
-        <div class="tile-img"><img src="images/visualizations/campus.png" alt="" loading="lazy"></div>
+        <div class="tile-img"><img src="images/visualizations/campus.png" alt=""></div>
         <div class="tile-cap"><span class="tile-name">Campus</span><span class="tile-date">2022</span></div>
     </a>
 </div>
@@ -299,10 +243,10 @@ const CATS    = ['Architecture', 'Visualization', 'AI & Generative', 'Computatio
 const N_PTS   = 80;
 
 // Soft, gentle physics
-const SPRING  = 0.014;
-const DAMPING = 0.094;
-const MOUSE_R = 140;
-const PUSH_F  = 0.38;
+const SPRING  = 0.014;   // slow spring return
+const DAMPING = 0.094;   // damps oscillation quickly
+const MOUSE_R = 140;     // narrow influence area
+const PUSH_F  = 0.38;    // barely-there push
 
 // Compressed strip sizing
 const STRIP_H  = 44;
@@ -312,7 +256,7 @@ const TITLE_G  = 30;
 const CONTENT_G= 12;
 
 /* ── STATE ──────────────────────────────────────────────── */
-let state       = 'intro';
+let state       = 'intro';  // 'intro' | 'splitting' | 'menu' | 'expanded'
 let expandedIdx = -1;
 
 /* ── CANVAS ──────────────────────────────────────────────── */
@@ -336,6 +280,7 @@ window.addEventListener('resize', () => { resizeCanvas(); initLines(); });
 
 /* ── GEOMETRY ────────────────────────────────────────────── */
 function menuY(i) {
+    // Use generous viewport range for spacious separation
     const top = Math.max(NAV_H + 90, H * 0.22);
     const bot = H * 0.90;
     return top + (bot - top) * (i / (N - 1));
@@ -362,7 +307,7 @@ class Line {
         this.baseY      = baseY;
         this.pts        = [];
         this.opacity    = 0;
-        this.flySpring  = null;
+        this.flySpring  = null;  // override spring for fly-away animation
         this.build();
     }
 
@@ -371,7 +316,7 @@ class Line {
             x:  (i / (N_PTS - 1)) * W,
             y:  this.baseY,
             vy: 0,
-            wo: 0
+            wo: 0   // wave offset — spring pulls toward baseY + wo
         }));
     }
 
@@ -472,37 +417,19 @@ let labelAlpha  = Array(N).fill(0);
 /* ── CONTENT AREAS ───────────────────────────────────────── */
 const contentEls = Array.from({ length: N }, (_, i) => document.getElementById('cc-' + i));
 
-/* ── SCROLL CHEVRON ──────────────────────────────────────── */
-const scrollChevron = document.getElementById('scroll-chevron');
-function updateScrollChevron() {
-    if (state === 'expanded' && expandedIdx >= 0) {
-        const el = contentEls[expandedIdx];
-        if (el) {
-            const overflow  = el.scrollWidth - el.clientWidth;
-            const remaining = overflow - el.scrollLeft;
-            if (overflow > 20 && remaining > 40) {
-                scrollChevron.classList.add('visible');
-                return;
-            }
-        }
-    }
-    scrollChevron.classList.remove('visible');
-}
-
-contentEls.forEach(el => el.addEventListener('scroll', updateScrollChevron));
-window.addEventListener('resize', updateScrollChevron);
-
 function showContent(idx) {
     const { top, height } = contentBounds(idx);
     const el = contentEls[idx];
     el.style.top    = top + 'px';
     el.style.height = height + 'px';
 
+    // Image portion = 62% of content height → leaves breathing room above & below within tile
     const imgH = Math.round(height * 0.62);
     el.querySelectorAll('.tile-img').forEach(t => {
         t.style.height = imgH + 'px';
-        t.style.width  = '';
+        t.style.width  = '';  // let natural img width flow
     });
+    // Placeholder empty tiles need explicit width
     el.querySelectorAll('.tile.empty .tile-img').forEach(t => {
         t.style.width = Math.round(imgH * 1.35) + 'px';
     });
@@ -522,6 +449,7 @@ function fadeTo(line, target, ms) {
     const t0    = performance.now();
     (function tick(t) {
         const p = Math.min((t - t0) / ms, 1);
+        // ease-out cubic
         const e = 1 - Math.pow(1 - p, 3);
         line.opacity = start + (target - start) * e;
         if (p < 1) requestAnimationFrame(tick);
@@ -535,11 +463,13 @@ function triggerSplit() {
     hideImages();
     document.getElementById('hint').classList.add('gone');
 
+    // Lift intro line upward uniformly — all pts same velocity for clean motion
     introLine.pts.forEach(p => { p.vy = -11; });
     introLine.setBaseY(NAV_H - 420);
-    introLine.flySpring = 0.055;
+    introLine.flySpring = 0.055;  // faster spring so it doesn't decelerate too soon
     fadeTo(introLine, 0, 900);
 
+    // Staggered emergence: each cat line blooms from center, springs to its position
     const originY = H * 0.5;
     catLines.forEach((l, i) => {
         setTimeout(() => {
@@ -549,6 +479,7 @@ function triggerSplit() {
         }, 280 + i * 130);
     });
 
+    // Labels fade in after last line appears
     setTimeout(() => {
         labelTarget = Array(N).fill(1);
         state = 'menu';
@@ -564,7 +495,6 @@ function expandCat(idx) {
         labelTarget = Array(N).fill(1);
         expandedIdx = -1;
         state = 'menu';
-        updateScrollChevron();
         return;
     }
 
@@ -578,14 +508,14 @@ function expandCat(idx) {
     labelTarget[idx] = 1;
 
     hideAllContent();
-    setTimeout(() => { showContent(idx); updateScrollChevron(); }, 320);
+    setTimeout(() => showContent(idx), 320);
 }
 
 /* ── CLICK (desktop only — touch handled separately) ─────── */
 let lastTouchEnd = 0;
 
 cvs.addEventListener('click', e => {
-    if (Date.now() - lastTouchEnd < 500) return;
+    if (Date.now() - lastTouchEnd < 500) return; // suppress ghost click after touch
     recordInteraction();
     if (state === 'intro') { triggerSplit(); return; }
 
@@ -684,7 +614,6 @@ function scrollStep() {
     if (el) el.scrollLeft = currentScroll;
     if (Math.abs(d) > 0.4) rafScroll = requestAnimationFrame(scrollStep);
     else { currentScroll = targetScroll; if (el) el.scrollLeft = targetScroll; rafScroll = null; }
-    updateScrollChevron();
 }
 
 /* ── LABEL DRAW ──────────────────────────────────────────── */
@@ -699,9 +628,9 @@ function drawLabel(i, isDark) {
     const inactiveCol = isDark ? '#888888'              : '#555555';
     const closeCol    = isDark ? 'rgba(140,140,140,1)'  : 'rgba(90,90,90,1)';
 
-    const numX   = mob ? 20  : 50;
-    const catX   = mob ? 40  : 80;
-    const catFs  = mob ? 10  : 11;
+    const numX  = mob ? 20  : 50;
+    const catX  = mob ? 40  : 80;
+    const catFs = mob ? 10  : 11;
     const closeX = W - (mob ? 20 : 52);
 
     ctx.save();
@@ -733,6 +662,7 @@ function drawLabel(i, isDark) {
 function render() {
     ctx.clearRect(0, 0, W, H);
 
+    // Lerp label opacities
     labelAlpha = labelAlpha.map((v, i) => v + (labelTarget[i] - v) * 0.06);
 
     const isDark   = !document.body.classList.contains('light-mode');
@@ -740,7 +670,7 @@ function render() {
     const introCol = isDark ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.65)';
 
     // ── IDLE WAVE ─────────────────────────────────────────
-    const idle    = Date.now() - lastInteraction > WAVE_TIMEOUT;
+    const idle = Date.now() - lastInteraction > WAVE_TIMEOUT;
     const waveSpd = W < 768 ? 0.012 : 0.008;
     const waveW   = W < 768 ? 0.30  : 0.15;
     const waveAmp = W < 768 ? 30    : 55;
@@ -764,12 +694,14 @@ function render() {
         catLines.forEach(l => l.pts.forEach(p => p.wo = 0));
     }
 
+    // Intro line — no mouse push while flying up
     if (introLine.opacity > 0.01) {
         const pf = state === 'splitting' ? 0 : PUSH_F;
         introLine.update(mx, my, pf, introLine.flySpring || SPRING);
         introLine.draw(introCol, 1.5);
     }
 
+    // Category lines
     catLines.forEach((l, i) => {
         if (l.opacity < 0.01) return;
         const isActive = (state === 'expanded' && i === expandedIdx);
@@ -785,23 +717,6 @@ render();
 
 /* ── HINT TEXT ───────────────────────────────────────────── */
 if (W < 768) document.getElementById('hint').textContent = 'tap to reveal';
-
-/* ── MOBILE MENU ─────────────────────────────────────────── */
-const menuBtn  = document.getElementById('menuBtn');
-const navPanel = document.getElementById('nav-panel');
-
-menuBtn.addEventListener('click', () => {
-    const opening = !navPanel.classList.contains('open');
-    navPanel.classList.toggle('open', opening);
-    menuBtn.textContent = opening ? 'CLOSE' : 'MENU';
-});
-
-navPanel.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-        navPanel.classList.remove('open');
-        menuBtn.textContent = 'MENU';
-    });
-});
 
 /* ── THEME ───────────────────────────────────────────────── */
 if (localStorage.getItem('theme') === 'light') {

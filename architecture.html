@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="0; url=index.html">
+    <script>window.location.replace('index.html');</script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><style>@media(prefers-color-scheme:dark){line{stroke:white}}@media(prefers-color-scheme:light){line{stroke:black}}</style><line x1='32' y1='0' x2='32' y2='64' stroke='black' stroke-width='6'/><line x1='0' y1='32' x2='64' y2='32' stroke='black' stroke-width='6'/></svg>">
+    <title>Mohammad Fasahat | Architecture</title>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-primary: #FFFFFF;
+            --text-secondary: #888888;
+            --line-color: rgba(255, 255, 255, 0.2);
+            --active-line-color: #FFFFFF;
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+        body.light-mode {
+            --bg-color: #F4F4F4;
+            --text-primary: #111111;
+            --text-secondary: #666666;
+            --line-color: rgba(0, 0, 0, 0.2);
+            --active-line-color: #000000;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg-color); color: var(--text-primary); font-family: var(--font-main); transition: background-color 0.5s ease, color 0.5s ease; overflow-x: hidden; cursor: crosshair; }
+        a, button, .project-row { cursor: pointer; }
+
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 40px 50px; position: fixed; top: 0; width: 100%;
+            z-index: 200; background: var(--bg-color); transition: background-color 0.5s ease;
+        }
+        .brand { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); text-decoration: none; }
+        .nav-right { display: flex; align-items: center; gap: 30px; }
+        .nav-right a { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); transition: color 0.3s; text-decoration: none; }
+        .nav-right a:hover { color: var(--text-primary); }
+        .theme-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--text-primary); cursor: pointer; transition: background .3s; }
+
+
+        .hover-reveal {
+            position: fixed; width: 400px; height: 280px; top: 0; left: 0;
+            opacity: 0; pointer-events: none; z-index: 0; overflow: hidden;
+            transition: opacity 0.2s, transform 0.1s ease-out;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5); background-color: #333;
+        }
+        .hover-reveal img { width: 100%; height: 100%; object-fit: cover; }
+        .hover-reveal.active { opacity: 1; }
+
+        .index-container {
+            margin-top: 180px; padding-bottom: 100px;
+            width: 100%; max-width: 1400px;
+            margin-left: auto; margin-right: auto;
+            padding-left: 50px; padding-right: 50px;
+            position: relative; z-index: 10;
+        }
+        .list-header {
+            display: flex; border-bottom: 1px solid var(--line-color);
+            padding-bottom: 15px; margin-bottom: 0;
+            font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary);
+        }
+        .col-1 { width: 10%; }
+        .col-2 { width: 50%; }
+        .col-3 { width: 20%; }
+        .col-4 { width: 20%; text-align: right; }
+
+        .project-row {
+            display: flex; align-items: center; padding: 35px 0;
+            position: relative; text-decoration: none; flex-wrap: wrap; z-index: 70;
+        }
+        .row-canvas { position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; pointer-events: none; z-index: 60; }
+        .p-num { font-size: 11px; color: var(--text-secondary); font-family: 'Courier New', monospace; transition: color 0.3s; }
+        .p-title { font-size: 24px; font-weight: 400; color: var(--text-primary); letter-spacing: -0.5px; transition: padding-left 0.3s; }
+        .p-type { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
+        .p-loc { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; text-align: right; }
+        .project-row:hover .p-title { padding-left: 15px; }
+        .project-row:hover .p-num { color: var(--text-primary); }
+
+        .mobile-only-img { display: none; width: 100%; height: 250px; object-fit: cover; margin-top: 20px; margin-bottom: 10px; }
+
+        @media (max-width: 768px) {
+            nav { padding: 25px 20px; }
+            .index-container { padding: 0 20px; margin-top: 120px; }
+            .list-header { display: none; }
+            .col-1, .col-3, .col-4 { display: none; }
+            .col-2 { width: 100%; }
+            .project-row { padding: 30px 0; flex-direction: column; align-items: flex-start; }
+            .p-title { font-size: 24px; margin-bottom: 10px; padding-left: 0 !important; }
+            .mobile-only-img { display: block; }
+            .hover-reveal { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="brand">Mohammad Fasahat</a>
+        <div class="nav-right">
+            <a href="works.html">Projects</a>
+            <a href="about.html">About</a>
+            <div class="theme-dot" id="themeDot"></div>
+        </div>
+    </nav>
+
+    </div>
+
+    <div class="hover-reveal" id="revealbox">
+        <img src="" id="revealimg">
+    </div>
+
+    <div class="index-container">
+        <div class="list-header">
+            <div class="col-1">No.</div>
+            <div class="col-2">Project</div>
+            <div class="col-3">Category</div>
+            <div class="col-4">Location / Year</div>
+        </div>
+
+        <a href="light-unfolds.html" class="project-row" data-img="images/light/light-1.jpg">
+            <div class="col-1 p-num">01</div>
+            <div class="col-2 p-title">Where the Light Unfolds</div>
+            <div class="col-3 p-type">Architecture</div>
+            <div class="col-4 p-loc">Italy / 2024</div>
+        </a>
+
+        <a href="better-half.html" class="project-row" data-img="images/ghana/ghana-33.jpg">
+            <div class="col-1 p-num">02</div>
+            <div class="col-2 p-title">Better Half</div>
+            <div class="col-3 p-type">Architecture</div>
+            <div class="col-4 p-loc">Ghana / 2023</div>
+        </a>
+
+        <a href="data-farm.html" class="project-row" data-img="images/zero-tower/work-3.jpg">
+            <div class="col-1 p-num">03</div>
+            <div class="col-2 p-title">Data Farm</div>
+            <div class="col-3 p-type">Architecture</div>
+            <div class="col-4 p-loc">Charlotte / 2021</div>
+        </a>
+
+        <a href="yard-to-yard.html" class="project-row" data-img="images/yard/yard-1.jpg">
+            <div class="col-1 p-num">04</div>
+            <div class="col-2 p-title">Yard to Yard</div>
+            <div class="col-3 p-type">Architecture</div>
+            <div class="col-4 p-loc">Charlotte / 2021</div>
+        </a>
+
+        <a href="rolling-diamond.html" class="project-row" data-img="images/stadium/hero-4.jpg">
+            <div class="col-1 p-num">05</div>
+            <div class="col-2 p-title">Rolling Diamond</div>
+            <div class="col-3 p-type">Architecture</div>
+            <div class="col-4 p-loc">Beijing / 2019</div>
+        </a>
+
+        <a href="ecolodge.html" class="project-row" data-img="images/eco/hero-6.jpg">
+            <div class="col-1 p-num">06</div>
+            <div class="col-2 p-title">Ecolodge</div>
+            <div class="col-3 p-type">Architecture</div>
+            <div class="col-4 p-loc">Golpayegan / 2018</div>
+        </a>
+
+        <a href="house-in-yazd.html" class="project-row" data-img="images/yazd/yazd-2.jpg">
+            <div class="col-1 p-num">07</div>
+            <div class="col-2 p-title">A House in Yazd</div>
+            <div class="col-3 p-type">Architecture</div>
+            <div class="col-4 p-loc">Yazd / 2017</div>
+        </a>
+
+        <a href="social-housing.html" class="project-row" data-img="images/housing/housing-1.jpg">
+            <div class="col-1 p-num">08</div>
+            <div class="col-2 p-title">Social Housing</div>
+            <div class="col-3 p-type">Architecture</div>
+            <div class="col-4 p-loc">Tabriz / 2018</div>
+        </a>
+
+        <a href="https://m-fasahat.github.io/ConnectiveEnvironments/" target="_blank" class="project-row" data-img="images/mech.png">
+            <div class="col-1 p-num">09</div>
+            <div class="col-2 p-title">The Mechanical Lungs ↗</div>
+            <div class="col-3 p-type">Installation</div>
+            <div class="col-4 p-loc">Charlotte / 2021</div>
+        </a>
+
+        <a href="church-st.html" class="project-row" data-img="images/church-st/church - 4.jpg">
+            <div class="col-1 p-num">10</div>
+            <div class="col-2 p-title">526 Church St</div>
+            <div class="col-3 p-type">Practice</div>
+            <div class="col-4 p-loc">Charlotte / 2022</div>
+        </a>
+
+        <a href="inpro.html" class="project-row" data-img="images/inpro/in-1.jpg">
+            <div class="col-1 p-num">11</div>
+            <div class="col-2 p-title">Inpro Manufactury</div>
+            <div class="col-3 p-type">Practice</div>
+            <div class="col-4 p-loc">Charlotte / 2024</div>
+        </a>
+
+        <a href="compton-hs.html" class="project-row" data-img="images/compton/c-3.jpg">
+            <div class="col-1 p-num">12</div>
+            <div class="col-2 p-title">Compton High School</div>
+            <div class="col-3 p-type">Practice</div>
+            <div class="col-4 p-loc">Los Angeles / 2024</div>
+        </a>
+    </div>
+
+    <script>
+        const themeDot = document.getElementById('themeDot');
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') document.body.classList.add('light-mode');
+        themeDot.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        });
+
+        const revealBox = document.getElementById('revealbox');
+        const revealImg = document.getElementById('revealimg');
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') document.body.classList.add('light-mode');
+
+        rows.forEach(row => {
+            const img = document.createElement('img');
+            img.src = row.getAttribute('data-img');
+            img.classList.add('mobile-only-img');
+            const titleCol = row.querySelector('.col-2');
+            if (titleCol) titleCol.after(img);
+        });
+
+        const pointsCount = 40, damping = 0.1, spring = 0.02, impactRadius = 80, impactForce = 8;
+        class RowPhysics {
+            constructor(row) {
+                this.row = row;
+                this.canvas = document.createElement('canvas');
+                this.canvas.classList.add('row-canvas');
+                this.row.appendChild(this.canvas);
+                this.ctx = this.canvas.getContext('2d');
+                this.points = []; this.isHovering = false; this.mouseX = -1000;
+                this.resize(); window.addEventListener('resize', () => this.resize());
+                this.row.addEventListener('mouseenter', () => { this.isHovering = true; this.loop(); });
+                this.row.addEventListener('mousemove', (e) => { this.mouseX = e.clientX - this.canvas.getBoundingClientRect().left; });
+                this.row.addEventListener('mouseleave', () => { this.isHovering = false; this.mouseX = -1000; });
+            }
+            resize() {
+                this.width = this.canvas.width = this.row.offsetWidth;
+                this.height = this.canvas.height = 60;
+                this.points = [];
+                const gap = this.width / (pointsCount - 1), y = this.height - 1;
+                for (let i = 0; i < pointsCount; i++) this.points.push({ x: i * gap, y, iy: y, vy: 0 });
+                this.drawStatic();
+            }
+            update() {
+                let moving = false;
+                for (let p of this.points) {
+                    let forceY = (p.y - p.iy) * spring;
+                    if (this.isHovering) {
+                        let dist = Math.abs(this.mouseX - p.x);
+                        if (dist < impactRadius) p.vy += ((impactRadius - dist) / impactRadius) * impactForce * 0.1;
+                    }
+                    p.vy -= forceY; p.vy *= (1 - damping); p.y += p.vy;
+                    if (Math.abs(p.y - p.iy) > 0.1 || Math.abs(p.vy) > 0.1) moving = true;
+                }
+                return moving || this.isHovering;
+            }
+            draw() {
+                this.ctx.clearRect(0, 0, this.width, this.height);
+                const style = getComputedStyle(document.body);
+                let color = this.isHovering ? style.getPropertyValue('--active-line-color').trim() : style.getPropertyValue('--line-color').trim();
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.points[0].x, this.points[0].y);
+                for (let i = 0; i < this.points.length - 1; i++) {
+                    const p = this.points[i], n = this.points[i+1];
+                    this.ctx.quadraticCurveTo(p.x, p.y, (p.x+n.x)/2, (p.y+n.y)/2);
+                }
+                this.ctx.strokeStyle = color; this.ctx.lineWidth = 1.5; this.ctx.stroke();
+            }
+            drawStatic() {
+                this.ctx.clearRect(0, 0, this.width, this.height);
+                const y = this.height - 1;
+                this.ctx.beginPath(); this.ctx.moveTo(0, y); this.ctx.lineTo(this.width, y);
+                this.ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--line-color').trim();
+                this.ctx.lineWidth = 1; this.ctx.stroke();
+            }
+            loop() {
+                if (this.update()) { this.draw(); requestAnimationFrame(() => this.loop()); }
+                else this.drawStatic();
+            }
+        }
+        rows.forEach(row => new RowPhysics(row));
+
+        window.addEventListener('mousemove', (e) => {
+            revealBox.style.left = (e.clientX + 60) + 'px';
+            revealBox.style.top = e.clientY + 'px';
+        });
+        rows.forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                revealImg.src = this.getAttribute('data-img');
+                revealBox.classList.add('active');
+                rows.forEach(r => { if (r !== row) r.style.opacity = '0.3'; });
+            });
+            row.addEventListener('mouseleave', function() {
+                revealBox.classList.remove('active');
+                rows.forEach(r => r.style.opacity = '1');
+            });
+        });
+
+    </script>
+</body>
+</html>

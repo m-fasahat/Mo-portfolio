@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -36,7 +36,7 @@
             cursor: crosshair; 
         }
 
-        a, button, .project-row, .theme-toggle, .mobile-menu-btn { cursor: pointer; }
+        a, button, .project-row { cursor: pointer; }
 
         /* --- NAV (CLEAN - NO BORDER) --- */
         nav {
@@ -49,22 +49,10 @@
         }
         .brand { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); text-decoration: none; }
         .nav-right { display: flex; align-items: center; gap: 30px; }
-        .desktop-menu { display: flex; gap: 25px; }
-        .desktop-menu a { text-decoration: none; color: var(--text-secondary); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s; }
-        .desktop-menu a:hover, .desktop-menu a.active { color: var(--text-primary); }
-        .mobile-menu-btn { display: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-primary); }
-        .theme-toggle { width: 18px; height: 18px; border-radius: 50%; background-color: var(--text-primary); border: 1px solid var(--bg-color); transition: transform 0.3s ease; }
-        .theme-toggle:hover { transform: scale(1.1); }
+        .nav-right a { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); transition: color 0.3s; text-decoration: none; }
+        .nav-right a:hover { color: var(--text-primary); }
+        .theme-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--text-primary); cursor: pointer; transition: background .3s; }
 
-        /* --- MOBILE OVERLAY --- */
-        .mobile-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--bg-color); z-index: 150;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
-        }
-        .mobile-overlay.active { opacity: 1; pointer-events: all; }
-        .mobile-links a { display: block; font-size: 24px; color: var(--text-primary); text-decoration: none; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; text-align: center; }
 
         /* --- MOUSE FOLLOWING IMAGE (LAYER 0) --- */
         /* This sits BEHIND the text/lines */
@@ -161,7 +149,7 @@
         /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
             nav { padding: 25px 20px; } 
-            .desktop-menu { display: none; } 
+ 
             .mobile-menu-btn { display: block; }
             
             .index-container { padding: 0 20px; margin-top: 120px; }
@@ -190,21 +178,12 @@
     <nav>
         <a href="index.html" class="brand">Mohammad Fasahat</a>
         <div class="nav-right">
-            <div class="desktop-menu">
-                <a href="works.html" class="active">Work</a>
-                <a href="about.html">About</a>
-            </div>
-            <div class="theme-toggle" id="themeToggle"></div>
-            <div class="mobile-menu-btn" id="mobileBtn">MENU</div>
+            <a href="index.html">Projects</a>
+            <a href="about.html">About</a>
+            <div class="theme-dot" id="themeDot"></div>
         </div>
     </nav>
 
-    <div class="mobile-overlay" id="mobileOverlay">
-        <div class="mobile-links">
-            <a href="index.html">Home</a>
-            <a href="works.html">Work</a>
-            <a href="about.html">About</a>
-        </div>
     </div>
 
     <!-- MOUSE FOLLOWER (Layer 0) -->
@@ -222,57 +201,85 @@
         </div>
 
         <!-- LIST -->
-        <a href="light-unfolds.html" class="project-row personal" data-img="images/light/light-1.jpg">
+        <a href="visualizations.html" class="project-row visual" data-img="images/visualizations/friends-house.jpg">
             <div class="col-1 p-num">01</div>
+            <div class="col-2 p-title">Narrative Visualization</div>
+            <div class="col-3 p-type">Visualization</div>
+            <div class="col-4 p-loc">Various / 2024</div>
+        </a>
+
+        <a href="ai-generative.html" class="project-row ai" data-img="images/light/light-1.jpg">
+            <div class="col-1 p-num">02</div>
+            <div class="col-2 p-title">AI & Generative Work</div>
+            <div class="col-3 p-type">AI / Generative</div>
+            <div class="col-4 p-loc">Various / 2024</div>
+        </a>
+
+        <a href="realtime.html" class="project-row realtime" data-img="images/stadium/hero-4.jpg">
+            <div class="col-1 p-num">03</div>
+            <div class="col-2 p-title">Realtime & Interactive</div>
+            <div class="col-3 p-type">Unreal / Realtime</div>
+            <div class="col-4 p-loc">Various / 2024</div>
+        </a>
+
+        <a href="computational.html" class="project-row computational" data-img="images/zero-tower/work-3.jpg">
+            <div class="col-1 p-num">04</div>
+            <div class="col-2 p-title">Computational Design</div>
+            <div class="col-3 p-type">Scripting / Parametric</div>
+            <div class="col-4 p-loc">Various / 2024</div>
+        </a>
+
+        <a href="light-unfolds.html" class="project-row personal" data-img="images/light/light-1.jpg">
+            <div class="col-1 p-num">05</div>
             <div class="col-2 p-title">Where the Light Unfolds</div>
             <div class="col-3 p-type">Architecture</div>
             <div class="col-4 p-loc">Italy / 2024</div>
         </a>
 
+        <a href="better-half.html" class="project-row personal" data-img="images/ghana/ghana-33.jpg">
+            <div class="col-1 p-num">06</div>
+            <div class="col-2 p-title">Better Half</div>
+            <div class="col-3 p-type">Architecture</div>
+            <div class="col-4 p-loc">Ghana / 2023</div>
+        </a>
+
         <a href="data-farm.html" class="project-row personal" data-img="images/zero-tower/work-3.jpg">
-            <div class="col-1 p-num">02</div>
+            <div class="col-1 p-num">07</div>
             <div class="col-2 p-title">Data Farm</div>
             <div class="col-3 p-type">Architecture</div>
             <div class="col-4 p-loc">Charlotte / 2021</div>
         </a>
 
         <a href="yard-to-yard.html" class="project-row personal" data-img="images/yard/yard-1.jpg">
-            <div class="col-1 p-num">03</div>
+            <div class="col-1 p-num">08</div>
             <div class="col-2 p-title">Yard to Yard</div>
             <div class="col-3 p-type">Architecture</div>
             <div class="col-4 p-loc">Charlotte / 2021</div>
         </a>
 
         <a href="rolling-diamond.html" class="project-row personal" data-img="images/stadium/hero-4.jpg">
-            <div class="col-1 p-num">04</div>
+            <div class="col-1 p-num">09</div>
             <div class="col-2 p-title">Rolling Diamond</div>
             <div class="col-3 p-type">Architecture</div>
             <div class="col-4 p-loc">Beijing / 2019</div>
         </a>
 
-        <a href="better-half.html" class="project-row personal" data-img="images/ghana/ghana-33.jpg">
-            <div class="col-1 p-num">05</div>
-            <div class="col-2 p-title">Better Half</div>
-            <div class="col-3 p-type">Architecture</div>
-            <div class="col-4 p-loc">Ghana / 2023</div>
-        </a>
-
         <a href="ecolodge.html" class="project-row personal" data-img="images/eco/hero-6.jpg">
-            <div class="col-1 p-num">06</div>
+            <div class="col-1 p-num">10</div>
             <div class="col-2 p-title">Ecolodge</div>
             <div class="col-3 p-type">Architecture</div>
             <div class="col-4 p-loc">Golpayegan / 2018</div>
         </a>
 
         <a href="house-in-yazd.html" class="project-row personal" data-img="images/yazd/yazd-2.jpg">
-            <div class="col-1 p-num">07</div>
+            <div class="col-1 p-num">11</div>
             <div class="col-2 p-title">A House in Yazd</div>
             <div class="col-3 p-type">Architecture</div>
             <div class="col-4 p-loc">Yazd / 2017</div>
         </a>
 
         <a href="social-housing.html" class="project-row personal" data-img="images/housing/housing-1.jpg">
-            <div class="col-1 p-num">08</div>
+            <div class="col-1 p-num">12</div>
             <div class="col-2 p-title">Social Housing</div>
             <div class="col-3 p-type">Architecture</div>
             <div class="col-4 p-loc">Tabriz / 2018</div>
@@ -280,55 +287,54 @@
 
         <!-- LINK TO EXTERNAL GITHUB PAGE -->
         <a href="https://m-fasahat.github.io/ConnectiveEnvironments/" target="_blank" class="project-row personal" data-img="images/mech.png">
-            <div class="col-1 p-num">09</div>
+            <div class="col-1 p-num">13</div>
             <div class="col-2 p-title">The Mechanical Lungs ↗</div>
             <div class="col-3 p-type">Installation</div>
             <div class="col-4 p-loc">Charlotte / 2021</div>
         </a>
 
         <a href="church-st.html" class="project-row practice visual" data-img="images/church-st/church - 4.jpg">
-            <div class="col-1 p-num">10</div>
+            <div class="col-1 p-num">14</div>
             <div class="col-2 p-title">526 Church St</div>
             <div class="col-3 p-type">Practice</div>
             <div class="col-4 p-loc">Charlotte / 2022</div>
         </a>
 
         <a href="inpro.html" class="project-row practice" data-img="images/inpro/in-1.jpg">
-            <div class="col-1 p-num">11</div>
+            <div class="col-1 p-num">15</div>
             <div class="col-2 p-title">Inpro Manufactury</div>
             <div class="col-3 p-type">Practice</div>
             <div class="col-4 p-loc">Charlotte / 2024</div>
         </a>
 
         <a href="compton-hs.html" class="project-row practice" data-img="images/compton/c-3.jpg">
-            <div class="col-1 p-num">12</div>
+            <div class="col-1 p-num">16</div>
             <div class="col-2 p-title">Compton High School</div>
             <div class="col-3 p-type">Practice</div>
             <div class="col-4 p-loc">Los Angeles / 2024</div>
-        </a>
-
-        <!-- Visualizations Section -->
-        <a href="visualizations.html" class="project-row visual" data-img="images/visualizations/friends-house.jpg">
-            <div class="col-1 p-num">13</div>
-            <div class="col-2 p-title">Selected Visualizations</div>
-            <div class="col-3 p-type">Visualization</div>
-            <div class="col-4 p-loc">Various / 2024</div>
         </a>
 
     </div>
 
     <div class="filter-bar">
         <button class="filter-btn active" onclick="filterSelection('all')">All</button>
+        <button class="filter-btn" onclick="filterSelection('visual')">Visualization</button>
+        <button class="filter-btn" onclick="filterSelection('ai')">AI & Generative</button>
+        <button class="filter-btn" onclick="filterSelection('realtime')">Realtime</button>
+        <button class="filter-btn" onclick="filterSelection('computational')">Computational</button>
         <button class="filter-btn" onclick="filterSelection('personal')">Architecture</button>
         <button class="filter-btn" onclick="filterSelection('practice')">Practice</button>
-        <button class="filter-btn" onclick="filterSelection('visual')">Visualization</button>
     </div>
 
     <script>
-        const themeToggle = document.getElementById('themeToggle');
-        const mobileBtn = document.getElementById('mobileBtn');
-        const mobileOverlay = document.getElementById('mobileOverlay');
-        const rows = document.querySelectorAll('.project-row');
+        const themeDot = document.getElementById('themeDot');
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') document.body.classList.add('light-mode');
+        themeDot.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        });
+
         const revealBox = document.getElementById('revealbox');
         const revealImg = document.getElementById('revealimg');
 
@@ -338,14 +344,6 @@
             document.body.classList.add('light-mode');
         }
 
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('light-mode');
-            if (document.body.classList.contains('light-mode')) {
-                localStorage.setItem('theme', 'light');
-            } else {
-                localStorage.setItem('theme', 'dark');
-            }
-        });
 
         // --- AUTO GENERATE MOBILE IMAGES ---
         rows.forEach(row => {
@@ -487,18 +485,6 @@
             });
         });
 
-        // Mobile Menu
-        let isMenuOpen = false;
-        mobileBtn.addEventListener('click', () => {
-            isMenuOpen = !isMenuOpen;
-            if(isMenuOpen) {
-                mobileOverlay.classList.add('active');
-                mobileBtn.innerText = "CLOSE";
-            } else {
-                mobileOverlay.classList.remove('active');
-                mobileBtn.innerText = "MENU";
-            }
-        });
 
         // Filter
         function filterSelection(category) {
