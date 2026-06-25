@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohammad Fasahat | City Encoder</title>
+    <meta name="description" content="City Encoder — Computational / 2026 Grasshopper · GhPython · LunchBox ML. Project by Mohammad Fasahat.">
+    <style>
+        /* --- SHARED VARIABLES --- */
+        :root {
+            --bg-color: #050505;
+            --text-primary: #FFFFFF;
+            --text-secondary: #888888;
+            --line-color: rgba(255, 255, 255, 0.15);
+            --active-line-color: #FFFFFF;
+            --accent: #3fd0c3;
+            --warn: #ff5a4d;
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            --mono: 'Courier New', monospace;
+        }
+
+        body.light-mode {
+            --bg-color: #F4F4F4;
+            --text-primary: #111111;
+            --text-secondary: #666666;
+            --line-color: rgba(0, 0, 0, 0.15);
+            --active-line-color: #000000;
+            --accent: #11998e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            transition: background-color 0.5s ease, color 0.5s ease;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        a, button, .kinetic-divider { cursor: pointer; }
+
+        /* --- NAV --- */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 40px 50px; position: fixed; top: 0; width: 100%; z-index: 500;
+            background: transparent; border: none;
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+        }
+        .brand { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); text-decoration: none; }
+        .nav-right { display: flex; align-items: center; gap: 30px; }
+        .nav-right a { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); transition: color 0.3s; text-decoration: none; }
+        .nav-right a:hover { color: var(--text-primary); }
+        .theme-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--text-primary); cursor: pointer; transition: background .3s; }
+
+        /* --- PROJECT LAYOUT --- */
+        .project-container {
+            display: grid; grid-template-columns: 30% 10% 60%;
+            padding: 180px 50px 100px 50px; max-width: 1600px; margin: 0 auto;
+            align-items: start; position: relative;
+        }
+        .info-column { position: sticky; top: 140px; height: fit-content; }
+        .project-meta { margin-bottom: 36px; }
+        .p-title { font-size: 24px; font-weight: 400; line-height: 1.2; margin-bottom: 15px; color: var(--text-primary); }
+        .p-details { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; line-height: 1.6; }
+        .p-description { font-size: 13px; line-height: 1.7; color: var(--text-primary); text-align: justify; }
+        .p-description p + p { margin-top: 14px; }
+
+        /* Process steps list (left) */
+        .process-steps { margin-top: 34px; border-top: 1px solid var(--line-color); }
+        .step-row { display: flex; gap: 14px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--line-color); }
+        .step-num { font-size: 10px; font-family: var(--mono); color: var(--text-secondary); letter-spacing: 1px; flex-shrink: 0; width: 22px; }
+        .step-body .step-name { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); display: block; margin-bottom: 5px; }
+        .step-body .step-desc { font-size: 12px; line-height: 1.6; color: var(--text-secondary); }
+
+        /* Spine */
+        .spine-column { position: relative; height: 100%; display: flex; justify-content: center; }
+        #spine-canvas {
+            position: fixed; top: 20%; height: 60%; width: 100px; z-index: 0; pointer-events: none;
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+        }
+
+        /* Gallery */
+        .gallery-column { display: flex; flex-direction: column; width: 100%; gap: 90px; }
+        .gallery-block { width: 100%; }
+        .block-label { display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; }
+        .block-label .bl-num { font-size: 10px; font-family: var(--mono); color: var(--text-secondary); letter-spacing: 1px; }
+        .block-label .bl-name { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-primary); }
+        .block-caption { font-size: 11px; line-height: 1.6; color: var(--text-secondary); margin-top: 12px; max-width: 640px; }
+
+        .project-image {
+            width: 100%; height: auto; display: block;
+            border: 1px solid var(--line-color);
+            background: #fff;
+            transition: opacity 0.5s ease;
+        }
+        .project-image:hover { opacity: 0.92; }
+        .project-video { width: 100%; height: auto; display: block; border: 1px solid var(--line-color); background: #000; }
+
+        /* --- HOW IT WORKS + CAPABILITIES --- */
+        .ht-text { font-size: 13px; line-height: 1.75; color: var(--text-primary); max-width: 680px; }
+        .ht-text p + p { margin-top: 14px; }
+        .cap-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+            background: var(--line-color); border: 1px solid var(--line-color);
+            margin-top: 34px;
+        }
+        .cap { background: var(--bg-color); padding: 22px 24px; }
+        .cap-h { display: block; font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text-primary); margin-bottom: 9px; }
+        .cap-h::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-right: 9px; vertical-align: middle; }
+        .cap-d { font-size: 12px; line-height: 1.6; color: var(--text-secondary); }
+        @media (max-width: 900px) { .cap-grid { grid-template-columns: 1fr; } }
+
+        /* Next */
+        .next-project { margin-top: 90px; text-align: right; padding-top: 20px; }
+        .next-label { font-size: 10px; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 2px; }
+        .next-title { font-size: 18px; color: var(--text-primary); text-decoration: none; margin-top: 5px; display: block; transition: opacity 0.3s; }
+        .next-title:hover { opacity: 0.6; }
+
+        @media (max-width: 900px) {
+            nav { padding: 25px 20px; }
+            .project-container { grid-template-columns: 1fr; padding: 120px 20px 60px 20px; gap: 40px; }
+            .info-column { position: static; margin-bottom: 10px; }
+            .spine-column, #spine-canvas { display: none; }
+            .gallery-column { gap: 60px; }
+        }
+    </style>
+<style>
+        /* MOBILE MENU */
+        .menu-btn { display: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-primary); cursor: pointer; padding: 10px; background: none; border: none; }
+        #nav-panel { position: fixed; inset: 0; background: var(--bg-color); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 400; opacity: 0; pointer-events: none; transition: opacity .4s ease; }
+        #nav-panel.open { opacity: 1; pointer-events: all; }
+        #nav-panel a { display: block; font-size: 24px; color: var(--text-primary); text-decoration: none; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; text-align: center; transition: opacity .3s; }
+        #nav-panel a:last-child { margin-bottom: 0; }
+        #nav-panel a:hover, #nav-panel a:active { opacity: 0.6; }
+</style>
+<style>/* ux-refinements */
+.p-description{text-align:left;}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:2px solid currentColor;outline-offset:3px;}
+@media (max-width:768px){.nav-right a{display:none;}.menu-btn{display:block;}}
+</style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="brand">Mohammad Fasahat</a>
+        <div class="nav-right">
+            <a href="quick-tour.html">Quick Tour</a>
+            <a href="index.html">Projects</a>
+            <a href="about.html">About</a>
+            <button class="menu-btn" id="menuBtn">MENU</button>
+            <div class="theme-dot" id="themeDot"></div>
+        </div>
+    </nav>
+<div id="nav-panel">
+    <a href="quick-tour.html">Quick Tour</a>
+    <a href="index.html">Projects</a>
+    <a href="about.html">About</a>
+</div>
+
+    <div class="project-container">
+
+        <!-- LEFT: STICKY INFO -->
+        <div class="info-column">
+            <div class="project-meta">
+                <h1 class="p-title">City Encoder</h1>
+                <div class="p-details">
+                    Computational / 2026<br>
+                    Grasshopper &middot; GhPython &middot; LunchBox ML<br>
+                    Role &mdash; Concept, Development &amp; Visualization
+                </div>
+            </div>
+            <div class="p-description">
+                <p>
+                    Modeling a whole city&mdash;or any large set of parcels&mdash;when you don't know each building's height is normally a slog: you'd measure or guess thousands of them. City Encoder skips that. Measure a handful of real heights, and let machine learning infer the rest.
+                </p>
+                <p>
+                    You assign actual heights to a small sample of parcels, then the tool derives a feature for every parcel&mdash;footprint area, the area-to-height ratio, distance to the city center&mdash;and trains a LunchBox ML model on the known ones. It predicts a height for each remaining parcel and extrudes the entire city in seconds. Custom GhPython handles the feature engineering and massing; LunchBox ML does the regression. The same approach works anywhere you have a few real numbers and want a fast, reasonable estimate for the rest of a list.
+                </p>
+            </div>
+
+            <div class="process-steps">
+                <div class="step-row">
+                    <div class="step-num">01</div>
+                    <div class="step-body">
+                        <span class="step-name">Base</span>
+                        <span class="step-desc">Import the city's parcel footprints over an aerial&mdash;flat, height-less geometry.</span>
+                    </div>
+                </div>
+                <div class="step-row">
+                    <div class="step-num">02</div>
+                    <div class="step-body">
+                        <span class="step-name">Sample</span>
+                        <span class="step-desc">Give a small, representative set of parcels their actual measured heights&mdash;the training data.</span>
+                    </div>
+                </div>
+                <div class="step-row">
+                    <div class="step-num">03</div>
+                    <div class="step-body">
+                        <span class="step-name">Train</span>
+                        <span class="step-desc">Build per-parcel features (area, ratio, distance to center) and fit a LunchBox ML model on the known samples.</span>
+                    </div>
+                </div>
+                <div class="step-row">
+                    <div class="step-num">04</div>
+                    <div class="step-body">
+                        <span class="step-name">Generate</span>
+                        <span class="step-desc">Predict heights for every remaining parcel and extrude the whole city at once.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="next-project">
+                <span class="next-label">Next</span>
+                <a href="index.html" class="next-title">All Works &rarr;</a>
+            </div>
+        </div>
+
+        <!-- CENTER: SPINE -->
+        <div class="spine-column">
+            <canvas id="spine-canvas"></canvas>
+        </div>
+
+        <!-- RIGHT: GALLERY -->
+        <div class="gallery-column">
+
+            <!-- HERO -->
+            <div class="gallery-block">
+                <div class="block-label">
+                    <span class="bl-num">&#9633;</span>
+                    <span class="bl-name">A City From a Handful of Samples</span>
+                </div>
+                <img src="images/city-encoder/generated.jpg" class="project-image" alt="Entire city district massed in 3D, measured parcels in red and ML-predicted parcels in green">
+                <p class="block-caption">The result: an entire district massed in one pass. The few parcels with measured heights are red; everything green was predicted by the model&mdash;a rough but plausible city in seconds rather than days.</p>
+            </div>
+
+            <!-- 01 BASE -->
+            <div class="gallery-block">
+                <div class="block-label">
+                    <span class="bl-num">01</span>
+                    <span class="bl-name">The Starting Point</span>
+                </div>
+                <img src="images/city-encoder/base.jpg" class="project-image" alt="Flat city parcel footprints over an aerial image in Rhino and Grasshopper">
+                <p class="block-caption">The input: thousands of parcel footprints pulled in over an aerial, with no height information attached&mdash;a flat city waiting to be massed.</p>
+            </div>
+
+            <!-- 02 SAMPLE -->
+            <div class="gallery-block">
+                <div class="block-label">
+                    <span class="bl-num">02</span>
+                    <span class="bl-name">A Few Known Heights</span>
+                </div>
+                <img src="images/city-encoder/trained-heights.jpg" class="project-image" alt="A small number of parcels extruded in red to their actual measured heights">
+                <p class="block-caption">A small, varied sample of parcels (red) is given its real measured heights. That handful of ground-truth values is all the model gets to learn from.</p>
+            </div>
+
+            <!-- 03 ML -->
+            <div class="gallery-block">
+                <div class="block-label">
+                    <span class="bl-num">03</span>
+                    <span class="bl-name">Features &amp; Machine Learning</span>
+                </div>
+                <img src="images/city-encoder/ml-data.jpg" class="project-image" alt="GhPython building a feature table feeding a LunchBox ML component in Grasshopper">
+                <p class="block-caption">Custom GhPython assembles a feature table for every parcel and feeds the known samples into a LunchBox ML regression component, which learns how those features map to height.</p>
+            </div>
+
+            <!-- 04 FEATURE ENGINEERING + HOW IT WORKS -->
+            <div class="gallery-block">
+                <div class="block-label">
+                    <span class="bl-num">04</span>
+                    <span class="bl-name">Feature Engineering</span>
+                </div>
+                <img src="images/city-encoder/feature-code.jpg" class="project-image" alt="Python code computing per-parcel features and extruded buildings appearing">
+                <p class="block-caption">The Python that does the work: per-parcel features computed and filtered, then predicted heights driving the extrusions that begin to populate the model.</p>
+
+                <div class="ht-text" style="margin-top:26px;">
+                    <p>
+                        The definition starts from a set of parcel footprints&mdash;here a whole city district over an aerial&mdash;none of which carry a height. You pick a small, varied sample and give those their real measured heights; that becomes the training set.
+                    </p>
+                    <p>
+                        For every parcel, custom GhPython derives features that tend to correlate with height: footprint area, the area-to-height ratio observed in the samples, and proximity to the city center, among others. Those features and the known heights go into a LunchBox ML regression component, which learns the relationship and predicts a height for each remaining parcel.
+                    </p>
+                    <p>
+                        The predictions drive a single extrusion pass that masses the whole city&mdash;samples in red, predictions in green. Because the logic is simply &ldquo;a few knowns, estimate the rest,&rdquo; the same setup transfers to any dataset where you can measure a little and need to approximate a lot.
+                    </p>
+                </div>
+
+                <div class="cap-grid">
+                    <div class="cap">
+                        <span class="cap-h">Few-Shot Massing</span>
+                        <span class="cap-d">A handful of measured heights is enough to mass thousands of parcels into a rough city model.</span>
+                    </div>
+                    <div class="cap">
+                        <span class="cap-h">Context-Aware</span>
+                        <span class="cap-d">Uses footprint area, area-to-height ratio, and distance to center&mdash;not a single flat average.</span>
+                    </div>
+                    <div class="cap">
+                        <span class="cap-h">Python + ML</span>
+                        <span class="cap-d">Custom GhPython for feature engineering, LunchBox ML for the regression&mdash;working together in one definition.</span>
+                    </div>
+                    <div class="cap">
+                        <span class="cap-h">Reusable Method</span>
+                        <span class="cap-d">Works anywhere you have a few real values and need a fast estimate for the rest of a list.</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        /* THEME MEMORY */
+        const themeDot = document.getElementById('themeDot');
+        if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+        themeDot.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        });
+
+        /* VERTICAL SPINE PHYSICS */
+        const canvas = document.getElementById('spine-canvas');
+        const ctx = canvas.getContext('2d');
+        let points = [];
+        const totalPoints = 40, spring = 0.05, damping = 0.1, mouseRadius = 100;
+        let mouse = { x: -1000, y: -1000 }, scrollSpeed = 0, lastScrollY = window.scrollY;
+
+        class Point {
+            constructor(x, y) { this.x = x; this.ix = x; this.y = y; this.vx = 0; }
+            update() {
+                let forceX = (this.x - this.ix) * spring;
+                let rect = canvas.getBoundingClientRect();
+                let dx = (mouse.x - rect.left) - this.x;
+                let dy = (mouse.y - rect.top) - this.y;
+                let dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < mouseRadius) {
+                    const force = (mouseRadius - dist) / mouseRadius;
+                    this.vx += force * (dx < 0 ? 1 : -1) * 2;
+                }
+                if (Math.abs(scrollSpeed) > 2) {
+                    const ny = this.y / canvas.height;
+                    this.vx += scrollSpeed * Math.sin(ny * Math.PI) * 0.05;
+                }
+                this.vx -= forceX;
+                this.vx *= (1 - damping);
+                this.x += this.vx;
+            }
+        }
+        function initCanvas() {
+            resize();
+            points = [];
+            const centerX = canvas.width / 2;
+            const gap = canvas.height / (totalPoints - 1);
+            for (let i = 0; i < totalPoints; i++) points.push(new Point(centerX, i * gap));
+        }
+        function resize() {
+            canvas.width = canvas.parentElement.offsetWidth;
+            canvas.height = canvas.parentElement.offsetHeight;
+            if (points.length > 0) { const centerX = canvas.width / 2; points.forEach(p => p.ix = centerX); }
+        }
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const style = getComputedStyle(document.body);
+            const lineColor = style.getPropertyValue('--line-color').trim();
+            const activeColor = style.getPropertyValue('--active-line-color').trim();
+            const currentScroll = window.scrollY;
+            scrollSpeed = currentScroll - lastScrollY; lastScrollY = currentScroll;
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            let isMoving = Math.abs(scrollSpeed) > 5;
+            for (let i = 0; i < points.length - 1; i++) {
+                const p = points[i], nextP = points[i + 1];
+                p.update();
+                ctx.quadraticCurveTo(p.x, p.y, (p.x + nextP.x) / 2, (p.y + nextP.y) / 2);
+            }
+            const last = points[points.length - 1]; last.update();
+            ctx.lineTo(last.x, last.y);
+            ctx.strokeStyle = isMoving ? activeColor : lineColor;
+            ctx.lineWidth = isMoving ? 1.5 : 1;
+            ctx.stroke();
+            requestAnimationFrame(animate);
+        }
+        window.addEventListener('resize', () => { initCanvas(); });
+        window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+        initCanvas();
+        animate();
+    </script>
+<!-- site-footer -->
+<footer class="site-footer" style="text-align:center;padding:48px 24px;font-family:inherit;font-size:11px;letter-spacing:1px;line-height:1.6;opacity:.5;">© 2026 Mohammad Fasahat. All rights reserved.</footer>
+<script>/* ux-refinements */
+(function(){var d=document.getElementById("themeDot");if(d){d.setAttribute("role","button");d.setAttribute("tabindex","0");d.setAttribute("aria-label","Toggle light or dark theme");d.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();d.click();}});}})();
+        // Mobile menu
+        (function(){
+            var btn = document.getElementById('menuBtn');
+            var panel = document.getElementById('nav-panel');
+            if (!btn || !panel) return;
+            btn.addEventListener('click', function(){ panel.classList.toggle('open'); });
+            panel.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ panel.classList.remove('open'); }); });
+        })();
+</script>
+</body>
+</html>

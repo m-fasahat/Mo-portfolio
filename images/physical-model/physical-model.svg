@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 300 300" width="220" height="220"
+     role="img" aria-label="Real-time physical model: an isometric model with live sampled points and a real-time pulse" fill="none">
+  <defs>
+    <style>
+      svg { color: #16181d; }
+      @media (prefers-color-scheme: dark) { svg { color: #e8eaed; } }
+      .pm { stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .pm-fill { fill: currentColor; stroke: none; }
+
+      .pm-v { transform-box: fill-box; transform-origin: center; animation: pmV 3.25s ease-in-out infinite; }
+      @keyframes pmV { 0%{opacity:.3;transform:scale(.8)} 50%{opacity:1;transform:scale(1.3)} 100%{opacity:.3;transform:scale(.8)} }
+      .pm-v2{animation-delay:.45s}.pm-v3{animation-delay:.9s}.pm-v4{animation-delay:1.35s}
+      .pm-v5{animation-delay:1.8s}.pm-v6{animation-delay:2.25s}.pm-v7{animation-delay:2.7s}
+      #pm-ring { transform-box: fill-box; transform-origin: center; animation: pmPing 6.5s ease-out infinite; }
+      @keyframes pmPing { 0%{transform:scale(.25);opacity:0} 12%{opacity:.5} 55%{transform:scale(1);opacity:0} 100%{transform:scale(1);opacity:0} }
+      #pm-live { animation: pmLive 1.2s ease-in-out infinite; }
+      @keyframes pmLive { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+      @media (prefers-reduced-motion: reduce) { .pm-v,#pm-ring,#pm-live{animation:none} .pm-v{opacity:.9} #pm-ring{opacity:0} }
+    </style>
+  </defs>
+
+  <!-- real-time pulse -->
+  <circle id="pm-ring" class="pm" stroke-width="1.6" cx="110" cy="111" r="78" opacity="0"/>
+  <!-- iso cube -->
+  <g class="pm" stroke-width="2" opacity="0.9">
+    <line x1="110" y1="56" x2="64" y2="84"/><line x1="110" y1="56" x2="156" y2="84"/>
+    <line x1="64" y1="84" x2="110" y2="112"/><line x1="156" y1="84" x2="110" y2="112"/>
+    <line x1="64" y1="84" x2="64" y2="138"/><line x1="156" y1="84" x2="156" y2="138"/>
+    <line x1="110" y1="112" x2="110" y2="166"/>
+    <line x1="64" y1="138" x2="110" y2="166"/><line x1="156" y1="138" x2="110" y2="166"/>
+  </g>
+  <!-- sampled points -->
+  <g class="pm-fill">
+    <circle class="pm-v"     cx="110" cy="56"  r="4"/>
+    <circle class="pm-v pm-v2" cx="64"  cy="84"  r="4"/>
+    <circle class="pm-v pm-v3" cx="156" cy="84"  r="4"/>
+    <circle class="pm-v pm-v4" cx="110" cy="112" r="4"/>
+    <circle class="pm-v pm-v5" cx="64"  cy="138" r="4"/>
+    <circle class="pm-v pm-v6" cx="156" cy="138" r="4"/>
+    <circle class="pm-v pm-v7" cx="110" cy="166" r="4"/>
+  </g>
+  <!-- live indicator -->
+  <circle id="pm-live" class="pm-fill" cx="178" cy="46" r="4.5"/>
+</svg>

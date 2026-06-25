@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohammad Fasahat | Toposolid Grading Script</title>
+    <meta name="description" content="Toposolid Grading Script — Computational / 2026 Rhino.Inside Revit · Grasshopper · ET CoLab. Project by Mohammad Fasahat.">
+    <style>
+        /* --- SHARED VARIABLES --- */
+        :root {
+            --bg-color: #050505;
+            --text-primary: #FFFFFF;
+            --text-secondary: #888888;
+            --line-color: rgba(255, 255, 255, 0.15);
+            --active-line-color: #FFFFFF;
+            --accent: #3fd0c3;
+            --warn: #ff5a4d;
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            --mono: 'Courier New', monospace;
+        }
+
+        body.light-mode {
+            --bg-color: #F4F4F4;
+            --text-primary: #111111;
+            --text-secondary: #666666;
+            --line-color: rgba(0, 0, 0, 0.15);
+            --active-line-color: #000000;
+            --accent: #11998e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            transition: background-color 0.5s ease, color 0.5s ease;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        a, button, .kinetic-divider { cursor: pointer; }
+
+        /* --- NAV --- */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 40px 50px; position: fixed; top: 0; width: 100%; z-index: 500;
+            background: transparent; border: none;
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+        }
+        .brand { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); text-decoration: none; }
+        .nav-right { display: flex; align-items: center; gap: 30px; }
+        .nav-right a { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); transition: color 0.3s; text-decoration: none; }
+        .nav-right a:hover { color: var(--text-primary); }
+        .theme-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--text-primary); cursor: pointer; transition: background .3s; }
+
+        /* --- PROJECT LAYOUT --- */
+        .project-container {
+            display: grid; grid-template-columns: 30% 10% 60%;
+            padding: 180px 50px 100px 50px; max-width: 1600px; margin: 0 auto;
+            align-items: start; position: relative;
+        }
+        .info-column { position: sticky; top: 140px; height: fit-content; }
+        .project-meta { margin-bottom: 36px; }
+        .p-title { font-size: 24px; font-weight: 400; line-height: 1.2; margin-bottom: 15px; color: var(--text-primary); }
+        .p-details { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; line-height: 1.6; }
+        .p-description { font-size: 13px; line-height: 1.7; color: var(--text-primary); text-align: justify; }
+        .p-description p + p { margin-top: 14px; }
+
+        /* Process steps list (left) */
+        .process-steps { margin-top: 34px; border-top: 1px solid var(--line-color); }
+        .step-row { display: flex; gap: 14px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--line-color); }
+        .step-num { font-size: 10px; font-family: var(--mono); color: var(--text-secondary); letter-spacing: 1px; flex-shrink: 0; width: 22px; }
+        .step-body .step-name { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); display: block; margin-bottom: 5px; }
+        .step-body .step-desc { font-size: 12px; line-height: 1.6; color: var(--text-secondary); }
+
+        /* Spine */
+        .spine-column { position: relative; height: 100%; display: flex; justify-content: center; }
+        #spine-canvas {
+            position: fixed; top: 20%; height: 60%; width: 100px; z-index: 0; pointer-events: none;
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+        }
+
+        /* Gallery */
+        .gallery-column { display: flex; flex-direction: column; width: 100%; gap: 90px; }
+        .gallery-block { width: 100%; }
+        .block-label { display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; }
+        .block-label .bl-num { font-size: 10px; font-family: var(--mono); color: var(--text-secondary); letter-spacing: 1px; }
+        .block-label .bl-name { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-primary); }
+        .block-caption { font-size: 11px; line-height: 1.6; color: var(--text-secondary); margin-top: 12px; max-width: 640px; }
+
+        .project-image {
+            width: 100%; height: auto; display: block;
+            border: 1px solid var(--line-color);
+            background: #fff;
+            transition: opacity 0.5s ease;
+        }
+        .project-image:hover { opacity: 0.92; }
+        .project-video { width: 100%; height: auto; display: block; border: 1px solid var(--line-color); background: #000; }
+
+        /* --- HOW IT WORKS + CAPABILITIES --- */
+        .ht-text { font-size: 13px; line-height: 1.75; color: var(--text-primary); max-width: 680px; }
+        .ht-text p + p { margin-top: 14px; }
+        .cap-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+            background: var(--line-color); border: 1px solid var(--line-color);
+            margin-top: 34px;
+        }
+        .cap { background: var(--bg-color); padding: 22px 24px; }
+        .cap-h { display: block; font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text-primary); margin-bottom: 9px; }
+        .cap-h::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-right: 9px; vertical-align: middle; }
+        .cap-d { font-size: 12px; line-height: 1.6; color: var(--text-secondary); }
+        @media (max-width: 900px) { .cap-grid { grid-template-columns: 1fr; } }
+
+        /* Next */
+        .next-project { margin-top: 90px; text-align: right; padding-top: 20px; }
+        .next-label { font-size: 10px; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 2px; }
+        .next-title { font-size: 18px; color: var(--text-primary); text-decoration: none; margin-top: 5px; display: block; transition: opacity 0.3s; }
+        .next-title:hover { opacity: 0.6; }
+
+        @media (max-width: 900px) {
+            nav { padding: 25px 20px; }
+            .project-container { grid-template-columns: 1fr; padding: 120px 20px 60px 20px; gap: 40px; }
+            .info-column { position: static; margin-bottom: 10px; }
+            .spine-column, #spine-canvas { display: none; }
+            .gallery-column { gap: 60px; }
+        }
+    </style>
+<style>
+        /* MOBILE MENU */
+        .menu-btn { display: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-primary); cursor: pointer; padding: 10px; background: none; border: none; }
+        #nav-panel { position: fixed; inset: 0; background: var(--bg-color); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 400; opacity: 0; pointer-events: none; transition: opacity .4s ease; }
+        #nav-panel.open { opacity: 1; pointer-events: all; }
+        #nav-panel a { display: block; font-size: 24px; color: var(--text-primary); text-decoration: none; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; text-align: center; transition: opacity .3s; }
+        #nav-panel a:last-child { margin-bottom: 0; }
+        #nav-panel a:hover, #nav-panel a:active { opacity: 0.6; }
+</style>
+<style>/* ux-refinements */
+.p-description{text-align:left;}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:2px solid currentColor;outline-offset:3px;}
+@media (max-width:768px){.nav-right a{display:none;}.menu-btn{display:block;}}
+</style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="brand">Mohammad Fasahat</a>
+        <div class="nav-right">
+            <a href="quick-tour.html">Quick Tour</a>
+            <a href="index.html">Projects</a>
+            <a href="about.html">About</a>
+            <button class="menu-btn" id="menuBtn">MENU</button>
+            <div class="theme-dot" id="themeDot"></div>
+        </div>
+    </nav>
+<div id="nav-panel">
+    <a href="quick-tour.html">Quick Tour</a>
+    <a href="index.html">Projects</a>
+    <a href="about.html">About</a>
+</div>
+
+    <div class="project-container">
+
+        <!-- LEFT: STICKY INFO -->
+        <div class="info-column">
+            <div class="project-meta">
+                <h1 class="p-title">Toposolid Grading Script</h1>
+                <div class="p-details">
+                    Computational / 2026<br>
+                    Rhino.Inside Revit &middot; Grasshopper &middot; ET CoLab<br>
+                    Role &mdash; Scripting &amp; tool development, Little
+                </div>
+            </div>
+            <div class="p-description">
+                <p>
+                    Grading the ground around a building in Revit is slow, manual work&mdash;nudging a toposolid's points by hand until the terrain sits flat against the floor and falls away naturally to existing grade. This script automates it.
+                </p>
+                <p>
+                    Built for Rhino.Inside Revit, it reads an existing toposolid and a building floor straight from the live model and regrades the surrounding terrain in Grasshopper. A handful of sliders control the result&mdash;how many points drive the mesh, how far the regrade reaches past the building, and the contour interval&mdash;so a surface can go from a quick test to a clean, presentation-ready grade in seconds. When it looks right, one toggle bakes the new toposolid back into Revit. It lives in Little's Emerging Technologies script library.
+                </p>
+            </div>
+
+            <div class="process-steps">
+                <div class="step-row">
+                    <div class="step-num">01</div>
+                    <div class="step-body">
+                        <span class="step-name">Live Model</span>
+                        <span class="step-desc">Runs through Rhino.Inside, working directly on the Revit toposolid and floor&mdash;no import or export.</span>
+                    </div>
+                </div>
+                <div class="step-row">
+                    <div class="step-num">02</div>
+                    <div class="step-body">
+                        <span class="step-name">Parametric Grade</span>
+                        <span class="step-desc">Flattens a pad to the building and regrades outward to the existing terrain, entirely slider-driven.</span>
+                    </div>
+                </div>
+                <div class="step-row">
+                    <div class="step-num">03</div>
+                    <div class="step-body">
+                        <span class="step-name">Live Preview</span>
+                        <span class="step-desc">Lightweight contour preview redraws instantly as the parameters change&mdash;no committing to test a grade.</span>
+                    </div>
+                </div>
+                <div class="step-row">
+                    <div class="step-num">04</div>
+                    <div class="step-body">
+                        <span class="step-name">Native Output</span>
+                        <span class="step-desc">Writes the result back as a real Revit toposolid&mdash;a usable model element, not a reference mesh.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="next-project">
+                <span class="next-label">Next</span>
+                <a href="index.html" class="next-title">All Works &rarr;</a>
+            </div>
+        </div>
+
+        <!-- CENTER: SPINE -->
+        <div class="spine-column">
+            <canvas id="spine-canvas"></canvas>
+        </div>
+
+        <!-- RIGHT: GALLERY -->
+        <div class="gallery-column">
+
+            <!-- HERO: WALKTHROUGH VIDEO -->
+            <div class="gallery-block">
+                <div class="block-label">
+                    <span class="bl-num">&#9633;</span>
+                    <span class="bl-name">The Script in Action</span>
+                </div>
+                <img src="images/toposolid/ts-contours.gif" class="project-image" alt="Contour lines generating live in the Rhino preview as the script runs">
+                <p class="block-caption">In live-preview mode, only the lightweight contour lines redraw&mdash;fast and safe to tweak&mdash;as the script regrades the terrain around the building, before any heavy toposolid mesh is baked.</p>
+            </div>
+
+            <!-- 01 INPUT -->
+            <div class="gallery-block">
+                <div class="block-label">
+                    <span class="bl-num">01</span>
+                    <span class="bl-name">The Input</span>
+                </div>
+                <img src="images/toposolid/ts-input.jpg" class="project-image" alt="Existing Revit toposolid with contour lines and building floor footprint">
+                <p class="block-caption">The starting point: an existing toposolid with its survey contours, and the building floor (green outline) sitting on the slope. Out of the box the terrain cuts awkwardly across the footprint&mdash;the grade the script is there to fix.</p>
+            </div>
+
+            <!-- 02 REGRADE -->
+            <div class="gallery-block">
+                <div class="block-label">
+                    <span class="bl-num">02</span>
+                    <span class="bl-name">Regrading the Terrain</span>
+                </div>
+                <img src="images/toposolid/ts-regrade.jpg" class="project-image" alt="Grasshopper computing the regraded contour mesh around the building">
+                <p class="block-caption">With the inputs set, the Grasshopper definition recomputes the surrounding ground&mdash;flattening a pad under the building and blending it back out through fresh contour lines, previewed live in the Rhino viewport before anything touches the model.</p>
+            </div>
+
+            <!-- 03 GRADED RESULT -->
+            <div class="gallery-block">
+                <div class="block-label">
+                    <span class="bl-num">03</span>
+                    <span class="bl-name">The Graded Toposolid</span>
+                </div>
+                <img src="images/toposolid/ts-graded.jpg" class="project-image" alt="Final graded toposolid baked back into Revit, with the annotated Grasshopper script">
+                <p class="block-caption">The finished grade, baked back into Revit as a new toposolid&mdash;a level building pad easing smoothly into the existing landform. On the left, the annotated script: labeled inputs up top and the control sliders that drive the whole result.</p>
+            </div>
+
+            <!-- 04 HOW IT WORKS -->
+            <div class="gallery-block">
+                <div class="block-label">
+                    <span class="bl-num">04</span>
+                    <span class="bl-name">How It Works</span>
+                </div>
+                <div class="ht-text">
+                    <p>
+                        The tool runs on Rhino.Inside, which hosts Grasshopper inside a running Revit session. That means it operates on the live model directly&mdash;reading an existing toposolid and a building floor, and writing the result straight back&mdash;with no file export or geometry round-trip in between.
+                    </p>
+                    <p>
+                        From those two inputs it rebuilds the terrain: it levels a pad to the floor's elevation, then regrades the surrounding ground so it eases away from the building and blends back into the original survey surface within a set distance. The whole grade is parametric. Control-point density governs how smooth the mesh is, the extent value sets how far the regrade reaches past the building, and the contour interval sets its resolution&mdash;so the same definition handles a gentle lawn or a tight retaining condition.
+                    </p>
+                    <p>
+                        While you work, only lightweight contour lines redraw in the viewport, which keeps it fast and responsive; the heavy toposolid is generated only when you commit. The output is a native Revit toposolid&mdash;a real, schedulable model element ready for documentation, not an imported reference mesh.
+                    </p>
+                </div>
+
+                <div class="cap-grid">
+                    <div class="cap">
+                        <span class="cap-h">Live in Revit</span>
+                        <span class="cap-d">Rhino.Inside hosts Grasshopper inside Revit, so it reads and writes the actual model with no IFC/DWG export.</span>
+                    </div>
+                    <div class="cap">
+                        <span class="cap-h">Fully Parametric</span>
+                        <span class="cap-d">Control points, regrade extent, and contour interval are all adjustable&mdash;one definition, any grading condition.</span>
+                    </div>
+                    <div class="cap">
+                        <span class="cap-h">Multi-Floor</span>
+                        <span class="cap-d">Grades around one or several building floors at once, holding each pad at its own level.</span>
+                    </div>
+                    <div class="cap">
+                        <span class="cap-h">Native Output</span>
+                        <span class="cap-d">Produces a real Revit toposolid&mdash;a usable, schedulable element&mdash;in a single bake, in seconds rather than hours.</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        /* THEME MEMORY */
+        const themeDot = document.getElementById('themeDot');
+        if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+        themeDot.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        });
+
+        /* VERTICAL SPINE PHYSICS */
+        const canvas = document.getElementById('spine-canvas');
+        const ctx = canvas.getContext('2d');
+        let points = [];
+        const totalPoints = 40, spring = 0.05, damping = 0.1, mouseRadius = 100;
+        let mouse = { x: -1000, y: -1000 }, scrollSpeed = 0, lastScrollY = window.scrollY;
+
+        class Point {
+            constructor(x, y) { this.x = x; this.ix = x; this.y = y; this.vx = 0; }
+            update() {
+                let forceX = (this.x - this.ix) * spring;
+                let rect = canvas.getBoundingClientRect();
+                let dx = (mouse.x - rect.left) - this.x;
+                let dy = (mouse.y - rect.top) - this.y;
+                let dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < mouseRadius) {
+                    const force = (mouseRadius - dist) / mouseRadius;
+                    this.vx += force * (dx < 0 ? 1 : -1) * 2;
+                }
+                if (Math.abs(scrollSpeed) > 2) {
+                    const ny = this.y / canvas.height;
+                    this.vx += scrollSpeed * Math.sin(ny * Math.PI) * 0.05;
+                }
+                this.vx -= forceX;
+                this.vx *= (1 - damping);
+                this.x += this.vx;
+            }
+        }
+        function initCanvas() {
+            resize();
+            points = [];
+            const centerX = canvas.width / 2;
+            const gap = canvas.height / (totalPoints - 1);
+            for (let i = 0; i < totalPoints; i++) points.push(new Point(centerX, i * gap));
+        }
+        function resize() {
+            canvas.width = canvas.parentElement.offsetWidth;
+            canvas.height = canvas.parentElement.offsetHeight;
+            if (points.length > 0) { const centerX = canvas.width / 2; points.forEach(p => p.ix = centerX); }
+        }
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const style = getComputedStyle(document.body);
+            const lineColor = style.getPropertyValue('--line-color').trim();
+            const activeColor = style.getPropertyValue('--active-line-color').trim();
+            const currentScroll = window.scrollY;
+            scrollSpeed = currentScroll - lastScrollY; lastScrollY = currentScroll;
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            let isMoving = Math.abs(scrollSpeed) > 5;
+            for (let i = 0; i < points.length - 1; i++) {
+                const p = points[i], nextP = points[i + 1];
+                p.update();
+                ctx.quadraticCurveTo(p.x, p.y, (p.x + nextP.x) / 2, (p.y + nextP.y) / 2);
+            }
+            const last = points[points.length - 1]; last.update();
+            ctx.lineTo(last.x, last.y);
+            ctx.strokeStyle = isMoving ? activeColor : lineColor;
+            ctx.lineWidth = isMoving ? 1.5 : 1;
+            ctx.stroke();
+            requestAnimationFrame(animate);
+        }
+        window.addEventListener('resize', () => { initCanvas(); });
+        window.addEventListener('mousemove', (e) => { const rect = canvas.getBoundingClientRect(); mouse.x = e.clientX - rect.left; mouse.y = e.clientY - rect.top; });
+        initCanvas();
+        animate();
+    </script>
+<!-- site-footer -->
+<footer class="site-footer" style="text-align:center;padding:48px 24px;font-family:inherit;font-size:11px;letter-spacing:1px;line-height:1.6;opacity:.5;">© 2026 Mohammad Fasahat. All rights reserved.</footer>
+<script>/* ux-refinements */
+(function(){var d=document.getElementById("themeDot");if(d){d.setAttribute("role","button");d.setAttribute("tabindex","0");d.setAttribute("aria-label","Toggle light or dark theme");d.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();d.click();}});}})();
+        // Mobile menu
+        (function(){
+            var btn = document.getElementById('menuBtn');
+            var panel = document.getElementById('nav-panel');
+            if (!btn || !panel) return;
+            btn.addEventListener('click', function(){ panel.classList.toggle('open'); });
+            panel.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ panel.classList.remove('open'); }); });
+        })();
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 300 300" width="220" height="220" role="img" aria-label="Toposolid Grading Script" fill="none">
+<style>
+.topo{stroke:currentColor;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.thin{stroke-width:1.6}.med{stroke-width:2}.bold{stroke-width:2.4}
+#surface{transform-box:fill-box;transform-origin:center;animation:drop 6.5s cubic-bezier(.45,0,.2,1) infinite}
+@keyframes drop{0%{transform:translateY(-58px);opacity:0}12%{opacity:.9}38%{transform:translateY(0);opacity:.9}58%{transform:translateY(0);opacity:.9}72%{transform:translateY(0);opacity:0}100%{transform:translateY(-58px);opacity:0}}
+#terrain{transform-box:fill-box;transform-origin:center bottom;animation:grade 6.5s ease-in-out infinite}
+@keyframes grade{0%,30%{transform:scaleY(1)}50%{transform:scaleY(.9)}66%{transform:scaleY(.96)}82%,100%{transform:scaleY(1)}}
+#result{stroke-dasharray:230;stroke-dashoffset:230;animation:weld 6.5s ease-in-out infinite}
+@keyframes weld{0%,40%{stroke-dashoffset:230;opacity:0}58%{stroke-dashoffset:0;opacity:.95}78%{stroke-dashoffset:0;opacity:.95}90%,100%{stroke-dashoffset:0;opacity:0}}
+#ripple{transform-box:fill-box;transform-origin:center;animation:ping 6.5s ease-out infinite}
+@keyframes ping{0%,40%{transform:scale(.2);opacity:0}50%{transform:scale(.5);opacity:.6}66%{transform:scale(1.15);opacity:0}100%{transform:scale(1.15);opacity:0}}
+@media (prefers-reduced-motion:reduce){#surface,#terrain,#result,#ripple{animation:none}#surface{opacity:.9;transform:translateY(0)}#result{stroke-dashoffset:0;opacity:.9}}
+</style>
+<g id="terrain" opacity="0.78">
+<path class="topo thin" d="M24,118 C56,108 78,128 108,120 S168,108 196,118" opacity="0.45"/>
+<path class="topo thin" d="M22,134 C58,122 80,146 110,136 S172,122 198,134" opacity="0.6"/>
+<path class="topo med" d="M20,152 C58,138 82,164 110,153 S174,138 200,152" opacity="0.8"/>
+<path class="topo med" d="M18,172 C58,156 84,184 110,172 S176,156 202,172"/>
+<path class="topo thin" d="M16,192 C58,176 86,202 110,191 S178,176 204,192" opacity="0.6"/>
+</g>
+<g id="surface">
+<path class="topo bold" d="M52,74 L168,58 L190,92 L74,108 Z" opacity="0.95"/>
+<path class="topo thin" d="M63,91 L179,75" opacity="0.5"/>
+<path class="topo thin" d="M110,66 L132,100" opacity="0.5"/>
+</g>
+<ellipse id="ripple" class="topo thin" cx="110" cy="158" rx="44" ry="13" opacity="0"/>
+<path id="result" class="topo bold" d="M20,158 C58,144 82,168 110,158 S174,144 200,158" opacity="0"/>
+</svg>

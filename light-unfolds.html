@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mohammad Fasahat | Where the Light Unfolds</title>
+    <meta name="description" content="Where the Light Unfolds — Italy / 2024 Boutique Hotel Competition / Individual. Project by Mohammad Fasahat.">
     <style>
         /* --- SHARED VARIABLES --- */
         :root {
@@ -40,7 +41,7 @@
         /* --- NAV (TRANSPARENT + BLUR) --- */
         nav {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 40px 50px; position: fixed; top: 0; width: 100%; z-index: 200;
+            padding: 40px 50px; position: fixed; top: 0; width: 100%; z-index: 500;
             background: transparent; 
             border: none; 
             backdrop-filter: blur(5px); 
@@ -148,17 +149,38 @@
             .gallery-column { gap: 40px; }
         }
     </style>
+<style>
+        /* MOBILE MENU */
+        .menu-btn { display: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-primary); cursor: pointer; padding: 10px; background: none; border: none; }
+        #nav-panel { position: fixed; inset: 0; background: var(--bg-color); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 400; opacity: 0; pointer-events: none; transition: opacity .4s ease; }
+        #nav-panel.open { opacity: 1; pointer-events: all; }
+        #nav-panel a { display: block; font-size: 24px; color: var(--text-primary); text-decoration: none; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; text-align: center; transition: opacity .3s; }
+        #nav-panel a:last-child { margin-bottom: 0; }
+        #nav-panel a:hover, #nav-panel a:active { opacity: 0.6; }
+</style>
+<style>/* ux-refinements */
+.p-description{text-align:left;}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:2px solid currentColor;outline-offset:3px;}
+@media (max-width:768px){.nav-right a{display:none;}.menu-btn{display:block;}}
+</style>
 </head>
 <body>
 
     <nav>
         <a href="index.html" class="brand">Mohammad Fasahat</a>
         <div class="nav-right">
+            <a href="quick-tour.html">Quick Tour</a>
             <a href="index.html">Projects</a>
             <a href="about.html">About</a>
+            <button class="menu-btn" id="menuBtn">MENU</button>
             <div class="theme-dot" id="themeDot"></div>
         </div>
     </nav>
+<div id="nav-panel">
+    <a href="quick-tour.html">Quick Tour</a>
+    <a href="index.html">Projects</a>
+    <a href="about.html">About</a>
+</div>
 
     </div>
 
@@ -170,7 +192,8 @@
                 <h1 class="p-title">Where the Light Unfolds</h1>
                 <div class="p-details">
                     Italy / 2024<br>
-                    Boutique Hotel Competition / Individual
+                    Boutique Hotel / Competition<br>
+                    Role &mdash; Individual
                 </div>
             </div>
             <div class="p-description">
@@ -184,8 +207,8 @@
             </div>
             
             <div class="next-project">
-                <span class="next-label">Next Project</span>
-                <a href="data-farm.html" class="next-title">Data Farm →</a>
+                <span class="next-label">Next</span>
+                <a href="index.html" class="next-title">All Works &rarr;</a>
             </div>
         </div>
 
@@ -213,19 +236,19 @@
             <img src="images/light/light-4.jpg" class="project-image" alt="Interior bedroom">
             
             <!-- Closing Image -->
-            <img src="images/light/light-6.jpg" class="project-image" alt="Atmospheric detail">
+            <img src="images/light/light-6.jpg" class="project-image" alt="Site plan — terraces, pool, and jacuzzi set into the island">
 
             <!-- Closing Image -->
-            <img src="images/light/light-7.jpg" class="project-image" alt="Atmospheric detail">
+            <img src="images/light/light-7.jpg" class="project-image" alt="Ground and first floor plans with room legend">
 
              <!-- Closing Image -->
-            <img src="images/light/light-9.jpg" class="project-image" alt="Atmospheric detail">
+            <img src="images/light/light-9.jpg" class="project-image" alt="Fabric concept diagrams — cinema projection, shading, and clear horizon">
 
              <!-- Closing Image -->
-            <img src="images/light/light-10.jpg" class="project-image" alt="Atmospheric detail">
+            <img src="images/light/light-10.jpg" class="project-image" alt="Exploded diagram — fabric flowing through the interior, recycled materials">
 
             <!-- Closing Image -->
-            <img src="images/light/light-11.jpg" class="project-image" alt="Atmospheric detail">
+            <img src="images/light/light-11.jpg" class="project-image" alt="Design operation diagrams — entry, void, circulation, and roof structure">
 
         </div>
     </div>
@@ -239,9 +262,6 @@
             localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
         });
 
-        // --- THEME MEMORY ---
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'light') document.body.classList.add('light-mode');
 
 
 
@@ -354,14 +374,27 @@
         window.addEventListener('resize', () => { initCanvas(); });
         
         window.addEventListener('mousemove', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            mouse.x = e.clientX - rect.left;
-            mouse.y = e.clientY - rect.top;
+            // store raw viewport coords; update() converts to canvas space via getBoundingClientRect
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
         });
 
         initCanvas();
         animate();
 
     </script>
+<!-- site-footer -->
+<footer class="site-footer" style="text-align:center;padding:48px 24px;font-family:inherit;font-size:11px;letter-spacing:1px;line-height:1.6;opacity:.5;">© 2026 Mohammad Fasahat. All rights reserved.</footer>
+<script>/* ux-refinements */
+(function(){var d=document.getElementById("themeDot");if(d){d.setAttribute("role","button");d.setAttribute("tabindex","0");d.setAttribute("aria-label","Toggle light or dark theme");d.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();d.click();}});}})();
+        // Mobile menu
+        (function(){
+            var btn = document.getElementById('menuBtn');
+            var panel = document.getElementById('nav-panel');
+            if (!btn || !panel) return;
+            btn.addEventListener('click', function(){ panel.classList.toggle('open'); });
+            panel.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ panel.classList.remove('open'); }); });
+        })();
+</script>
 </body>
 </html>

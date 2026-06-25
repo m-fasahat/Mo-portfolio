@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 300 300" width="220" height="220" role="img" aria-label="City Encoder" fill="none">
+<style>
+.ce{stroke:currentColor;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ce-thin{stroke-width:1.6}.ce-med{stroke-width:2}.ce-fill{fill:currentColor;stroke:none}
+#ce-city{animation:ceCity 6.5s ease-in-out infinite}
+@keyframes ceCity{0%{opacity:0}14%{opacity:.95}86%{opacity:.95}100%{opacity:0}}
+#ce-scan{transform-box:fill-box;transform-origin:center;animation:ceScan 6.5s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes ceScan{0%,8%{transform:translateX(-78px);opacity:0}16%{opacity:.9}52%{transform:translateX(78px);opacity:.9}60%,100%{transform:translateX(78px);opacity:0}}
+.ce-cell{opacity:0;animation:cePop 6.5s ease-in-out infinite}
+@keyframes cePop{0%,34%{opacity:0}46%{opacity:1}84%{opacity:1}94%,100%{opacity:0}}
+.ce-c1{animation-delay:0s}.ce-c2{animation-delay:.18s}.ce-c3{animation-delay:.36s}.ce-c4{animation-delay:.54s}.ce-c5{animation-delay:.72s}.ce-c6{animation-delay:.9s}
+@media (prefers-reduced-motion:reduce){#ce-city,#ce-scan,.ce-cell{animation:none}#ce-city{opacity:.95}#ce-scan{opacity:0}.ce-cell{opacity:1}}
+</style>
+<path class="ce ce-thin" d="M26,168 L104,168" opacity="0.5"/>
+<g id="ce-city" opacity="0">
+<rect class="ce ce-med" x="34" y="120" width="20" height="48"/>
+<rect class="ce ce-med" x="58" y="92" width="22" height="76"/>
+<rect class="ce ce-med" x="84" y="134" width="20" height="34"/>
+<line class="ce ce-thin" x1="63" y1="104" x2="75" y2="104" opacity="0.5"/>
+<line class="ce ce-thin" x1="63" y1="118" x2="75" y2="118" opacity="0.5"/>
+<line class="ce ce-thin" x1="39" y1="132" x2="49" y2="132" opacity="0.5"/>
+</g>
+<g opacity="0.9">
+<rect class="ce ce-thin" x="128" y="96" width="66" height="66" opacity="0.55"/>
+<line class="ce ce-thin" x1="150" y1="96" x2="150" y2="162" opacity="0.4"/>
+<line class="ce ce-thin" x1="172" y1="96" x2="172" y2="162" opacity="0.4"/>
+<line class="ce ce-thin" x1="128" y1="118" x2="194" y2="118" opacity="0.4"/>
+<line class="ce ce-thin" x1="128" y1="140" x2="194" y2="140" opacity="0.4"/>
+<rect class="ce-fill ce-cell ce-c1" x="133" y="101" width="12" height="12" rx="1.5"/>
+<rect class="ce-fill ce-cell ce-c4" x="177" y="101" width="12" height="12" rx="1.5"/>
+<rect class="ce-fill ce-cell ce-c2" x="155" y="123" width="12" height="12" rx="1.5"/>
+<rect class="ce-fill ce-cell ce-c5" x="133" y="145" width="12" height="12" rx="1.5"/>
+<rect class="ce-fill ce-cell ce-c3" x="177" y="145" width="12" height="12" rx="1.5"/>
+<rect class="ce-fill ce-cell ce-c6" x="155" y="145" width="12" height="12" rx="1.5"/>
+</g>
+<line id="ce-scan" class="ce ce-med" x1="110" y1="84" x2="110" y2="176" opacity="0"/>
+</svg>

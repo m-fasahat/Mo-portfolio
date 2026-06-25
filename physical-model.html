@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohammad Fasahat | Real-Time Physical Model</title>
+    <meta name="description" content="Real-Time Physical Model — AI Workflow / 2024 Stable Diffusion · ComfyUI · Local Server. Project by Mohammad Fasahat.">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-primary: #FFFFFF;
+            --text-secondary: #888888;
+            --line-color: rgba(255, 255, 255, 0.15);
+            --active-line-color: #FFFFFF;
+            --accent: #d29a63;
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            --mono: 'Courier New', monospace;
+        }
+        body.light-mode {
+            --bg-color: #F4F4F4;
+            --text-primary: #111111;
+            --text-secondary: #666666;
+            --line-color: rgba(0, 0, 0, 0.15);
+            --active-line-color: #000000;
+            --accent: #b9772f;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-color); color: var(--text-primary); font-family: var(--font-main);
+            transition: background-color 0.5s ease, color 0.5s ease; overflow-x: hidden; cursor: crosshair;
+        }
+        a, button { cursor: pointer; }
+
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 40px 50px; position: fixed; top: 0; width: 100%; z-index: 500;
+            background: transparent; border: none; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+        }
+        .brand { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); text-decoration: none; }
+        .nav-right { display: flex; align-items: center; gap: 30px; }
+        .nav-right a { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); transition: color 0.3s; text-decoration: none; }
+        .nav-right a:hover { color: var(--text-primary); }
+        .theme-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--text-primary); cursor: pointer; transition: background .3s; }
+
+        .project-container {
+            display: grid; grid-template-columns: 30% 10% 60%;
+            padding: 180px 50px 100px 50px; max-width: 1600px; margin: 0 auto; align-items: start; position: relative;
+        }
+        .info-column { position: sticky; top: 140px; height: fit-content; }
+        .project-meta { margin-bottom: 36px; }
+        .p-title { font-size: 24px; font-weight: 400; line-height: 1.2; margin-bottom: 15px; color: var(--text-primary); }
+        .p-details { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; line-height: 1.6; }
+        .p-description { font-size: 13px; line-height: 1.7; color: var(--text-primary); text-align: justify; }
+        .p-description p + p { margin-top: 14px; }
+
+        .process-steps { margin-top: 34px; border-top: 1px solid var(--line-color); }
+        .step-row { display: flex; gap: 14px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--line-color); }
+        .step-num { font-size: 10px; font-family: var(--mono); color: var(--text-secondary); letter-spacing: 1px; flex-shrink: 0; width: 22px; }
+        .step-body .step-name { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); display: block; margin-bottom: 5px; }
+        .step-body .step-desc { font-size: 12px; line-height: 1.6; color: var(--text-secondary); }
+
+        .spine-column { position: relative; height: 100%; display: flex; justify-content: center; }
+        #spine-canvas {
+            position: fixed; top: 20%; height: 60%; width: 100px; z-index: 0; pointer-events: none;
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+        }
+
+        .gallery-column { display: flex; flex-direction: column; width: 100%; gap: 90px; }
+        .gallery-block { width: 100%; }
+        .block-label { display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; }
+        .block-label .bl-num { font-size: 10px; font-family: var(--mono); color: var(--text-secondary); letter-spacing: 1px; }
+        .block-label .bl-name { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-primary); }
+        .block-caption { font-size: 11px; line-height: 1.6; color: var(--text-secondary); margin-top: 12px; max-width: 640px; }
+
+        .project-image { width: 100%; height: auto; display: block; border: 1px solid var(--line-color); background: #111; transition: opacity 0.5s ease; }
+        .project-image:hover { opacity: 0.92; }
+        .media-wrap { position: relative; }
+        .live-tag {
+            position: absolute; top: 14px; left: 14px;
+            font-size: 9px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+            color: #fff; padding: 5px 10px 5px 22px; background: rgba(0,0,0,0.55); backdrop-filter: blur(4px); pointer-events: none;
+        }
+        .live-tag::before { content: ""; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 1.4s ease-in-out infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+
+        .ht-text { font-size: 13px; line-height: 1.75; color: var(--text-primary); max-width: 680px; }
+        .ht-text p + p { margin-top: 14px; }
+        .ht-text .ip { font-family: var(--mono); color: var(--accent); }
+        .cap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line-color); border: 1px solid var(--line-color); margin-top: 34px; }
+        .cap { background: var(--bg-color); padding: 22px 24px; }
+        .cap-h { display: block; font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text-primary); margin-bottom: 9px; }
+        .cap-h::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-right: 9px; vertical-align: middle; }
+        .cap-d { font-size: 12px; line-height: 1.6; color: var(--text-secondary); }
+
+        .video-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; width: 100%; }
+        .video-pair video { width: 100%; height: auto; display: block; border: 1px solid var(--line-color); background: #000; }
+
+        .next-project { margin-top: 90px; text-align: right; padding-top: 20px; }
+        .next-label { font-size: 10px; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 2px; }
+        .next-title { font-size: 18px; color: var(--text-primary); text-decoration: none; margin-top: 5px; display: block; transition: opacity 0.3s; }
+        .next-title:hover { opacity: 0.6; }
+
+        @media (max-width: 900px) {
+            nav { padding: 25px 20px; }
+            .project-container { grid-template-columns: 1fr; padding: 120px 20px 60px 20px; gap: 40px; }
+            .info-column { position: static; margin-bottom: 10px; }
+            .spine-column, #spine-canvas { display: none; }
+            .gallery-column { gap: 60px; }
+            .cap-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+<style>
+        /* MOBILE MENU */
+        .menu-btn { display: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-primary); cursor: pointer; padding: 10px; background: none; border: none; }
+        #nav-panel { position: fixed; inset: 0; background: var(--bg-color); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 400; opacity: 0; pointer-events: none; transition: opacity .4s ease; }
+        #nav-panel.open { opacity: 1; pointer-events: all; }
+        #nav-panel a { display: block; font-size: 24px; color: var(--text-primary); text-decoration: none; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; text-align: center; transition: opacity .3s; }
+        #nav-panel a:last-child { margin-bottom: 0; }
+        #nav-panel a:hover, #nav-panel a:active { opacity: 0.6; }
+</style>
+<style>/* ux-refinements */
+.p-description{text-align:left;}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:2px solid currentColor;outline-offset:3px;}
+@media (max-width:768px){.nav-right a{display:none;}.menu-btn{display:block;}}
+</style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="brand">Mohammad Fasahat</a>
+        <div class="nav-right">
+            <a href="quick-tour.html">Quick Tour</a>
+            <a href="index.html">Projects</a>
+            <a href="about.html">About</a>
+            <button class="menu-btn" id="menuBtn">MENU</button>
+            <div class="theme-dot" id="themeDot"></div>
+        </div>
+    </nav>
+<div id="nav-panel">
+    <a href="quick-tour.html">Quick Tour</a>
+    <a href="index.html">Projects</a>
+    <a href="about.html">About</a>
+</div>
+
+    <div class="project-container">
+
+        <!-- LEFT: STICKY INFO -->
+        <div class="info-column">
+            <div class="project-meta">
+                <h1 class="p-title">Real-Time Physical Model</h1>
+                <div class="p-details">
+                    AI Workflow / 2024<br>
+                    Stable Diffusion &middot; ComfyUI &middot; Local Server<br>
+                    Role &mdash; Concept, Development &amp; Visualization
+                </div>
+            </div>
+            <div class="p-description">
+                <p>
+                    Point a camera at a rough physical model&mdash;chipboard, foam, a few wood offcuts&mdash;and watch it become a finished, photoreal render in real time. Move a piece and the render moves with it. This was an experiment in collapsing the distance between a massing study you can touch and the image you'd normally wait hours to produce.
+                </p>
+                <p>
+                    A live camera feed runs into a Stable Diffusion pipeline in ComfyUI, which reinterprets every frame against a prompt&mdash;material, context, light, lens&mdash;many times a second. The whole thing ran entirely on local office servers: the pipeline was served on the network at the workstation's IP address, and a short set of commands let internal staff connect&mdash;to drive it directly or to send their own live camera data in for processing.
+                </p>
+                <p>
+                    It was built for big presentations. With the model on the table and the render on the room's main screen, clients could rearrange the massing with their own hands and generate their own renderings, live, in front of everyone.
+                </p>
+            </div>
+
+            <div class="process-steps">
+                <div class="step-row">
+                    <div class="step-num">01</div>
+                    <div class="step-body">
+                        <span class="step-name">Camera In</span>
+                        <span class="step-desc">A live DSLR or phone feed of a rough physical model streams straight into the pipeline.</span>
+                    </div>
+                </div>
+                <div class="step-row">
+                    <div class="step-num">02</div>
+                    <div class="step-body">
+                        <span class="step-name">Diffusion</span>
+                        <span class="step-desc">A ComfyUI / Stable Diffusion graph reinterprets each frame against a fixed prompt, in real time.</span>
+                    </div>
+                </div>
+                <div class="step-row">
+                    <div class="step-num">03</div>
+                    <div class="step-body">
+                        <span class="step-name">Instant Feedback</span>
+                        <span class="step-desc">Move, rotate, or swap a piece and the photoreal render updates with it&mdash;no export, no waiting.</span>
+                    </div>
+                </div>
+                <div class="step-row">
+                    <div class="step-num">04</div>
+                    <div class="step-body">
+                        <span class="step-name">On the Network</span>
+                        <span class="step-desc">Hosted on a local server and reachable by office users over its IP to operate it or feed live data.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="next-project">
+                <span class="next-label">Next</span>
+                <a href="index.html" class="next-title">All Works &rarr;</a>
+            </div>
+        </div>
+
+        <!-- CENTER: SPINE -->
+        <div class="spine-column">
+            <canvas id="spine-canvas"></canvas>
+        </div>
+
+        <!-- RIGHT: GALLERY -->
+        <div class="gallery-column">
+
+            <!-- 00 CITY MODEL VIDEOS -->
+            <div class="gallery-block">
+                <div class="block-label">
+                    <span class="bl-num">&#9633;</span>
+                    <span class="bl-name">City Model — Live</span>
+                </div>
+                <div class="video-pair">
+                    <video autoplay muted loop playsinline>
+                        <source src="images/physical-model/city-model-01.mp4" type="video/mp4">
+                    </video>
+                    <video autoplay muted loop playsinline>
+                        <source src="images/physical-model/city-model-02.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <p class="block-caption">City massing model running through the live diffusion pipeline — two simultaneous angles, redrawing in real time as the model is adjusted.</p>
+            </div>
+
+            <!-- HERO GIF -->
+            <div class="gallery-block">
+                <div class="block-label">
+                    <span class="bl-num">&#9633;</span>
+                    <span class="bl-name">Real Time, In the Room</span>
+                </div>
+                <div class="media-wrap">
+                    <img src="images/physical-model/pm-hero.gif" class="project-image" alt="Hands rearranging a physical massing model while the render updates live">
+                    <span class="live-tag">Live</span>
+                </div>
+                <p class="block-caption">Left: the live camera feed of the physical model, with a hand rearranging the blocks. Right: the diffusion output redrawing in step&mdash;every nudge to the model becomes a new photoreal frame, instantly.</p>
+            </div>
+
+            <!-- 01 CAPTURE RIG -->
+            <div class="gallery-block">
+                <div class="block-label">
+                    <span class="bl-num">01</span>
+                    <span class="bl-name">The Capture Rig</span>
+                </div>
+                <img src="images/physical-model/pm-bench.jpg" class="project-image" alt="Workshop bench with chipboard model, camera on a tripod, and a laptop running ComfyUI">
+                <p class="block-caption">The whole setup is deliberately cheap: white plaster and chipboard massing, a few wood offcuts, a camera on a small tripod, and a laptop running the pipeline. No special model&mdash;just whatever reads as volume to the camera.</p>
+            </div>
+
+            <!-- 02 WHAT THE CAMERA SEES -->
+            <div class="gallery-block">
+                <div class="block-label">
+                    <span class="bl-num">02</span>
+                    <span class="bl-name">What the Camera Sees</span>
+                </div>
+                <img src="images/physical-model/pm-camera.jpg" class="project-image" alt="DSLR viewfinder framing rough chipboard and paper massing">
+                <p class="block-caption">Through the viewfinder it's just rough blocks and folded paper. That raw frame is the only geometry the system needs&mdash;the prompt supplies the material, the trees, the time of day.</p>
+            </div>
+
+            <!-- 03 PRESENTATION ROOM -->
+            <div class="gallery-block">
+                <div class="block-label">
+                    <span class="bl-num">03</span>
+                    <span class="bl-name">In the Presentation Room</span>
+                </div>
+                <img src="images/physical-model/pm-setup.jpg" class="project-image" alt="Large city massing model in the office with the live render on a big screen">
+                <p class="block-caption">Scaled up for client work: a large city massing model on the table and the live render filling the room's main screen. Clients could lean in, move a tower, and watch the skyline re-render in front of them.</p>
+            </div>
+
+            <!-- 04 MODEL TO RENDER -->
+            <div class="gallery-block">
+                <div class="block-label">
+                    <span class="bl-num">04</span>
+                    <span class="bl-name">From Model to Render</span>
+                </div>
+                <img src="images/physical-model/pm-board.jpg" class="project-image" alt="Breakdown of tools, prompt, and resulting real-time renders of a villa">
+                <p class="block-caption">A study version of the same idea: a small paper-and-chipboard villa, a single prompt, and the run of photoreal variations it produced&mdash;each one following the physical model as it was reshaped.</p>
+            </div>
+
+            <!-- 05 HOW IT WORKS -->
+            <div class="gallery-block">
+                <div class="block-label">
+                    <span class="bl-num">05</span>
+                    <span class="bl-name">How It Works</span>
+                </div>
+                <div class="ht-text">
+                    <p>
+                        At its core it's a real-time image-to-image loop. A camera points at the physical massing and streams its feed into ComfyUI running Stable Diffusion. Each frame is reinterpreted against a fixed prompt&mdash;material, context, time of day, lens&mdash;so a crude white block reads as a glass villa or a city tower, refreshed many times a second.
+                    </p>
+                    <p>
+                        Because it reads a live feed rather than a saved file, the loop never stops: nudge a building, rotate the camera, or drop in a new piece, and the render follows immediately. There's no re-export and no render queue&mdash;the image just keeps up with the model.
+                    </p>
+                    <p>
+                        It ran entirely on local office hardware. The pipeline was served from a workstation and exposed on the internal network at its <span class="ip">IP address</span>; a short set of commands let any office user connect&mdash;either to operate it directly or to push their own live camera data to it for processing&mdash;which made it easy to carry into any meeting room without touching the cloud.
+                    </p>
+                </div>
+
+                <div class="cap-grid">
+                    <div class="cap">
+                        <span class="cap-h">Real-Time I2I</span>
+                        <span class="cap-d">Live camera to photoreal render, many frames a second&mdash;change the model and the image changes with it.</span>
+                    </div>
+                    <div class="cap">
+                        <span class="cap-h">Runs Local</span>
+                        <span class="cap-d">Entirely on office hardware&mdash;no cloud service and no data leaving the building.</span>
+                    </div>
+                    <div class="cap">
+                        <span class="cap-h">Networked Access</span>
+                        <span class="cap-d">Served on the workstation's IP so internal users could connect, drive it, or stream live data in for processing.</span>
+                    </div>
+                    <div class="cap">
+                        <span class="cap-h">Built for Presentations</span>
+                        <span class="cap-d">Clients rearranged the physical massing by hand and generated their own renderings on the big screen.</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const themeDot = document.getElementById('themeDot');
+        if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+        themeDot.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        });
+
+        const canvas = document.getElementById('spine-canvas');
+        const ctx = canvas.getContext('2d');
+        let points = [];
+        const totalPoints = 40, spring = 0.05, damping = 0.1, mouseRadius = 100;
+        let mouse = { x: -1000, y: -1000 }, scrollSpeed = 0, lastScrollY = window.scrollY;
+        class Point {
+            constructor(x, y) { this.x = x; this.ix = x; this.y = y; this.vx = 0; }
+            update() {
+                let forceX = (this.x - this.ix) * spring;
+                let rect = canvas.getBoundingClientRect();
+                let dx = (mouse.x - rect.left) - this.x;
+                let dy = (mouse.y - rect.top) - this.y;
+                let dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < mouseRadius) { const force = (mouseRadius - dist) / mouseRadius; this.vx += force * (dx < 0 ? 1 : -1) * 2; }
+                if (Math.abs(scrollSpeed) > 2) { const ny = this.y / canvas.height; this.vx += scrollSpeed * Math.sin(ny * Math.PI) * 0.05; }
+                this.vx -= forceX; this.vx *= (1 - damping); this.x += this.vx;
+            }
+        }
+        function initCanvas() {
+            resize(); points = [];
+            const centerX = canvas.width / 2, gap = canvas.height / (totalPoints - 1);
+            for (let i = 0; i < totalPoints; i++) points.push(new Point(centerX, i * gap));
+        }
+        function resize() {
+            canvas.width = canvas.parentElement.offsetWidth; canvas.height = canvas.parentElement.offsetHeight;
+            if (points.length > 0) { const centerX = canvas.width / 2; points.forEach(p => p.ix = centerX); }
+        }
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const style = getComputedStyle(document.body);
+            const lineColor = style.getPropertyValue('--line-color').trim();
+            const activeColor = style.getPropertyValue('--active-line-color').trim();
+            const currentScroll = window.scrollY;
+            scrollSpeed = currentScroll - lastScrollY; lastScrollY = currentScroll;
+            ctx.beginPath(); ctx.moveTo(points[0].x, points[0].y);
+            let isMoving = Math.abs(scrollSpeed) > 5;
+            for (let i = 0; i < points.length - 1; i++) {
+                const p = points[i], nextP = points[i + 1];
+                p.update();
+                ctx.quadraticCurveTo(p.x, p.y, (p.x + nextP.x) / 2, (p.y + nextP.y) / 2);
+            }
+            const last = points[points.length - 1]; last.update(); ctx.lineTo(last.x, last.y);
+            ctx.strokeStyle = isMoving ? activeColor : lineColor; ctx.lineWidth = isMoving ? 1.5 : 1; ctx.stroke();
+            requestAnimationFrame(animate);
+        }
+        window.addEventListener('resize', () => { initCanvas(); });
+        window.addEventListener('mousemove', (e) => { const rect = canvas.getBoundingClientRect(); mouse.x = e.clientX - rect.left; mouse.y = e.clientY - rect.top; });
+        initCanvas(); animate();
+    </script>
+<!-- site-footer -->
+<footer class="site-footer" style="text-align:center;padding:48px 24px;font-family:inherit;font-size:11px;letter-spacing:1px;line-height:1.6;opacity:.5;">© 2026 Mohammad Fasahat. All rights reserved.</footer>
+<script>/* ux-refinements */
+(function(){var d=document.getElementById("themeDot");if(d){d.setAttribute("role","button");d.setAttribute("tabindex","0");d.setAttribute("aria-label","Toggle light or dark theme");d.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();d.click();}});}})();
+        // Mobile menu
+        (function(){
+            var btn = document.getElementById('menuBtn');
+            var panel = document.getElementById('nav-panel');
+            if (!btn || !panel) return;
+            btn.addEventListener('click', function(){ panel.classList.toggle('open'); });
+            panel.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ panel.classList.remove('open'); }); });
+        })();
+</script>
+</body>
+</html>

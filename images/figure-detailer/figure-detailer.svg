@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 300 300" width="220" height="220"
+     role="img" aria-label="Smart figure detailer: a figure is revealed by a sweeping mask" fill="none">
+  <defs>
+    <style>
+      svg { color: #16181d; }
+      @media (prefers-color-scheme: dark) { svg { color: #e8eaed; } }
+      .fd { stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      #fd-spark { transform-box: fill-box; transform-origin: center; animation: fdTw 6.5s ease-in-out infinite; }
+      @keyframes fdTw { 0%,30%{opacity:0;transform:scale(.4)} 46%{opacity:1;transform:scale(1)} 62%{opacity:.25;transform:scale(.6)} 80%{opacity:1;transform:scale(1)} 92%,100%{opacity:0;transform:scale(.4)} }
+      @media (prefers-reduced-motion: reduce) { #fd-spark{animation:none;opacity:0} }
+    </style>
+    <clipPath id="fdReveal" clipPathUnits="userSpaceOnUse">
+      <rect x="78" y="44" width="64" height="156">
+        <animate attributeName="width" dur="6.5s" repeatCount="indefinite" values="0;64;64;0" keyTimes="0;0.42;0.82;1" calcMode="spline" keySplines="0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1"/>
+      </rect>
+    </clipPath>
+  </defs>
+  <g class="fd" clip-path="url(#fdReveal)" opacity="0.92">
+    <circle stroke-width="2" cx="110" cy="70" r="16"/>
+    <path stroke-width="2.2" d="M84,186 C82,120 92,100 110,100 C128,100 138,120 136,186"/>
+  </g>
+  <line class="fd" stroke-width="1.6" x1="80" y1="46" x2="80" y2="194" opacity="0">
+    <animate attributeName="x1" dur="6.5s" repeatCount="indefinite" values="80;142;142;80" keyTimes="0;0.42;0.82;1" calcMode="spline" keySplines="0.4 0 0.2 1;0 0 1 1;0.4 0 0.2 1"/>
+    <animate attributeName="x2" dur="6.5s" repeatCount="indefinite" values="80;142;142;80" keyTimes="0;0.42;0.82;1" calcMode="spline" keySplines="0.4 0 0.2 1;0 0 1 1;0.4 0 0.2 1"/>
+    <animate attributeName="opacity" dur="6.5s" repeatCount="indefinite" values="0;.6;.6;0;0" keyTimes="0;0.06;0.4;0.5;1"/>
+  </line>
+  <g id="fd-spark" class="fd" stroke-width="2">
+    <line x1="150" y1="56" x2="150" y2="74"/><line x1="141" y1="65" x2="159" y2="65"/>
+  </g>
+</svg>

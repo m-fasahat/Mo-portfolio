@@ -6,6 +6,7 @@
     <!-- FAVICON LINK -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><style>@media(prefers-color-scheme:dark){line{stroke:white}}@media(prefers-color-scheme:light){line{stroke:black}}</style><line x1='32' y1='0' x2='32' y2='64' stroke='black' stroke-width='6'/><line x1='0' y1='32' x2='64' y2='32' stroke='black' stroke-width='6'/></svg>">
     <title>Mohammad Fasahat | Social Housing</title>
+    <meta name="description" content="Social Housing — Tabriz, Iran / 2018 Residential Complex / Studio Project. Project by Mohammad Fasahat.">
     <style>
         /* --- SHARED VARIABLES --- */
         :root {
@@ -41,7 +42,7 @@
         /* --- NAV --- */
         nav {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 40px 50px; position: fixed; top: 0; width: 100%; z-index: 200;
+            padding: 40px 50px; position: fixed; top: 0; width: 100%; z-index: 500;
             background: transparent;
             border: none;
             backdrop-filter: blur(5px);
@@ -147,17 +148,38 @@
             .gallery-column { gap: 40px; }
         }
     </style>
+<style>
+        /* MOBILE MENU */
+        .menu-btn { display: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-primary); cursor: pointer; padding: 10px; background: none; border: none; }
+        #nav-panel { position: fixed; inset: 0; background: var(--bg-color); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 400; opacity: 0; pointer-events: none; transition: opacity .4s ease; }
+        #nav-panel.open { opacity: 1; pointer-events: all; }
+        #nav-panel a { display: block; font-size: 24px; color: var(--text-primary); text-decoration: none; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; text-align: center; transition: opacity .3s; }
+        #nav-panel a:last-child { margin-bottom: 0; }
+        #nav-panel a:hover, #nav-panel a:active { opacity: 0.6; }
+</style>
+<style>/* ux-refinements */
+.p-description{text-align:left;}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:2px solid currentColor;outline-offset:3px;}
+@media (max-width:768px){.nav-right a{display:none;}.menu-btn{display:block;}}
+</style>
 </head>
 <body>
 
     <nav>
         <a href="index.html" class="brand">Mohammad Fasahat</a>
         <div class="nav-right">
+            <a href="quick-tour.html">Quick Tour</a>
             <a href="index.html">Projects</a>
             <a href="about.html">About</a>
+            <button class="menu-btn" id="menuBtn">MENU</button>
             <div class="theme-dot" id="themeDot"></div>
         </div>
     </nav>
+<div id="nav-panel">
+    <a href="quick-tour.html">Quick Tour</a>
+    <a href="index.html">Projects</a>
+    <a href="about.html">About</a>
+</div>
 
     </div>
 
@@ -169,7 +191,8 @@
                 <h1 class="p-title">Social Housing</h1>
                 <div class="p-details">
                     Tabriz, Iran / 2018<br>
-                    Residential Complex / Studio Project
+                    Residential Complex / Studio Project<br>
+                    Role &mdash; With Kamran Eyvaz
                 </div>
             </div>
             <div class="p-description">
@@ -183,9 +206,8 @@
             </div>
             
             <div class="next-project">
-                <span class="next-label">Next Project</span>
-                <!-- Update this link to your next project -->
-                <a href="works.html" class="next-title">The Mechanical Lungs →</a>
+                <span class="next-label">Next</span>
+                <a href="index.html" class="next-title">All Works &rarr;</a>
             </div>
         </div>
 
@@ -225,9 +247,6 @@
             localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
         });
 
-        // --- THEME MEMORY ---
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'light') document.body.classList.add('light-mode');
 
 
 
@@ -339,14 +358,27 @@
         window.addEventListener('resize', () => { initCanvas(); });
         
         window.addEventListener('mousemove', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            mouse.x = e.clientX - rect.left;
-            mouse.y = e.clientY - rect.top;
+            // store raw viewport coords; update() converts to canvas space via getBoundingClientRect
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
         });
 
         initCanvas();
         animate();
 
     </script>
+<!-- site-footer -->
+<footer class="site-footer" style="text-align:center;padding:48px 24px;font-family:inherit;font-size:11px;letter-spacing:1px;line-height:1.6;opacity:.5;">© 2026 Mohammad Fasahat. All rights reserved.</footer>
+<script>/* ux-refinements */
+(function(){var d=document.getElementById("themeDot");if(d){d.setAttribute("role","button");d.setAttribute("tabindex","0");d.setAttribute("aria-label","Toggle light or dark theme");d.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();d.click();}});}})();
+        // Mobile menu
+        (function(){
+            var btn = document.getElementById('menuBtn');
+            var panel = document.getElementById('nav-panel');
+            if (!btn || !panel) return;
+            btn.addEventListener('click', function(){ panel.classList.toggle('open'); });
+            panel.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ panel.classList.remove('open'); }); });
+        })();
+</script>
 </body>
 </html>

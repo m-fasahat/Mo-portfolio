@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mohammad Fasahat</title>
+    <meta name="description" content="Mohammad Fasahat — architect and computational designer. Selected work across architecture, visualization, AI & generative, and computational design.">
     <style>
         :root {
             --bg:    #050505;
@@ -17,7 +18,9 @@
             height:100%; overflow:hidden;
             background:var(--bg); color:var(--fg);
             font-family:var(--font); cursor:crosshair;
+            transition:background .4s ease, color .3s ease;
         }
+        body.light-mode { --bg:#F4F4F4; --fg:#111111; background:#F4F4F4; color:#111111; }
         a { text-decoration:none; color:inherit; }
 
         /* NAV */
@@ -32,7 +35,7 @@
             font-size:11px; font-weight:600; letter-spacing:1px;
             text-transform:uppercase; color:var(--muted); transition:color .3s;
         }
-        .nav-right a:hover { color:var(--fg); }
+        .nav-right a:hover, .nav-right a.active { color:var(--fg); }
         .theme-dot { width:16px; height:16px; border-radius:50%; background:var(--fg); cursor:pointer; transition:background .3s; }
         body.light-mode .theme-dot { background:#111111; }
 
@@ -130,15 +133,25 @@
         }
         .tile-img {
             overflow:hidden;
+            aspect-ratio:1/1;          /* force 1:1 square tiles */
         }
         .tile-img img {
-            height:100%; width:auto; display:block; object-fit:cover;
-            min-width:140px;
+            height:100%; width:100%; display:block; object-fit:cover;
             filter:grayscale(12%);
             transition:filter .5s, transform .6s;
         }
         .tile:hover .tile-img img { filter:grayscale(0%); transform:scale(1.025); }
         .tile.empty .tile-img { background:rgba(255,255,255,.05); }
+
+        /* animated line-art tiles (inherit theme via currentColor) */
+        .tile-anim {
+            width:100%; height:100%; display:block;
+            background:rgba(255,255,255,.05);
+            color:#f4f4f4;                       /* dark theme: light lines */
+            transition:transform .6s, background .3s, color .3s;
+        }
+        body.light-mode .tile-anim { background:rgba(0,0,0,.045); color:#161616; }
+        .tile:hover .tile-anim { transform:scale(1.03); }
 
         .tile-cap {
             display:flex; justify-content:space-between; align-items:baseline;
@@ -171,14 +184,65 @@
             #scroll-chevron { right: 16px; font-size: 20px; }
         }
 
+
+        /* ── VISUALIZATION LIGHTBOX (cc-1 only) ─────────────── */
+        .viz-tile { cursor:zoom-in; }
+        .viz-lb {
+            position:fixed; inset:0; z-index:1000;
+            background:rgba(5,5,5,0.97);
+            display:none; opacity:0; transition:opacity .3s ease;
+        }
+        body.light-mode .viz-lb { background:rgba(244,244,244,0.98); }
+        .viz-lb.open { display:flex; opacity:1; align-items:center; justify-content:center; }
+        .viz-lb-close {
+            position:absolute; top:22px; right:30px; z-index:5;
+            background:none; border:none; color:var(--fg); font-size:28px; line-height:1; cursor:pointer;
+        }
+        body.light-mode .viz-lb-close { color:#111; }
+        .viz-lb-stage { display:flex; align-items:center; justify-content:center; gap:26px; width:100%; height:100%; padding:0 76px; }
+        .viz-lb-side { display:flex; flex-direction:column; gap:14px; flex:0 0 auto; width:132px; }
+        .viz-lb-side img {
+            width:100%; height:82px; object-fit:cover; cursor:pointer;
+            opacity:.4; filter:grayscale(45%); transition:opacity .3s, transform .3s, filter .3s;
+        }
+        .viz-lb-side img:hover { opacity:1; transform:scale(1.05); filter:grayscale(0); }
+        .viz-lb-center { flex:1 1 auto; max-width:1100px; min-width:0; display:flex; flex-direction:column; align-items:center; gap:18px; }
+        .viz-lb-center img.main { max-width:100%; max-height:74vh; object-fit:contain; box-shadow:0 30px 80px rgba(0,0,0,.5); }
+        .viz-lb-meta { display:flex; align-items:center; gap:22px; flex-wrap:wrap; justify-content:center; }
+        .viz-lb-cap { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--fg); opacity:.85; }
+        body.light-mode .viz-lb-cap { color:#111; }
+        .viz-lb-post {
+            font-size:11px; letter-spacing:1.5px; text-transform:uppercase; text-decoration:none;
+            color:var(--fg); border:1px solid rgba(255,255,255,.28); padding:10px 18px; transition:.3s;
+        }
+        .viz-lb-post:hover { background:var(--fg); color:#050505; }
+        body.light-mode .viz-lb-post { color:#111; border-color:rgba(0,0,0,.28); }
+        body.light-mode .viz-lb-post:hover { background:#111; color:#fff; }
+        .viz-lb-arrow {
+            position:absolute; top:50%; transform:translateY(-50%);
+            background:none; border:none; color:var(--fg); font-size:40px; cursor:pointer; opacity:.5; padding:10px 18px; transition:opacity .2s;
+        }
+        .viz-lb-arrow:hover { opacity:1; }
+        .viz-lb-arrow.prev { left:16px; } .viz-lb-arrow.next { right:16px; }
+        body.light-mode .viz-lb-arrow { color:#111; }
+        @media (max-width:768px) {
+            .viz-lb-side { display:none; }
+            .viz-lb-stage { padding:0 44px; }
+            .viz-lb-center img.main { max-height:66vh; }
+        }
     </style>
+<style>/* ux-refinements */
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:2px solid currentColor;outline-offset:3px;}
+@media (max-width:768px){nav .nav-right a{padding:8px 2px;}}
+</style>
 </head>
 <body>
 
 <nav>
     <a href="index.html" class="brand">Mohammad Fasahat</a>
     <div class="nav-right">
-        <a href="index.html">Projects</a>
+            <a href="quick-tour.html">Quick Tour</a>
+        <a href="index.html" class="active">Projects</a>
         <a href="about.html">About</a>
         <button class="menu-btn" id="menuBtn">MENU</button>
         <div class="theme-dot" id="themeDot"></div>
@@ -186,8 +250,8 @@
 </nav>
 
 <div id="nav-panel">
-    <a href="index.html">Home</a>
-    <a href="works.html">Projects</a>
+    <a href="quick-tour.html">Quick Tour</a>
+    <a href="index.html">Projects</a>
     <a href="about.html">About</a>
 </div>
 
@@ -209,86 +273,344 @@
 <!-- ── CONTENT AREAS ─────────────────────────────────────── -->
 <div class="cat-content" id="cc-0">
     <a class="tile" href="light-unfolds.html">
-        <div class="tile-img"><img src="images/light/light-1.jpg" alt="" loading="lazy"></div>
+        <div class="tile-img"><img src="images/light/light-1.jpg" alt="Where the Light Unfolds — boutique hotel competition" loading="lazy"></div>
         <div class="tile-cap"><span class="tile-name">Where the Light Unfolds</span><span class="tile-date">2024</span></div>
     </a>
     <a class="tile" href="better-half.html">
-        <div class="tile-img"><img src="images/ghana/ghana-33.jpg" alt="" loading="lazy"></div>
+        <div class="tile-img"><img src="images/ghana/ghana-33.jpg" alt="Better Half — educational center, Ghana" loading="lazy"></div>
         <div class="tile-cap"><span class="tile-name">Better Half</span><span class="tile-date">2023</span></div>
     </a>
     <a class="tile" href="data-farm.html">
-        <div class="tile-img"><img src="images/zero-tower/work-3.jpg" alt="" loading="lazy"></div>
-        <div class="tile-cap"><span class="tile-name">Data Farm</span><span class="tile-date">2023</span></div>
+        <div class="tile-img"><img src="images/zero-tower/work-3.jpg" alt="Data Farm — net-zero office tower" loading="lazy"></div>
+        <div class="tile-cap"><span class="tile-name">Data Farm</span><span class="tile-date">2021</span></div>
     </a>
     <a class="tile" href="yard-to-yard.html">
-        <div class="tile-img"><img src="images/yard/yard-1.jpg" alt="" loading="lazy"></div>
-        <div class="tile-cap"><span class="tile-name">Yard to Yard</span><span class="tile-date">2022</span></div>
+        <div class="tile-img"><img src="images/yard/yard-1.jpg" alt="Yard to Yard — residential complex" loading="lazy"></div>
+        <div class="tile-cap"><span class="tile-name">Yard to Yard</span><span class="tile-date">2021</span></div>
     </a>
     <a class="tile" href="rolling-diamond.html">
-        <div class="tile-img"><img src="images/stadium/hero-4.jpg" alt="" loading="lazy"></div>
-        <div class="tile-cap"><span class="tile-name">Rolling Diamond</span><span class="tile-date">2022</span></div>
+        <div class="tile-img"><img src="images/stadium/hero-4.jpg" alt="Rolling Diamond — soccer stadium concept" loading="lazy"></div>
+        <div class="tile-cap"><span class="tile-name">Rolling Diamond</span><span class="tile-date">2019</span></div>
     </a>
     <a class="tile" href="ecolodge.html">
-        <div class="tile-img"><img src="images/eco/hero-6.jpg" alt="" loading="lazy"></div>
-        <div class="tile-cap"><span class="tile-name">Ecolodge</span><span class="tile-date">2021</span></div>
+        <div class="tile-img"><img src="images/eco/hero-6.jpg" alt="Ecolodge — ecotourism center" loading="lazy"></div>
+        <div class="tile-cap"><span class="tile-name">Ecolodge</span><span class="tile-date">2018</span></div>
     </a>
     <a class="tile" href="house-in-yazd.html">
-        <div class="tile-img"><img src="images/yazd/yazd-2.jpg" alt="" loading="lazy"></div>
-        <div class="tile-cap"><span class="tile-name">A House in Yazd</span><span class="tile-date">2021</span></div>
+        <div class="tile-img"><img src="images/yazd/yazd-2.jpg" alt="A House in Yazd — villa competition" loading="lazy"></div>
+        <div class="tile-cap"><span class="tile-name">A House in Yazd</span><span class="tile-date">2017</span></div>
     </a>
     <a class="tile" href="social-housing.html">
-        <div class="tile-img"><img src="images/housing/housing-1.jpg" alt="" loading="lazy"></div>
-        <div class="tile-cap"><span class="tile-name">Social Housing</span><span class="tile-date">2020</span></div>
+        <div class="tile-img"><img src="images/housing/housing-1.jpg" alt="Social Housing — Residential Complex" loading="lazy"></div>
+        <div class="tile-cap"><span class="tile-name">Social Housing</span><span class="tile-date">2018</span></div>
+    </a>
+    <a class="tile" href="inpro.html">
+        <div class="tile-img"><img src="images/inpro/in-1.jpg" alt="Inpro — Industrial Warehouse &amp; Office" loading="lazy"></div>
+        <div class="tile-cap"><span class="tile-name">Inpro</span><span class="tile-date">2025</span></div>
+    </a>
+    <a class="tile" href="compton-hs.html">
+        <div class="tile-img"><img src="images/compton/c-3.jpg" alt="Compton High School — High School &amp; Cultural Center" loading="lazy"></div>
+        <div class="tile-cap"><span class="tile-name">Compton High School</span><span class="tile-date">2024</span></div>
     </a>
 </div>
 
 <div class="cat-content" id="cc-1">
-    <a class="tile" href="visualizations.html#friends-house">
-        <div class="tile-img"><img src="images/visualizations/friends-house.jpg" alt="" loading="lazy"></div>
+    <a class="tile" href="ue5-villa.html">
+        <div class="tile-img"><img src="images/ue5-villa/interior-cinematic.jpg" alt="Villa S — Real-Time Walkthrough" loading="lazy"></div>
+        <div class="tile-cap"><span class="tile-name">Villa S — Walkthrough</span><span class="tile-date">2026</span></div>
+    </a>
+    <a class="tile" href="church-st.html">
+        <div class="tile-img"><img src="images/church-st/church%20-%201.jpg" alt="526 Church St — Mixed-Use Development" loading="lazy"></div>
+        <div class="tile-cap"><span class="tile-name">526 Church St</span><span class="tile-date">2022</span></div>
+    </a>
+    <a class="tile" href="quick-tour.html">
+        <div class="tile-img"><img src="images/visualizations/friends-house.jpg" alt="A Friend's House" loading="lazy"></div>
         <div class="tile-cap"><span class="tile-name">A Friend's House</span><span class="tile-date">2024</span></div>
     </a>
-    <a class="tile" href="visualizations.html">
-        <div class="tile-img"><img src="images/visualizations/formenta.jpg" alt="" loading="lazy"></div>
-        <div class="tile-cap"><span class="tile-name">Formenta Villa</span><span class="tile-date">2023</span></div>
+    <a class="tile" href="quick-tour.html">
+        <div class="tile-img"><img src="images/visualizations/formenta.jpg" alt="Formenta Villa" loading="lazy"></div>
+        <div class="tile-cap"><span class="tile-name">Formenta Villa</span><span class="tile-date">2020</span></div>
     </a>
-    <a class="tile" href="visualizations.html">
-        <div class="tile-img"><img src="images/visualizations/dragons.jpg" alt="" loading="lazy"></div>
+    <a class="tile" href="quick-tour.html">
+        <div class="tile-img"><img src="images/visualizations/dragons.jpg" alt="Dragon's Landing" loading="lazy"></div>
         <div class="tile-cap"><span class="tile-name">Dragon's Landing</span><span class="tile-date">2023</span></div>
     </a>
-    <a class="tile" href="visualizations.html">
-        <div class="tile-img"><img src="images/visualizations/campus.png" alt="" loading="lazy"></div>
+    <a class="tile" href="quick-tour.html">
+        <div class="tile-img"><img src="images/visualizations/campus.png" alt="Campus" loading="lazy"></div>
         <div class="tile-cap"><span class="tile-name">Campus</span><span class="tile-date">2022</span></div>
     </a>
 </div>
 
 <div class="cat-content" id="cc-2">
-    <div class="tile empty">
-        <div class="tile-img"></div>
-        <div class="tile-cap"><span class="tile-name">Generative Façade</span><span class="tile-date">2025</span></div>
-    </div>
-    <div class="tile empty">
-        <div class="tile-img"></div>
-        <div class="tile-cap"><span class="tile-name">Diffusion Study</span><span class="tile-date">2025</span></div>
-    </div>
-    <div class="tile empty">
-        <div class="tile-img"></div>
-        <div class="tile-cap"><span class="tile-name">Pipeline 01</span><span class="tile-date">2024</span></div>
-    </div>
+    <a class="tile" href="figure-detailer.html">
+        <div class="tile-img"><svg class="tile-anim" viewBox="-40 -40 300 300"
+     role="img" aria-label="Smart figure detailer: a figure is revealed by a sweeping mask" fill="none">
+  <defs>
+    <style>
+      .fd { stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      #fd-spark { transform-box: fill-box; transform-origin: center; animation: fdTw 6.5s ease-in-out infinite; }
+      @keyframes fdTw { 0%,30%{opacity:0;transform:scale(.4)} 46%{opacity:1;transform:scale(1)} 62%{opacity:.25;transform:scale(.6)} 80%{opacity:1;transform:scale(1)} 92%,100%{opacity:0;transform:scale(.4)} }
+      @media (prefers-reduced-motion: reduce) { #fd-spark{animation:none;opacity:0} }
+    </style>
+    <clipPath id="fdReveal" clipPathUnits="userSpaceOnUse">
+      <rect x="78" y="44" width="64" height="156">
+        <animate attributeName="width" dur="6.5s" repeatCount="indefinite" values="0;64;64;0" keyTimes="0;0.42;0.82;1" calcMode="spline" keySplines="0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1"/>
+      </rect>
+    </clipPath>
+  </defs>
+  <g class="fd" clip-path="url(#fdReveal)" opacity="0.92">
+    <circle stroke-width="2" cx="110" cy="70" r="16"/>
+    <path stroke-width="2.2" d="M84,186 C82,120 92,100 110,100 C128,100 138,120 136,186"/>
+  </g>
+  <line class="fd" stroke-width="1.6" x1="80" y1="46" x2="80" y2="194" opacity="0">
+    <animate attributeName="x1" dur="6.5s" repeatCount="indefinite" values="80;142;142;80" keyTimes="0;0.42;0.82;1" calcMode="spline" keySplines="0.4 0 0.2 1;0 0 1 1;0.4 0 0.2 1"/>
+    <animate attributeName="x2" dur="6.5s" repeatCount="indefinite" values="80;142;142;80" keyTimes="0;0.42;0.82;1" calcMode="spline" keySplines="0.4 0 0.2 1;0 0 1 1;0.4 0 0.2 1"/>
+    <animate attributeName="opacity" dur="6.5s" repeatCount="indefinite" values="0;.6;.6;0;0" keyTimes="0;0.06;0.4;0.5;1"/>
+  </line>
+  <g id="fd-spark" class="fd" stroke-width="2">
+    <line x1="150" y1="56" x2="150" y2="74"/><line x1="141" y1="65" x2="159" y2="65"/>
+  </g>
+</svg></div>
+        <div class="tile-cap"><span class="tile-name">Smart Figure Detailer</span><span class="tile-date">2026</span></div>
+    </a>
+    <a class="tile" href="iteration-smart.html">
+        <div class="tile-img"><svg class="tile-anim" viewBox="-40 -40 300 300"
+     role="img" aria-label="Smart iteration: design variants cycle on a loop around the current best" fill="none">
+  <defs>
+    <style>
+      .it { stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .it-fill { fill: currentColor; stroke: none; }
+
+      .it-g { animation: itG 6.5s ease-in-out infinite; }
+      @keyframes itG { 0%{opacity:0} 18%{opacity:.5} 40%{opacity:0} 100%{opacity:0} }
+      #it-g2 { animation-delay: 1.5s; }
+      #it-spark { transform-box: fill-box; transform-origin: center; animation: itTw 6.5s ease-in-out infinite; }
+      @keyframes itTw { 0%,30%{opacity:0;transform:scale(.4)} 46%{opacity:1;transform:scale(1)} 62%{opacity:0;transform:scale(.5)} 100%{opacity:0} }
+
+      @media (prefers-reduced-motion: reduce) { .it-g,#it-spark{animation:none} #it-g1{opacity:.5} }
+    </style>
+  </defs>
+
+  <!-- iteration loop -->
+  <circle class="it" stroke-width="1.6" cx="110" cy="110" r="72" stroke-dasharray="6 9" opacity="0.4"/>
+  <!-- variant ghosts -->
+  <rect id="it-g1" class="it it-g" stroke-width="1.6" x="84" y="84" width="52" height="52" rx="10" transform="rotate(-10 110 110)"/>
+  <rect id="it-g2" class="it it-g" stroke-width="1.6" x="84" y="84" width="52" height="52" rx="10" transform="rotate(10 110 110)"/>
+  <!-- current best -->
+  <rect class="it" stroke-width="2.4" x="84" y="84" width="52" height="52" rx="10" opacity="0.92"/>
+  <!-- orbiting candidate -->
+  <circle class="it-fill" r="4.5">
+    <animateMotion dur="6.5s" repeatCount="indefinite" path="M110,38 A72,72 0 1,1 109.9,38 Z"/>
+  </circle>
+  <!-- AI spark -->
+  <g id="it-spark" class="it" stroke-width="2">
+    <line x1="150" y1="52" x2="150" y2="68"/><line x1="142" y1="60" x2="158" y2="60"/>
+  </g>
+</svg></div>
+        <div class="tile-cap"><span class="tile-name">Smart Iteration</span><span class="tile-date">2026</span></div>
+    </a>
+    <a class="tile" href="smart-prompt.html">
+        <div class="tile-img"><svg class="tile-anim" viewBox="-40 -40 300 300"
+     role="img" aria-label="Smart prompt: a prompt is typed and a spark generates" fill="none">
+  <defs>
+    <style>
+      .pr { stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+      #pr-type { stroke-dasharray: 70; stroke-dashoffset: 70; animation: prType 6.5s ease-in-out infinite; }
+      @keyframes prType { 0%{stroke-dashoffset:70} 26%{stroke-dashoffset:0} 86%{stroke-dashoffset:0} 96%,100%{stroke-dashoffset:70} }
+      #pr-caret { animation: prCaret 1.05s steps(1,end) infinite; }
+      @keyframes prCaret { 0%,100%{opacity:1} 50%{opacity:0} }
+      #pr-spark { transform-box: fill-box; transform-origin: center; animation: prTw 6.5s ease-in-out infinite; }
+      @keyframes prTw { 0%,28%{opacity:0;transform:scale(.4)} 40%{opacity:1;transform:scale(1)} 56%{opacity:.25;transform:scale(.65)} 72%{opacity:1;transform:scale(1)} 86%,100%{opacity:0;transform:scale(.4)} }
+
+      @media (prefers-reduced-motion: reduce) {
+        #pr-type,#pr-caret,#pr-spark{animation:none}
+        #pr-type{stroke-dashoffset:0} #pr-spark{opacity:1}
+      }
+    </style>
+  </defs>
+
+  <!-- AI spark (generation) -->
+  <g id="pr-spark" class="pr" stroke-width="2.4">
+    <line x1="110" y1="54" x2="110" y2="80"/><line x1="97" y1="67" x2="123" y2="67"/>
+  </g>
+  <!-- prompt bar -->
+  <rect class="pr" stroke-width="1.8" x="40" y="116" width="140" height="30" rx="15" opacity="0.55"/>
+  <line id="pr-type" class="pr" stroke-width="2" x1="56" y1="131" x2="122" y2="131" opacity="0.75"/>
+  <line id="pr-caret" class="pr" stroke-width="2" x1="132" y1="124" x2="132" y2="138"/>
+</svg>
+</div>
+        <div class="tile-cap"><span class="tile-name">Smart Prompt</span><span class="tile-date">2026</span></div>
+    </a>
+    <a class="tile" href="physical-model.html">
+        <div class="tile-img"><svg class="tile-anim" viewBox="-40 -40 300 300"
+     role="img" aria-label="Real-time physical model: an isometric model with live sampled points and a real-time pulse" fill="none">
+  <defs>
+    <style>
+      .pm { stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .pm-fill { fill: currentColor; stroke: none; }
+
+      .pm-v { transform-box: fill-box; transform-origin: center; animation: pmV 3.25s ease-in-out infinite; }
+      @keyframes pmV { 0%{opacity:.3;transform:scale(.8)} 50%{opacity:1;transform:scale(1.3)} 100%{opacity:.3;transform:scale(.8)} }
+      .pm-v2{animation-delay:.45s}.pm-v3{animation-delay:.9s}.pm-v4{animation-delay:1.35s}
+      .pm-v5{animation-delay:1.8s}.pm-v6{animation-delay:2.25s}.pm-v7{animation-delay:2.7s}
+      #pm-ring { transform-box: fill-box; transform-origin: center; animation: pmPing 6.5s ease-out infinite; }
+      @keyframes pmPing { 0%{transform:scale(.25);opacity:0} 12%{opacity:.5} 55%{transform:scale(1);opacity:0} 100%{transform:scale(1);opacity:0} }
+      #pm-live { animation: pmLive 1.2s ease-in-out infinite; }
+      @keyframes pmLive { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+      @media (prefers-reduced-motion: reduce) { .pm-v,#pm-ring,#pm-live{animation:none} .pm-v{opacity:.9} #pm-ring{opacity:0} }
+    </style>
+  </defs>
+
+  <!-- real-time pulse -->
+  <circle id="pm-ring" class="pm" stroke-width="1.6" cx="110" cy="111" r="78" opacity="0"/>
+  <!-- iso cube -->
+  <g class="pm" stroke-width="2" opacity="0.9">
+    <line x1="110" y1="56" x2="64" y2="84"/><line x1="110" y1="56" x2="156" y2="84"/>
+    <line x1="64" y1="84" x2="110" y2="112"/><line x1="156" y1="84" x2="110" y2="112"/>
+    <line x1="64" y1="84" x2="64" y2="138"/><line x1="156" y1="84" x2="156" y2="138"/>
+    <line x1="110" y1="112" x2="110" y2="166"/>
+    <line x1="64" y1="138" x2="110" y2="166"/><line x1="156" y1="138" x2="110" y2="166"/>
+  </g>
+  <!-- sampled points -->
+  <g class="pm-fill">
+    <circle class="pm-v"     cx="110" cy="56"  r="4"/>
+    <circle class="pm-v pm-v2" cx="64"  cy="84"  r="4"/>
+    <circle class="pm-v pm-v3" cx="156" cy="84"  r="4"/>
+    <circle class="pm-v pm-v4" cx="110" cy="112" r="4"/>
+    <circle class="pm-v pm-v5" cx="64"  cy="138" r="4"/>
+    <circle class="pm-v pm-v6" cx="156" cy="138" r="4"/>
+    <circle class="pm-v pm-v7" cx="110" cy="166" r="4"/>
+  </g>
+  <!-- live indicator -->
+  <circle id="pm-live" class="pm-fill" cx="178" cy="46" r="4.5"/>
+</svg></div>
+        <div class="tile-cap"><span class="tile-name">Real-Time Physical Model</span><span class="tile-date">2024</span></div>
+    </a>
 </div>
 
 <div class="cat-content" id="cc-3">
-    <div class="tile empty">
-        <div class="tile-img"></div>
-        <div class="tile-cap"><span class="tile-name">Parametric Shell</span><span class="tile-date">2024</span></div>
+    <a class="tile" href="toposolid-script.html">
+        <div class="tile-img"><svg class="tile-anim" viewBox="-40 -40 300 300" role="img" aria-label="Toposolid Grading Script" fill="none">
+<style>
+.topo{stroke:currentColor;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.thin{stroke-width:1.6}.med{stroke-width:2}.bold{stroke-width:2.4}
+#surface{transform-box:fill-box;transform-origin:center;animation:drop 6.5s cubic-bezier(.45,0,.2,1) infinite}
+@keyframes drop{0%{transform:translateY(-58px);opacity:0}12%{opacity:.9}38%{transform:translateY(0);opacity:.9}58%{transform:translateY(0);opacity:.9}72%{transform:translateY(0);opacity:0}100%{transform:translateY(-58px);opacity:0}}
+#terrain{transform-box:fill-box;transform-origin:center bottom;animation:grade 6.5s ease-in-out infinite}
+@keyframes grade{0%,30%{transform:scaleY(1)}50%{transform:scaleY(.9)}66%{transform:scaleY(.96)}82%,100%{transform:scaleY(1)}}
+#result{stroke-dasharray:230;stroke-dashoffset:230;animation:weld 6.5s ease-in-out infinite}
+@keyframes weld{0%,40%{stroke-dashoffset:230;opacity:0}58%{stroke-dashoffset:0;opacity:.95}78%{stroke-dashoffset:0;opacity:.95}90%,100%{stroke-dashoffset:0;opacity:0}}
+#ripple{transform-box:fill-box;transform-origin:center;animation:ping 6.5s ease-out infinite}
+@keyframes ping{0%,40%{transform:scale(.2);opacity:0}50%{transform:scale(.5);opacity:.6}66%{transform:scale(1.15);opacity:0}100%{transform:scale(1.15);opacity:0}}
+@media (prefers-reduced-motion:reduce){#surface,#terrain,#result,#ripple{animation:none}#surface{opacity:.9;transform:translateY(0)}#result{stroke-dashoffset:0;opacity:.9}}
+</style>
+<g id="terrain" opacity="0.78">
+<path class="topo thin" d="M24,118 C56,108 78,128 108,120 S168,108 196,118" opacity="0.45"/>
+<path class="topo thin" d="M22,134 C58,122 80,146 110,136 S172,122 198,134" opacity="0.6"/>
+<path class="topo med" d="M20,152 C58,138 82,164 110,153 S174,138 200,152" opacity="0.8"/>
+<path class="topo med" d="M18,172 C58,156 84,184 110,172 S176,156 202,172"/>
+<path class="topo thin" d="M16,192 C58,176 86,202 110,191 S178,176 204,192" opacity="0.6"/>
+</g>
+<g id="surface">
+<path class="topo bold" d="M52,74 L168,58 L190,92 L74,108 Z" opacity="0.95"/>
+<path class="topo thin" d="M63,91 L179,75" opacity="0.5"/>
+<path class="topo thin" d="M110,66 L132,100" opacity="0.5"/>
+</g>
+<ellipse id="ripple" class="topo thin" cx="110" cy="158" rx="44" ry="13" opacity="0"/>
+<path id="result" class="topo bold" d="M20,158 C58,144 82,168 110,158 S174,144 200,158" opacity="0"/>
+</svg></div>
+        <div class="tile-cap"><span class="tile-name">Toposolid Grading Script</span><span class="tile-date">2026</span></div>
+    </a>
+    <a class="tile" href="translated.html">
+        <div class="tile-img"><svg class="tile-anim" viewBox="-40 -40 300 300" role="img" aria-label="Drawing Translator" fill="none">
+<style>
+.tr{stroke:currentColor;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.tr-thin{stroke-width:1.6}.tr-med{stroke-width:2}.tr-fill{fill:currentColor;stroke:none}
+#tr-in{stroke-dasharray:150;stroke-dashoffset:150;animation:trIn 6.5s ease-in-out infinite}
+@keyframes trIn{0%{stroke-dashoffset:150}22%{stroke-dashoffset:0}100%{stroke-dashoffset:0}}
+#tr-packet{offset-path:path('M92,110 L128,110');transform-box:fill-box;animation:trPkt 6.5s cubic-bezier(.5,0,.3,1) infinite}
+@keyframes trPkt{0%,28%{offset-distance:0%;opacity:0}34%{opacity:1}52%{offset-distance:100%;opacity:1}58%,100%{offset-distance:100%;opacity:0}}
+@supports not (offset-path:path('M0,0 L1,1')){#tr-packet{animation:trPktX 6.5s cubic-bezier(.5,0,.3,1) infinite}@keyframes trPktX{0%,28%{transform:translateX(0);opacity:0}34%{opacity:1}52%{transform:translateX(36px);opacity:1}58%,100%{transform:translateX(36px);opacity:0}}}
+#tr-node{transform-box:fill-box;transform-origin:center;animation:trNode 6.5s ease-in-out infinite}
+@keyframes trNode{0%,40%{transform:scale(1)}50%{transform:scale(1.25)}64%,100%{transform:scale(1)}}
+.tr-out{stroke-dasharray:60;stroke-dashoffset:60;opacity:0;animation:trOut 6.5s ease-in-out infinite}
+@keyframes trOut{0%,46%{stroke-dashoffset:60;opacity:0}62%{stroke-dashoffset:0;opacity:.95}86%{stroke-dashoffset:0;opacity:.95}96%,100%{stroke-dashoffset:0;opacity:0}}
+.tr-o2{animation-delay:.1s}.tr-o3{animation-delay:.2s}.tr-o4{animation-delay:.3s}
+@media (prefers-reduced-motion:reduce){#tr-in,#tr-packet,#tr-node,.tr-out{animation:none}#tr-in{stroke-dashoffset:0}#tr-packet{opacity:0}.tr-out{stroke-dashoffset:0;opacity:.95}}
+</style>
+<rect class="tr tr-thin" x="24" y="62" width="64" height="92" rx="4" opacity="0.5"/>
+<path id="tr-in" class="tr tr-med" d="M34,132 C44,96 52,118 58,100 S72,86 80,108"/>
+<rect class="tr tr-thin" x="132" y="62" width="64" height="92" rx="4" opacity="0.5"/>
+<line class="tr tr-med tr-out" x1="142" y1="92" x2="186" y2="92"/>
+<line class="tr tr-med tr-out tr-o2" x1="142" y1="110" x2="178" y2="110"/>
+<line class="tr tr-med tr-out tr-o3" x1="142" y1="128" x2="186" y2="128"/>
+<line class="tr tr-thin tr-out tr-o4" x1="142" y1="92" x2="142" y2="128" opacity="0.6"/>
+<line class="tr tr-thin" x1="92" y1="110" x2="128" y2="110" opacity="0.4"/>
+<circle id="tr-node" class="tr tr-med" cx="110" cy="110" r="9"/>
+<circle id="tr-packet" class="tr-fill" cx="92" cy="110" r="3.4"/>
+</svg></div>
+        <div class="tile-cap"><span class="tile-name">Drawing Translator</span><span class="tile-date">2025</span></div>
+    </a>
+    <a class="tile" href="city-encoder.html">
+        <div class="tile-img"><svg class="tile-anim" viewBox="-40 -40 300 300" role="img" aria-label="City Encoder" fill="none">
+<style>
+.ce{stroke:currentColor;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ce-thin{stroke-width:1.6}.ce-med{stroke-width:2}.ce-fill{fill:currentColor;stroke:none}
+#ce-city{animation:ceCity 6.5s ease-in-out infinite}
+@keyframes ceCity{0%{opacity:0}14%{opacity:.95}86%{opacity:.95}100%{opacity:0}}
+#ce-scan{transform-box:fill-box;transform-origin:center;animation:ceScan 6.5s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes ceScan{0%,8%{transform:translateX(-78px);opacity:0}16%{opacity:.9}52%{transform:translateX(78px);opacity:.9}60%,100%{transform:translateX(78px);opacity:0}}
+.ce-cell{opacity:0;animation:cePop 6.5s ease-in-out infinite}
+@keyframes cePop{0%,34%{opacity:0}46%{opacity:1}84%{opacity:1}94%,100%{opacity:0}}
+.ce-c1{animation-delay:0s}.ce-c2{animation-delay:.18s}.ce-c3{animation-delay:.36s}.ce-c4{animation-delay:.54s}.ce-c5{animation-delay:.72s}.ce-c6{animation-delay:.9s}
+@media (prefers-reduced-motion:reduce){#ce-city,#ce-scan,.ce-cell{animation:none}#ce-city{opacity:.95}#ce-scan{opacity:0}.ce-cell{opacity:1}}
+</style>
+<path class="ce ce-thin" d="M26,168 L104,168" opacity="0.5"/>
+<g id="ce-city" opacity="0">
+<rect class="ce ce-med" x="34" y="120" width="20" height="48"/>
+<rect class="ce ce-med" x="58" y="92" width="22" height="76"/>
+<rect class="ce ce-med" x="84" y="134" width="20" height="34"/>
+<line class="ce ce-thin" x1="63" y1="104" x2="75" y2="104" opacity="0.5"/>
+<line class="ce ce-thin" x1="63" y1="118" x2="75" y2="118" opacity="0.5"/>
+<line class="ce ce-thin" x1="39" y1="132" x2="49" y2="132" opacity="0.5"/>
+</g>
+<g opacity="0.9">
+<rect class="ce ce-thin" x="128" y="96" width="66" height="66" opacity="0.55"/>
+<line class="ce ce-thin" x1="150" y1="96" x2="150" y2="162" opacity="0.4"/>
+<line class="ce ce-thin" x1="172" y1="96" x2="172" y2="162" opacity="0.4"/>
+<line class="ce ce-thin" x1="128" y1="118" x2="194" y2="118" opacity="0.4"/>
+<line class="ce ce-thin" x1="128" y1="140" x2="194" y2="140" opacity="0.4"/>
+<rect class="ce-fill ce-cell ce-c1" x="133" y="101" width="12" height="12" rx="1.5"/>
+<rect class="ce-fill ce-cell ce-c4" x="177" y="101" width="12" height="12" rx="1.5"/>
+<rect class="ce-fill ce-cell ce-c2" x="155" y="123" width="12" height="12" rx="1.5"/>
+<rect class="ce-fill ce-cell ce-c5" x="133" y="145" width="12" height="12" rx="1.5"/>
+<rect class="ce-fill ce-cell ce-c3" x="177" y="145" width="12" height="12" rx="1.5"/>
+<rect class="ce-fill ce-cell ce-c6" x="155" y="145" width="12" height="12" rx="1.5"/>
+</g>
+<line id="ce-scan" class="ce ce-med" x1="110" y1="84" x2="110" y2="176" opacity="0"/>
+</svg></div>
+        <div class="tile-cap"><span class="tile-name">City Encoder</span><span class="tile-date">2026</span></div>
+    </a>
+</div>
+
+<!-- VISUALIZATION LIGHTBOX -->
+<div class="viz-lb" id="vizLb" role="dialog" aria-modal="true">
+    <button class="viz-lb-close" id="vizLbClose" aria-label="Close">&times;</button>
+    <button class="viz-lb-arrow prev" id="vizPrev" aria-label="Previous">&#8249;</button>
+    <div class="viz-lb-stage">
+        <div class="viz-lb-side" id="vizSideL"></div>
+        <div class="viz-lb-center">
+            <img class="main" id="vizLbImg" src="" alt="">
+            <div class="viz-lb-meta">
+                <span class="viz-lb-cap" id="vizLbCap"></span>
+                <a class="viz-lb-post" id="vizLbPost" href="#" target="_blank" rel="noopener">View post &#8599;</a>
+            </div>
+        </div>
+        <div class="viz-lb-side" id="vizSideR"></div>
     </div>
-    <div class="tile empty">
-        <div class="tile-img"></div>
-        <div class="tile-cap"><span class="tile-name">Structural Mesh</span><span class="tile-date">2023</span></div>
-    </div>
-    <div class="tile empty">
-        <div class="tile-img"></div>
-        <div class="tile-cap"><span class="tile-name">Script 03</span><span class="tile-date">2023</span></div>
-    </div>
+    <button class="viz-lb-arrow next" id="vizNext" aria-label="Next">&#8250;</button>
 </div>
 
 <script>
@@ -332,7 +654,24 @@ function resizeCanvas() {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 resizeCanvas();
-window.addEventListener('resize', () => { resizeCanvas(); initLines(); });
+window.addEventListener('resize', () => {
+    resizeCanvas();
+    // Re-layout existing lines for the CURRENT state — do NOT rebuild (that hid the lines)
+    introLine.resize();
+    catLines.forEach(l => l.resize());
+    if (state === 'intro' || state === 'splitting') {
+        introLine.setBaseY(H * 0.5);
+    } else if (state === 'menu') {
+        catLines.forEach((l, i) => l.setBaseY(menuY(i)));
+    } else if (state === 'expanded' && expandedIdx >= 0) {
+        const ey = expandedY(expandedIdx);
+        catLines.forEach((l, i) => l.setBaseY(ey[i]));
+        if (contentEls[expandedIdx] && contentEls[expandedIdx].classList.contains('active')) {
+            showContent(expandedIdx);
+        }
+    }
+    updateScrollChevron();
+});
 
 /* ── GEOMETRY ────────────────────────────────────────────── */
 function menuY(i) {
@@ -498,13 +837,13 @@ function showContent(idx) {
     el.style.top    = top + 'px';
     el.style.height = height + 'px';
 
-    const imgH = Math.round(height * 0.62);
+    const imgH = Math.round(height * (W < 768 ? 0.42 : 0.62));  // smaller tiles on mobile
     el.querySelectorAll('.tile-img').forEach(t => {
         t.style.height = imgH + 'px';
         t.style.width  = '';
     });
     el.querySelectorAll('.tile.empty .tile-img').forEach(t => {
-        t.style.width = Math.round(imgH * 1.35) + 'px';
+        t.style.width = imgH + 'px';   /* square */
     });
 
     el.classList.add('active');
@@ -789,32 +1128,24 @@ if (W < 768) document.getElementById('hint').textContent = 'tap to reveal';
 /* ── MOBILE MENU ─────────────────────────────────────────── */
 const menuBtn  = document.getElementById('menuBtn');
 const navPanel = document.getElementById('nav-panel');
-
-menuBtn.addEventListener('click', () => {
-    const opening = !navPanel.classList.contains('open');
-    navPanel.classList.toggle('open', opening);
-    menuBtn.textContent = opening ? 'CLOSE' : 'MENU';
-});
-
-navPanel.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-        navPanel.classList.remove('open');
-        menuBtn.textContent = 'MENU';
-    });
-});
-
-/* ── THEME ───────────────────────────────────────────────── */
-if (localStorage.getItem('theme') === 'light') {
-    document.body.classList.add('light-mode');
-    document.body.style.background = '#F4F4F4';
-    document.body.style.color      = '#111';
+if (menuBtn && navPanel) {
+    menuBtn.addEventListener('click', () => navPanel.classList.toggle('open'));
+    navPanel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navPanel.classList.remove('open')));
 }
-document.getElementById('themeDot').addEventListener('click', () => {
+
+/* ── THEME TOGGLE ── */
+const themeDot = document.getElementById('themeDot');
+if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+themeDot.addEventListener('click', () => {
     const light = document.body.classList.toggle('light-mode');
-    document.body.style.background = light ? '#F4F4F4' : '#050505';
-    document.body.style.color      = light ? '#111111' : '#FFFFFF';
     localStorage.setItem('theme', light ? 'light' : 'dark');
 });
+themeDot.setAttribute('role', 'button');
+themeDot.setAttribute('tabindex', '0');
+themeDot.setAttribute('aria-label', 'Toggle light or dark theme');
+themeDot.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); themeDot.click(); } });
 </script>
+<!-- site-footer -->
+<footer class="site-footer" style="position:fixed;left:0;right:0;bottom:0;z-index:30;pointer-events:none;text-align:center;padding:10px 16px;font-family:var(--font);font-size:10px;letter-spacing:1px;color:#888;">© 2026 Mohammad Fasahat. All rights reserved.</footer>
 </body>
 </html>

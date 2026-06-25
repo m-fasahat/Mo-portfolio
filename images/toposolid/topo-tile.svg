@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0c1413"/>
+      <stop offset="1" stop-color="#05201d"/>
+    </linearGradient>
+    <path id="blob" d="M120,200 C120,118 205,78 305,80 C418,82 502,138 500,212 C498,292 414,332 300,330 C198,328 120,282 120,200 Z"/>
+  </defs>
+  <rect width="600" height="400" fill="url(#bg)"/>
+  <g fill="none" stroke="#3fd0c3" stroke-width="1.4">
+    <use href="#blob" opacity="0.18"/>
+    <use href="#blob" opacity="0.30" transform="translate(305,205) scale(0.80) translate(-305,-205)"/>
+    <use href="#blob" opacity="0.45" transform="translate(305,205) scale(0.60) translate(-305,-205)"/>
+    <use href="#blob" opacity="0.65" transform="translate(305,205) scale(0.42) translate(-305,-205)"/>
+    <use href="#blob" opacity="0.85" transform="translate(305,205) scale(0.26) translate(-305,-205)"/>
+  </g>
+  <rect x="276" y="186" width="58" height="38" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.9"/>
+</svg>

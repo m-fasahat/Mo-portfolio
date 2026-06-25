@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 300 300" width="220" height="220" role="img" aria-label="Drawing Translator" fill="none">
+<style>
+.tr{stroke:currentColor;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.tr-thin{stroke-width:1.6}.tr-med{stroke-width:2}.tr-fill{fill:currentColor;stroke:none}
+#tr-in{stroke-dasharray:150;stroke-dashoffset:150;animation:trIn 6.5s ease-in-out infinite}
+@keyframes trIn{0%{stroke-dashoffset:150}22%{stroke-dashoffset:0}100%{stroke-dashoffset:0}}
+#tr-packet{offset-path:path('M92,110 L128,110');transform-box:fill-box;animation:trPkt 6.5s cubic-bezier(.5,0,.3,1) infinite}
+@keyframes trPkt{0%,28%{offset-distance:0%;opacity:0}34%{opacity:1}52%{offset-distance:100%;opacity:1}58%,100%{offset-distance:100%;opacity:0}}
+@supports not (offset-path:path('M0,0 L1,1')){#tr-packet{animation:trPktX 6.5s cubic-bezier(.5,0,.3,1) infinite}@keyframes trPktX{0%,28%{transform:translateX(0);opacity:0}34%{opacity:1}52%{transform:translateX(36px);opacity:1}58%,100%{transform:translateX(36px);opacity:0}}}
+#tr-node{transform-box:fill-box;transform-origin:center;animation:trNode 6.5s ease-in-out infinite}
+@keyframes trNode{0%,40%{transform:scale(1)}50%{transform:scale(1.25)}64%,100%{transform:scale(1)}}
+.tr-out{stroke-dasharray:60;stroke-dashoffset:60;opacity:0;animation:trOut 6.5s ease-in-out infinite}
+@keyframes trOut{0%,46%{stroke-dashoffset:60;opacity:0}62%{stroke-dashoffset:0;opacity:.95}86%{stroke-dashoffset:0;opacity:.95}96%,100%{stroke-dashoffset:0;opacity:0}}
+.tr-o2{animation-delay:.1s}.tr-o3{animation-delay:.2s}.tr-o4{animation-delay:.3s}
+@media (prefers-reduced-motion:reduce){#tr-in,#tr-packet,#tr-node,.tr-out{animation:none}#tr-in{stroke-dashoffset:0}#tr-packet{opacity:0}.tr-out{stroke-dashoffset:0;opacity:.95}}
+</style>
+<rect class="tr tr-thin" x="24" y="62" width="64" height="92" rx="4" opacity="0.5"/>
+<path id="tr-in" class="tr tr-med" d="M34,132 C44,96 52,118 58,100 S72,86 80,108"/>
+<rect class="tr tr-thin" x="132" y="62" width="64" height="92" rx="4" opacity="0.5"/>
+<line class="tr tr-med tr-out" x1="142" y1="92" x2="186" y2="92"/>
+<line class="tr tr-med tr-out tr-o2" x1="142" y1="110" x2="178" y2="110"/>
+<line class="tr tr-med tr-out tr-o3" x1="142" y1="128" x2="186" y2="128"/>
+<line class="tr tr-thin tr-out tr-o4" x1="142" y1="92" x2="142" y2="128" opacity="0.6"/>
+<line class="tr tr-thin" x1="92" y1="110" x2="128" y2="110" opacity="0.4"/>
+<circle id="tr-node" class="tr tr-med" cx="110" cy="110" r="9"/>
+<circle id="tr-packet" class="tr-fill" cx="92" cy="110" r="3.4"/>
+</svg>

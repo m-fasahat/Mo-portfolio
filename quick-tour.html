@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><style>@media(prefers-color-scheme:dark){line{stroke:white}}@media(prefers-color-scheme:light){line{stroke:black}}</style><line x1='32' y1='0' x2='32' y2='64' stroke='black' stroke-width='6'/><line x1='0' y1='32' x2='64' y2='32' stroke='black' stroke-width='6'/></svg>">
+    <title>Mohammad Fasahat | Quick Tour</title>
+    <meta name="description" content="A quick visual tour through selected renderings, animations, and visual studies by Mohammad Fasahat.">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-primary: #FFFFFF;
+            --text-secondary: #888888;
+            --line-color: rgba(255, 255, 255, 0.15);
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+        body.light-mode {
+            --bg-color: #F4F4F4;
+            --text-primary: #111111;
+            --text-secondary: #666666;
+            --line-color: rgba(0, 0, 0, 0.15);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-color); color: var(--text-primary);
+            font-family: var(--font-main);
+            transition: background-color .5s ease, color .5s ease;
+            overflow-x: hidden; cursor: crosshair;
+        }
+        a, button { cursor: pointer; }
+        a:focus-visible, button:focus-visible, [tabindex]:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+
+        /* NAV */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 40px 50px; position: fixed; top: 0; width: 100%; z-index: 500;
+            background: transparent; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+        }
+        .brand { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); text-decoration: none; }
+        .nav-right { display: flex; align-items: center; gap: 30px; }
+        .nav-right a { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); transition: color .3s; text-decoration: none; }
+        .nav-right a:hover, .nav-right a.active { color: var(--text-primary); }
+        .theme-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--text-primary); cursor: pointer; transition: background .3s; }
+
+        /* MOBILE MENU */
+        .menu-btn { display: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-primary); cursor: pointer; padding: 10px; background: none; border: none; }
+        #nav-panel { position: fixed; inset: 0; background: var(--bg-color); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 400; opacity: 0; pointer-events: none; transition: opacity .4s ease; }
+        #nav-panel.open { opacity: 1; pointer-events: all; }
+        #nav-panel a { display: block; font-size: 24px; color: var(--text-primary); text-decoration: none; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; text-align: center; transition: opacity .3s; }
+        #nav-panel a:last-child { margin-bottom: 0; }
+        #nav-panel a:hover, #nav-panel a:active { opacity: 0.6; }
+
+        /* GALLERY */
+        .tour-container { padding: 170px 50px 100px; max-width: 1600px; margin: 0 auto; }
+        .tour-header { margin-bottom: 60px; text-align: center; max-width: 620px; margin-left: auto; margin-right: auto; }
+        .tour-title { font-size: 22px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
+        .tour-desc { font-size: 13px; line-height: 1.7; color: var(--text-secondary); }
+
+        .tour-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+        .tour-item { position: relative; aspect-ratio: 1 / 1; overflow: hidden; cursor: zoom-in; background: rgba(0,0,0,.08); }
+        body.light-mode .tour-item { background: rgba(0,0,0,.06); }
+        .tour-item img, .tour-item video {
+            width: 100%; height: 100%; object-fit: cover; display: block;
+            filter: grayscale(18%); transition: transform .6s ease, filter .5s ease;
+        }
+        .tour-item:hover img, .tour-item:hover video { transform: scale(1.04); filter: grayscale(0%); }
+
+        /* BEFORE / AFTER BADGE */
+        .tour-item[data-before]::after {
+            content: "Before / After";
+            position: absolute; top: 10px; right: 10px; z-index: 2;
+            font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+            color: #fff; background: rgba(0,0,0,.6); backdrop-filter: blur(4px);
+            padding: 5px 9px; border-radius: 2px; pointer-events: none;
+            opacity: .85; transition: opacity .4s ease, background .4s ease;
+        }
+        .tour-item[data-before]:hover::after { opacity: 1; background: rgba(0,0,0,.78); }
+
+        @media (max-width: 1100px) { .tour-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 900px) {
+            nav { padding: 25px 20px; }
+            .tour-container { padding: 120px 20px 60px; }
+            .tour-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        }
+        @media (max-width: 768px) {
+            .nav-right a { display: none; }
+            .menu-btn { display: block; }
+        }
+        @media (max-width: 560px) {
+            .tour-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        }
+
+        /* LIGHTBOX */
+        .lightbox { position: fixed; inset: 0; z-index: 1000; background: rgba(5,5,5,0.97); display: flex; flex-direction: column; opacity: 0; pointer-events: none; visibility: hidden; transition: opacity .35s ease, visibility .35s; }
+        body.light-mode .lightbox { background: rgba(244,244,244,0.98); }
+        .lightbox.open { opacity: 1; pointer-events: all; visibility: visible; }
+        .lb-bar { display: flex; justify-content: flex-end; align-items: center; padding: 24px 32px; }
+        .lb-close { background: none; border: none; color: var(--text-primary); font-size: 26px; line-height: 1; cursor: pointer; padding: 4px 8px; }
+        .lb-stage { flex: 1; display: flex; align-items: center; justify-content: center; padding: 0 32px; min-height: 0; position: relative; }
+        .lb-stage > img, .lb-stage > video { display: block; width: auto; height: auto; max-width: min(84vw, 1040px); max-height: 78vh; object-fit: contain; box-shadow: 0 24px 64px rgba(0,0,0,.5); }
+        .lb-stage > img[hidden], .lb-stage > video[hidden] { display: none; }
+
+        /* BEFORE / AFTER TOGGLE */
+        .lb-toggle { display: inline-flex; border: 1px solid var(--line-color); border-radius: 3px; overflow: hidden; }
+        .lb-toggle[hidden] { display: none; }
+        .lb-tg {
+            background: none; border: none; color: var(--text-secondary);
+            font-family: var(--font-main); font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+            padding: 8px 20px; transition: background .3s ease, color .3s ease;
+        }
+        .lb-tg + .lb-tg { border-left: 1px solid var(--line-color); }
+        .lb-tg.active { background: var(--text-primary); color: var(--bg-color); }
+        .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-primary); font-size: 42px; cursor: pointer; opacity: .45; transition: opacity .2s; padding: 10px 16px; }
+        .lb-nav:hover { opacity: 1; }
+        .lb-prev { left: 14px; } .lb-next { right: 14px; }
+        .lb-foot { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 18px 32px 32px; }
+        .lb-count { font-size: 11px; letter-spacing: 1.5px; color: var(--text-secondary); }
+        .lb-link { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--text-primary); padding-bottom: 3px; transition: opacity .3s; }
+        .lb-link:hover { opacity: .55; }
+        .lb-link[hidden] { display: none; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="brand">Mohammad Fasahat</a>
+        <div class="nav-right">
+            <a href="quick-tour.html" class="active">Quick Tour</a>
+            <a href="index.html">Projects</a>
+            <a href="about.html">About</a>
+            <button class="menu-btn" id="menuBtn">MENU</button>
+            <div class="theme-dot" id="themeDot"></div>
+        </div>
+    </nav>
+
+    <div id="nav-panel">
+        <a href="quick-tour.html">Quick Tour</a>
+        <a href="index.html">Projects</a>
+        <a href="about.html">About</a>
+    </div>
+
+    <div class="tour-container">
+        <div class="tour-header">
+            <h1 class="tour-title">Quick Tour</h1>
+            <p class="tour-desc">A quick walk through a selection of renderings and visual studies. Click any image to view it full-screen.</p>
+        </div>
+
+        <div class="tour-grid" id="tourGrid">
+            <div class="tour-item" data-project="ue5-villa.html" data-project-name="Villa S — Walkthrough"><img src="images/tour/interior-cinematic.jpg" alt="Villa S — Real-Time Walkthrough" loading="lazy"></div>
+            <div class="tour-item"><img src="images/tour/Night%20Scene.jpg" alt="A-Frame Cabin at Dusk" loading="lazy"></div>
+            <div class="tour-item" data-video="images/tour/night-scene.mp4"><video src="images/tour/night-scene.mp4" poster="images/tour/night-scene.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
+            <div class="tour-item" data-video="images/tour/ue5-solitude.mp4"><video src="images/tour/ue5-solitude.mp4" poster="images/tour/ue5-solitude.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
+            <div class="tour-item" data-before="images/tour/night-scene-base.png"><img src="images/tour/friends-house.jpg" alt="A Friend's House (before / after)" loading="lazy"></div>
+            <div class="tour-item" data-before="images/tour/dragons-base.jpg"><img src="images/tour/dragons.jpg" alt="Dragon's Landing (before / after)" loading="lazy"></div>
+            <div class="tour-item" data-before="images/tour/formenta-hidden-line.jpg"><img src="images/tour/formenta.jpg" alt="Winter Formenta (before / after)" loading="lazy"></div>
+            <div class="tour-item" data-before="images/tour/adv-overlook-base.jpg"><img src="images/tour/adv-overlook-updated.jpg" alt="C6 — From the Overlook (before / after)" loading="lazy"></div>
+            <div class="tour-item"><img src="images/tour/campus.jpg" alt="Campus" loading="lazy"></div>
+            <div class="tour-item"><img src="images/tour/light-1.jpg" alt="Where the Light Unfolds" loading="lazy"></div>
+            <div class="tour-item"><img src="images/tour/eco-hero-6.jpg" alt="Ecolodge" loading="lazy"></div>
+            <div class="tour-item"><img src="images/tour/eco-hero-2.jpg" alt="Ecolodge" loading="lazy"></div>
+            <div class="tour-item"><img src="images/tour/yazd-2.jpg" alt="A House in Yazd" loading="lazy"></div>
+            <div class="tour-item"><img src="images/tour/stadium-hero-4.jpg" alt="Rolling Diamond" loading="lazy"></div>
+            <div class="tour-item"><img src="images/tour/ghana-33.jpg" alt="Better Half" loading="lazy"></div>
+            <div class="tour-item"><img src="images/tour/ghana-2.jpg" alt="Better Half" loading="lazy"></div>
+            <div class="tour-item"><img src="images/tour/work-3.jpg" alt="Data Farm" loading="lazy"></div>
+            <div class="tour-item"><img src="images/tour/yard-1.jpg" alt="Yard to Yard" loading="lazy"></div>
+            <div class="tour-item"><img src="images/tour/yard-hero-3.jpg" alt="Yard to Yard" loading="lazy"></div>
+            <div class="tour-item"><img src="images/tour/housing-1.jpg" alt="Social Housing" loading="lazy"></div>
+        </div>
+    </div>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+        <div class="lb-bar">
+            <button class="lb-close" id="lbClose" aria-label="Close">&times;</button>
+        </div>
+        <div class="lb-stage">
+            <button class="lb-nav lb-prev" id="lbPrev" aria-label="Previous">&#8249;</button>
+            <img id="lbImg" src="" alt="">
+            <video id="lbVideo" src="" muted loop playsinline controls hidden></video>
+            <button class="lb-nav lb-next" id="lbNext" aria-label="Next">&#8250;</button>
+        </div>
+        <div class="lb-foot">
+            <div class="lb-toggle" id="lbToggle" hidden>
+                <button class="lb-tg" id="lbTgBefore" type="button">Before</button>
+                <button class="lb-tg active" id="lbTgAfter" type="button">After</button>
+            </div>
+            <a class="lb-link" id="lbLink" href="#" hidden>View project &rarr;</a>
+            <span class="lb-count" id="lbCount"></span>
+        </div>
+    </div>
+
+    <!-- site-footer -->
+    <footer class="site-footer" style="text-align:center;padding:48px 24px;font-family:inherit;font-size:11px;letter-spacing:1px;line-height:1.6;opacity:.5;">© 2026 Mohammad Fasahat. All rights reserved.</footer>
+
+    <script>
+        // --- THEME ---
+        const themeDot = document.getElementById('themeDot');
+        if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+        themeDot.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        });
+        themeDot.setAttribute('role', 'button');
+        themeDot.setAttribute('tabindex', '0');
+        themeDot.setAttribute('aria-label', 'Toggle light or dark theme');
+        themeDot.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); themeDot.click(); } });
+
+        // --- MOBILE MENU ---
+        const menuBtn  = document.getElementById('menuBtn');
+        const navPanel = document.getElementById('nav-panel');
+        if (menuBtn && navPanel) {
+            menuBtn.addEventListener('click', () => navPanel.classList.toggle('open'));
+            navPanel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navPanel.classList.remove('open')));
+        }
+
+        // --- LIGHTBOX ---
+        const items      = Array.from(document.querySelectorAll('.tour-item'));
+        const lb         = document.getElementById('lightbox');
+        const lbImg      = document.getElementById('lbImg');
+        const lbCount    = document.getElementById('lbCount');
+        const lbLink     = document.getElementById('lbLink');
+        const lbVideo    = document.getElementById('lbVideo');
+        const lbToggle   = document.getElementById('lbToggle');
+        const lbTgBefore = document.getElementById('lbTgBefore');
+        const lbTgAfter  = document.getElementById('lbTgAfter');
+        let cur = 0;
+        let curBefore = null, curAfter = null;
+
+        function setView(which) {
+            lbImg.src = which === 'before' ? curBefore : curAfter;
+            lbTgBefore.classList.toggle('active', which === 'before');
+            lbTgAfter.classList.toggle('active', which === 'after');
+        }
+
+        function renderLB() {
+            const item  = items[cur];
+            const media = item.querySelector('img, video');
+            const before = item.dataset.before;
+            const vid    = item.dataset.video;
+            lbVideo.pause(); lbVideo.hidden = true; lbImg.hidden = true; lbToggle.hidden = true;
+            if (vid) {
+                lbVideo.src = vid;
+                lbVideo.hidden = false;
+                lbVideo.play().catch(() => {});
+                curAfter = curBefore = null;
+            } else if (before) {
+                curAfter  = media.getAttribute('src');
+                curBefore = before;
+                lbImg.alt = media.getAttribute('alt') || '';
+                lbImg.hidden = false;
+                lbToggle.hidden = false;
+                setView('after');
+            } else {
+                curAfter = curBefore = null;
+                lbImg.alt = media.getAttribute('alt') || '';
+                lbImg.hidden = false;
+                lbImg.src = media.getAttribute('src');
+            }
+            lbCount.textContent = (cur + 1) + ' / ' + items.length;
+            const proj = item.dataset.project;
+            if (proj) {
+                lbLink.href = proj;
+                lbLink.textContent = (item.dataset.projectName || 'View project') + ' →';
+                lbLink.hidden = false;
+            } else {
+                lbLink.hidden = true;
+            }
+        }
+
+        lbTgBefore.addEventListener('click', () => setView('before'));
+        lbTgAfter.addEventListener('click',  () => setView('after'));
+
+        function openLB(i)  { cur = i; renderLB(); lb.classList.add('open');    document.body.style.overflow = 'hidden'; }
+        function closeLB()  { lb.classList.remove('open'); document.body.style.overflow = ''; lbVideo.pause(); }
+        function stepLB(d)  { cur = (cur + d + items.length) % items.length; renderLB(); }
+
+        items.forEach((el, i) => el.addEventListener('click', () => openLB(i)));
+        document.getElementById('lbClose').addEventListener('click', closeLB);
+        document.getElementById('lbPrev').addEventListener('click', () => stepLB(-1));
+        document.getElementById('lbNext').addEventListener('click', () => stepLB(1));
+        lb.addEventListener('click', e => { if (e.target === lb || e.target.classList.contains('lb-stage')) closeLB(); });
+        document.addEventListener('keydown', e => {
+            if (!lb.classList.contains('open')) return;
+            if (e.key === 'Escape')     closeLB();
+            if (e.key === 'ArrowRight') stepLB(1);
+            if (e.key === 'ArrowLeft')  stepLB(-1);
+        });
+
+        // Swipe to navigate (mobile)
+        let touchX = null;
+        lb.addEventListener('touchstart', e => { touchX = e.changedTouches[0].clientX; }, { passive: true });
+        lb.addEventListener('touchend',   e => {
+            if (touchX === null) return;
+            const dx = e.changedTouches[0].clientX - touchX;
+            if (Math.abs(dx) > 50) stepLB(dx < 0 ? 1 : -1);
+            touchX = null;
+        }, { passive: true });
+    </script>
+</body>
+</html>

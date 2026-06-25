@@ -6,6 +6,7 @@
     <!-- FAVICON LINK -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><style>@media(prefers-color-scheme:dark){line{stroke:white}}@media(prefers-color-scheme:light){line{stroke:black}}</style><line x1='32' y1='0' x2='32' y2='64' stroke='black' stroke-width='6'/><line x1='0' y1='32' x2='64' y2='32' stroke='black' stroke-width='6'/></svg>">
     <title>Mohammad Fasahat | Profile</title>
+    <meta name="description" content="About Mohammad Fasahat — architect and computational designer. Background, skills, software, and contact.">
     <style>
         /* --- SHARED VARIABLES --- */
         :root {
@@ -46,12 +47,12 @@
         /* --- NAV --- */
         nav {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 40px 50px; position: fixed; top: 0; width: 100%; z-index: 200;
+            padding: 40px 50px; position: fixed; top: 0; width: 100%; z-index: 500;
         }
         .brand { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); text-decoration: none; }
         .nav-right { display: flex; align-items: center; gap: 30px; }
         .nav-right a { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); transition: color 0.3s; text-decoration: none; }
-        .nav-right a:hover { color: var(--text-primary); }
+        .nav-right a:hover, .nav-right a.active { color: var(--text-primary); }
         .theme-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--text-primary); cursor: pointer; transition: background .3s; }
 
 
@@ -135,17 +136,38 @@
             .portrait { width: 100%; max-width: 300px; height: auto; aspect-ratio: 3/4; }
         }
     </style>
+<style>
+        /* MOBILE MENU */
+        .menu-btn { display: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-primary); cursor: pointer; padding: 10px; background: none; border: none; }
+        #nav-panel { position: fixed; inset: 0; background: var(--bg-color); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 400; opacity: 0; pointer-events: none; transition: opacity .4s ease; }
+        #nav-panel.open { opacity: 1; pointer-events: all; }
+        #nav-panel a { display: block; font-size: 24px; color: var(--text-primary); text-decoration: none; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; text-align: center; transition: opacity .3s; }
+        #nav-panel a:last-child { margin-bottom: 0; }
+        #nav-panel a:hover, #nav-panel a:active { opacity: 0.6; }
+</style>
+<style>/* ux-refinements */
+.p-description{text-align:left;}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:2px solid currentColor;outline-offset:3px;}
+@media (max-width:768px){.nav-right a{display:none;}.menu-btn{display:block;}}
+</style>
 </head>
 <body>
 
     <nav>
         <a href="index.html" class="brand">Mohammad Fasahat</a>
         <div class="nav-right">
+            <a href="quick-tour.html">Quick Tour</a>
             <a href="index.html">Projects</a>
-            <a href="about.html">About</a>
+            <a href="about.html" class="active">About</a>
+            <button class="menu-btn" id="menuBtn">MENU</button>
             <div class="theme-dot" id="themeDot"></div>
         </div>
     </nav>
+<div id="nav-panel">
+    <a href="quick-tour.html">Quick Tour</a>
+    <a href="index.html">Projects</a>
+    <a href="about.html">About</a>
+</div>
 
     </div>
 
@@ -212,8 +234,6 @@
             localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
         });
 
-        // --- THEME MEMORY ---
-        const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'light') {
             document.body.classList.add('light-mode');
         }
@@ -311,5 +331,18 @@
         animate();
 
     </script>
+<!-- site-footer -->
+<footer class="site-footer" style="position:fixed;left:0;right:0;bottom:0;z-index:50;pointer-events:none;text-align:center;padding:10px 16px;font-family:inherit;font-size:10px;letter-spacing:1px;color:#888;">© 2026 Mohammad Fasahat. All rights reserved.</footer>
+<script>/* ux-refinements */
+(function(){var d=document.getElementById("themeDot");if(d){d.setAttribute("role","button");d.setAttribute("tabindex","0");d.setAttribute("aria-label","Toggle light or dark theme");d.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();d.click();}});}})();
+        // Mobile menu
+        (function(){
+            var btn = document.getElementById('menuBtn');
+            var panel = document.getElementById('nav-panel');
+            if (!btn || !panel) return;
+            btn.addEventListener('click', function(){ panel.classList.toggle('open'); });
+            panel.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ panel.classList.remove('open'); }); });
+        })();
+</script>
 </body>
-</html>
+</html

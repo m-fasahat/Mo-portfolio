@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohammad Fasahat | Villa S — Real-Time Walkthrough</title>
+    <meta name="description" content="Villa S — Real-Time Walkthrough — Real-Time Archviz / 2025 Unreal Engine 5 · Lumen · UMG · Babolsar, Mazandaran. Project by Mohammad Fasahat.">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-primary: #FFFFFF;
+            --text-secondary: #888888;
+            --line-color: rgba(255, 255, 255, 0.15);
+            --active-line-color: #FFFFFF;
+            --accent: #3fd0c3;
+            --panel: rgba(255,255,255,0.04);
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            --mono: 'Courier New', monospace;
+        }
+        body.light-mode {
+            --bg-color: #F4F4F4;
+            --text-primary: #111111;
+            --text-secondary: #666666;
+            --line-color: rgba(0, 0, 0, 0.15);
+            --active-line-color: #000000;
+            --accent: #11998e;
+            --panel: rgba(0,0,0,0.035);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-color); color: var(--text-primary);
+            font-family: var(--font-main);
+            transition: background-color 0.5s ease, color 0.5s ease;
+            overflow-x: hidden; cursor: crosshair;
+        }
+        a, button, .feat-tab { cursor: pointer; }
+
+        /* NAV */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 40px 50px; position: fixed; top: 0; width: 100%; z-index: 500;
+            background: transparent; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+        }
+        .brand { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-primary); text-decoration: none; }
+        .nav-right { display: flex; align-items: center; gap: 30px; }
+        .nav-right a { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); transition: color 0.3s; text-decoration: none; }
+        .nav-right a:hover { color: var(--text-primary); }
+        .theme-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--text-primary); transition: background .3s; }
+
+        /* LAYOUT */
+        .project-container {
+            display: grid; grid-template-columns: 30% 10% 60%;
+            padding: 180px 50px 100px 50px; max-width: 1600px; margin: 0 auto;
+            align-items: start; position: relative;
+        }
+        .info-column { position: sticky; top: 140px; height: fit-content; }
+        .project-meta { margin-bottom: 36px; }
+        .p-title { font-size: 24px; font-weight: 400; line-height: 1.2; margin-bottom: 15px; }
+        .p-details { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; line-height: 1.6; }
+        .p-description { font-size: 13px; line-height: 1.7; text-align: justify; }
+        .p-description p + p { margin-top: 14px; }
+        .process-steps { margin-top: 34px; border-top: 1px solid var(--line-color); }
+        .step-row { display: flex; gap: 14px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--line-color); }
+        .step-num { font-size: 10px; font-family: var(--mono); color: var(--text-secondary); letter-spacing: 1px; flex-shrink: 0; width: 22px; }
+        .step-body .step-name { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; display: block; margin-bottom: 5px; }
+        .step-body .step-desc { font-size: 12px; line-height: 1.6; color: var(--text-secondary); }
+        .next-project { margin-top: 60px; text-align: right; }
+        .next-label { font-size: 10px; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 2px; }
+        .next-title { font-size: 18px; text-decoration: none; color: var(--text-primary); margin-top: 5px; display: block; transition: opacity 0.3s; }
+        .next-title:hover { opacity: 0.6; }
+
+        .spine-column { position: relative; height: 100%; display: flex; justify-content: center; }
+        #spine-canvas {
+            position: fixed; top: 20%; height: 60%; width: 100px; z-index: 0; pointer-events: none;
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+        }
+
+        /* GALLERY */
+        .gallery-column { display: flex; flex-direction: column; width: 100%; gap: 90px; }
+        .gallery-block { width: 100%; }
+        .block-label { display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; }
+        .block-label .bl-num { font-size: 10px; font-family: var(--mono); color: var(--text-secondary); letter-spacing: 1px; }
+        .block-label .bl-name { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; }
+        .block-caption { font-size: 11px; line-height: 1.6; color: var(--text-secondary); margin-top: 12px; max-width: 680px; }
+        .project-image, .project-video {
+            width: 100%; height: auto; display: block; border: 1px solid var(--line-color); background: #000;
+        }
+
+        /* FEATURE SWITCHER */
+        .feat-tabs { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+        .feat-tab {
+            font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;
+            color: var(--text-secondary); background: var(--panel);
+            border: 1px solid var(--line-color); padding: 11px 18px;
+            transition: color .25s, border-color .25s, background .25s;
+        }
+        .feat-tab:hover { color: var(--text-primary); }
+        .feat-tab.active { color: var(--text-primary); border-color: var(--active-line-color); }
+        .feat-tab.active::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-right: 8px; vertical-align: middle; }
+        .feat-stage {
+            position: relative; width: 100%; aspect-ratio: 16 / 10;
+            border: 1px solid var(--line-color); background: #000; overflow: hidden;
+        }
+        .feat-vid {
+            position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+            opacity: 0; transition: opacity .4s ease; pointer-events: none;
+        }
+        .feat-vid.active { opacity: 1; }
+
+        /* MEDIA GRID (final looks) */
+        .media-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        .media-grid figure { margin: 0; }
+        .media-grid figcaption { font-size: 11px; line-height: 1.6; color: var(--text-secondary); margin-top: 10px; }
+        @media (max-width: 760px) { .media-grid { grid-template-columns: 1fr; } }
+
+        @media (max-width: 900px) {
+            nav { padding: 25px 20px; }
+            .project-container { grid-template-columns: 1fr; padding: 120px 20px 60px 20px; gap: 40px; }
+            .info-column { position: static; }
+            .spine-column, #spine-canvas { display: none; }
+            .gallery-column { gap: 60px; }
+        }
+    </style>
+<style>
+        /* MOBILE MENU */
+        .menu-btn { display: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-primary); cursor: pointer; padding: 10px; background: none; border: none; }
+        #nav-panel { position: fixed; inset: 0; background: var(--bg-color); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 400; opacity: 0; pointer-events: none; transition: opacity .4s ease; }
+        #nav-panel.open { opacity: 1; pointer-events: all; }
+        #nav-panel a { display: block; font-size: 24px; color: var(--text-primary); text-decoration: none; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; text-align: center; transition: opacity .3s; }
+        #nav-panel a:last-child { margin-bottom: 0; }
+        #nav-panel a:hover, #nav-panel a:active { opacity: 0.6; }
+</style>
+<style>/* ux-refinements */
+.p-description{text-align:left;}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:2px solid currentColor;outline-offset:3px;}
+@media (max-width:768px){.nav-right a{display:none;}.menu-btn{display:block;}}
+</style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="brand">Mohammad Fasahat</a>
+        <div class="nav-right">
+            <a href="quick-tour.html">Quick Tour</a>
+            <a href="index.html">Projects</a>
+            <a href="about.html">About</a>
+            <button class="menu-btn" id="menuBtn">MENU</button>
+            <div class="theme-dot" id="themeDot"></div>
+        </div>
+    </nav>
+<div id="nav-panel">
+    <a href="quick-tour.html">Quick Tour</a>
+    <a href="index.html">Projects</a>
+    <a href="about.html">About</a>
+</div>
+
+    <div class="project-container">
+
+        <!-- LEFT: INFO -->
+        <div class="info-column">
+            <div class="project-meta">
+                <h1 class="p-title">Villa S &mdash; Real-Time Walkthrough</h1>
+                <div class="p-details">
+                    Real-Time Archviz / 2025<br>
+                    Unreal Engine 5 &middot; Lumen &middot; UMG &middot; Babolsar, Mazandaran<br>
+                    Role &mdash; Concept, Development &amp; Visualization
+                </div>
+            </div>
+            <div class="p-description">
+                <p>
+                    A playable, real-time tour of Villa S built in Unreal Engine 5. Instead of a fixed render, the villa runs as an interactive application&mdash;the visitor opens a menu, walks the rooms, and changes the time of day, the weather, and the material finishes live, all lit by Lumen global illumination.
+                </p>
+                <p>
+                    The interface is built with UMG widgets driving Blueprint logic behind the scenes. The same environment also feeds a set of cinematic rain renders, graded in DaVinci Resolve, that show the mood the engine can reach in a final pass.
+                </p>
+            </div>
+
+            <div class="process-steps">
+                <div class="step-row">
+                    <div class="step-num">01</div>
+                    <div class="step-body"><span class="step-name">Real-Time Lumen</span><span class="step-desc">Fully dynamic lighting&mdash;sun angle and sky respond instantly, no baking.</span></div>
+                </div>
+                <div class="step-row">
+                    <div class="step-num">02</div>
+                    <div class="step-body"><span class="step-name">Interactive UI</span><span class="step-desc">UMG menu for room jumps, weather, sun, and live material swaps.</span></div>
+                </div>
+                <div class="step-row">
+                    <div class="step-num">03</div>
+                    <div class="step-body"><span class="step-name">Blueprint Logic</span><span class="step-desc">Widget events wired in Blueprints control the scene state.</span></div>
+                </div>
+                <div class="step-row">
+                    <div class="step-num">04</div>
+                    <div class="step-body"><span class="step-name">Cinematic Pass</span><span class="step-desc">Rain sequences rendered out and graded in DaVinci Resolve.</span></div>
+                </div>
+            </div>
+
+            <div class="next-project">
+                <span class="next-label">Next</span>
+                <a href="index.html" class="next-title">All Works &rarr;</a>
+            </div>
+        </div>
+
+        <!-- CENTER: SPINE -->
+        <div class="spine-column"><canvas id="spine-canvas"></canvas></div>
+
+        <!-- RIGHT: GALLERY -->
+        <div class="gallery-column">
+
+            <!-- HERO -->
+            <div class="gallery-block">
+                <div class="block-label"><span class="bl-num">&#9633;</span><span class="bl-name">Cinematic Pass &mdash; Rain</span></div>
+                <video class="project-video" src="images/ue5-villa/hero.mp4" poster="images/ue5-villa/hero-poster.jpg" autoplay muted loop playsinline controls preload="metadata"></video>
+                <p class="block-caption">The headline look: a rainy evening at Villa S, rendered out of Unreal and graded in DaVinci Resolve. Wet courtyard, a lone tree beyond the glass, and rain streaking the full-height windows.</p>
+            </div>
+
+            <!-- START MENU -->
+            <div class="gallery-block">
+                <div class="block-label"><span class="bl-num">01</span><span class="bl-name">The Opening Menu</span></div>
+                <img class="project-image" src="images/ue5-villa/menu.jpg" alt="Villa S start menu with Start Tour and Quit over a concrete texture" loading="lazy">
+                <p class="block-caption">The first screen the visitor sees&mdash;&ldquo;Villa S, Babolsar, Mazandaran&rdquo; with <em>Start Tour</em> and <em>Quit</em> set over a raw concrete plate, establishing the material language before the tour begins.</p>
+            </div>
+
+            <!-- INTERACTIVE FEATURES -->
+            <div class="gallery-block">
+                <div class="block-label"><span class="bl-num">02</span><span class="bl-name">Interactive Controls</span></div>
+                <div class="feat-tabs">
+                    <button class="feat-tab active" data-i="0">Sun &amp; Weather</button>
+                    <button class="feat-tab" data-i="1">Rooms</button>
+                    <button class="feat-tab" data-i="2">Materials</button>
+                </div>
+                <div class="feat-stage">
+                    <video class="feat-vid active" data-i="0" src="images/ue5-villa/feat-weather.mp4" poster="images/ue5-villa/feat-weather-poster.jpg" autoplay muted loop playsinline preload="metadata"></video>
+                    <video class="feat-vid" data-i="1" src="images/ue5-villa/feat-rooms.mp4" poster="images/ue5-villa/feat-rooms-poster.jpg" muted loop playsinline preload="none"></video>
+                    <video class="feat-vid" data-i="2" src="images/ue5-villa/feat-materials.mp4" poster="images/ue5-villa/feat-materials-poster.jpg" muted loop playsinline preload="none"></video>
+                </div>
+                <p class="block-caption" id="featCap">Sun &amp; Weather &mdash; a slider drives the sun&rsquo;s position and the sky; toggling rain on rolls in clouds, wets the surfaces, and changes the whole mood in real time.</p>
+            </div>
+
+            <!-- FINAL LOOKS -->
+            <div class="gallery-block">
+                <div class="block-label"><span class="bl-num">03</span><span class="bl-name">Final Looks</span></div>
+                <div class="media-grid">
+                    <figure>
+                        <video class="project-video" src="images/ue5-villa/final-1.mp4" poster="images/ue5-villa/final-1-poster.jpg" autoplay muted loop playsinline preload="metadata"></video>
+                        <figcaption>Interior toward the rain-soaked courtyard&mdash;reflections on the polished floor.</figcaption>
+                    </figure>
+                    <figure>
+                        <video class="project-video" src="images/ue5-villa/final-2.mp4" poster="images/ue5-villa/final-2-poster.jpg" autoplay muted loop playsinline preload="metadata"></video>
+                        <figcaption>Courtyard exterior&mdash;concrete walls and the tree under an overcast, drizzling sky.</figcaption>
+                    </figure>
+                </div>
+            </div>
+
+            <!-- BEHIND THE SCENE -->
+            <div class="gallery-block">
+                <div class="block-label"><span class="bl-num">04</span><span class="bl-name">Behind the Scenes &mdash; UI</span></div>
+                <img class="project-image" src="images/ue5-villa/blueprints.jpg" alt="Widget Blueprint node graph driving the UI logic" loading="lazy">
+                <p class="block-caption">The Widget Blueprint graph wiring it together&mdash;button events that switch rooms, drive the sun and weather, and reassign materials on click.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        /* THEME MEMORY */
+        const themeDot = document.getElementById('themeDot');
+        if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+        themeDot.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        });
+
+        /* FEATURE SWITCHER */
+        (function(){
+            const tabs = Array.from(document.querySelectorAll('.feat-tab'));
+            const vids = Array.from(document.querySelectorAll('.feat-vid'));
+            const cap  = document.getElementById('featCap');
+            const caps = [
+                'Sun &amp; Weather — a slider drives the sun’s position and the sky; toggling rain on rolls in clouds, wets the surfaces, and changes the whole mood in real time.',
+                'Rooms — the room panel jumps the camera straight to the Living Room, Kitchen, Master Bed, or Courtyard, so the visitor can move through the villa without free-roaming.',
+                'Materials — the floor-finish palette swaps materials live; picking a swatch reassigns the surface instantly across the scene.'
+            ];
+            function show(i){
+                tabs.forEach(t => t.classList.toggle('active', +t.dataset.i === i));
+                vids.forEach(v => {
+                    const on = +v.dataset.i === i;
+                    v.classList.toggle('active', on);
+                    if (on) { v.play().catch(()=>{}); } else { v.pause(); }
+                });
+                cap.innerHTML = caps[i];
+            }
+            tabs.forEach(t => t.addEventListener('click', () => show(+t.dataset.i)));
+        })();
+
+        /* VERTICAL SPINE PHYSICS */
+        const canvas = document.getElementById('spine-canvas');
+        const ctx = canvas.getContext('2d');
+        let points = [];
+        const totalPoints = 40, spring = 0.05, damping = 0.1, mouseRadius = 100;
+        let mouse = { x: -1000, y: -1000 }, scrollSpeed = 0, lastScrollY = window.scrollY;
+        class Point {
+            constructor(x, y) { this.x = x; this.ix = x; this.y = y; this.vx = 0; }
+            update() {
+                let forceX = (this.x - this.ix) * spring;
+                let rect = canvas.getBoundingClientRect();
+                let dx = (mouse.x - rect.left) - this.x;
+                let dy = (mouse.y - rect.top) - this.y;
+                let dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < mouseRadius) { const force = (mouseRadius - dist) / mouseRadius; this.vx += force * (dx < 0 ? 1 : -1) * 2; }
+                if (Math.abs(scrollSpeed) > 2) { const ny = this.y / canvas.height; this.vx += scrollSpeed * Math.sin(ny * Math.PI) * 0.05; }
+                this.vx -= forceX; this.vx *= (1 - damping); this.x += this.vx;
+            }
+        }
+        function initCanvas() { resize(); points = []; const centerX = canvas.width / 2; const gap = canvas.height / (totalPoints - 1); for (let i = 0; i < totalPoints; i++) points.push(new Point(centerX, i * gap)); }
+        function resize() { canvas.width = canvas.parentElement.offsetWidth; canvas.height = canvas.parentElement.offsetHeight; if (points.length > 0) { const centerX = canvas.width / 2; points.forEach(p => p.ix = centerX); } }
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const style = getComputedStyle(document.body);
+            const lineColor = style.getPropertyValue('--line-color').trim();
+            const activeColor = style.getPropertyValue('--active-line-color').trim();
+            const currentScroll = window.scrollY; scrollSpeed = currentScroll - lastScrollY; lastScrollY = currentScroll;
+            ctx.beginPath(); ctx.moveTo(points[0].x, points[0].y);
+            let isMoving = Math.abs(scrollSpeed) > 5;
+            for (let i = 0; i < points.length - 1; i++) { const p = points[i], nextP = points[i + 1]; p.update(); ctx.quadraticCurveTo(p.x, p.y, (p.x + nextP.x) / 2, (p.y + nextP.y) / 2); }
+            const last = points[points.length - 1]; last.update(); ctx.lineTo(last.x, last.y);
+            ctx.strokeStyle = isMoving ? activeColor : lineColor; ctx.lineWidth = isMoving ? 1.5 : 1; ctx.stroke();
+            requestAnimationFrame(animate);
+        }
+        window.addEventListener('resize', () => { initCanvas(); });
+        window.addEventListener('mousemove', (e) => { const rect = canvas.getBoundingClientRect(); mouse.x = e.clientX - rect.left; mouse.y = e.clientY - rect.top; });
+        initCanvas(); animate();
+    </script>
+<!-- site-footer -->
+<footer class="site-footer" style="text-align:center;padding:48px 24px;font-family:inherit;font-size:11px;letter-spacing:1px;line-height:1.6;opacity:.5;">© 2026 Mohammad Fasahat. All rights reserved.</footer>
+<script>/* ux-refinements */
+(function(){var d=document.getElementById("themeDot");if(d){d.setAttribute("role","button");d.setAttribute("tabindex","0");d.setAttribute("aria-label","Toggle light or dark theme");d.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();d.click();}});}})();
+        // Mobile menu
+        (function(){
+            var btn = document.getElementById('menuBtn');
+            var panel = document.getElementById('nav-panel');
+            if (!btn || !panel) return;
+            btn.addEventListener('click', function(){ panel.classList.toggle('open'); });
+            panel.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ panel.classList.remove('open'); }); });
+        })();
+</script>
+</body>
+</html>

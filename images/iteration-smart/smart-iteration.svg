@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 300 300" width="220" height="220"
+     role="img" aria-label="Smart iteration: design variants cycle on a loop around the current best" fill="none">
+  <defs>
+    <style>
+      svg { color: #16181d; }
+      @media (prefers-color-scheme: dark) { svg { color: #e8eaed; } }
+      .it { stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .it-fill { fill: currentColor; stroke: none; }
+
+      .it-g { animation: itG 6.5s ease-in-out infinite; }
+      @keyframes itG { 0%{opacity:0} 18%{opacity:.5} 40%{opacity:0} 100%{opacity:0} }
+      #it-g2 { animation-delay: 1.5s; }
+      #it-spark { transform-box: fill-box; transform-origin: center; animation: itTw 6.5s ease-in-out infinite; }
+      @keyframes itTw { 0%,30%{opacity:0;transform:scale(.4)} 46%{opacity:1;transform:scale(1)} 62%{opacity:0;transform:scale(.5)} 100%{opacity:0} }
+
+      @media (prefers-reduced-motion: reduce) { .it-g,#it-spark{animation:none} #it-g1{opacity:.5} }
+    </style>
+  </defs>
+
+  <!-- iteration loop -->
+  <circle class="it" stroke-width="1.6" cx="110" cy="110" r="72" stroke-dasharray="6 9" opacity="0.4"/>
+  <!-- variant ghosts -->
+  <rect id="it-g1" class="it it-g" stroke-width="1.6" x="84" y="84" width="52" height="52" rx="10" transform="rotate(-10 110 110)"/>
+  <rect id="it-g2" class="it it-g" stroke-width="1.6" x="84" y="84" width="52" height="52" rx="10" transform="rotate(10 110 110)"/>
+  <!-- current best -->
+  <rect class="it" stroke-width="2.4" x="84" y="84" width="52" height="52" rx="10" opacity="0.92"/>
+  <!-- orbiting candidate -->
+  <circle class="it-fill" r="4.5">
+    <animateMotion dur="6.5s" repeatCount="indefinite" path="M110,38 A72,72 0 1,1 109.9,38 Z"/>
+  </circle>
+  <!-- AI spark -->
+  <g id="it-spark" class="it" stroke-width="2">
+    <line x1="150" y1="52" x2="150" y2="68"/><line x1="142" y1="60" x2="158" y2="60"/>
+  </g>
+</svg>
